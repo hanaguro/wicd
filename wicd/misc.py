@@ -140,10 +140,7 @@ def Run(cmd, include_stderr=False, return_pipe=False,
     else:
         err = None
         fds = False
-    if return_obj:
-        std_in = PIPE
-    else:
-        std_in = None
+    std_in = None
     
     # We need to make sure that the results of the command we run
     # are in English, so we set up a temporary environment.
