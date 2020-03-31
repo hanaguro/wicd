@@ -219,7 +219,7 @@
           <object class="GtkHBox" id="connecting_hbox">
             <property name="border_width">4</property>
             <child>
-              <object class="GtkProgressBar" id="progressbar">
+              <object class="GtkProgressBarWindow" id="progressbar">
                 <property name="tooltip_text" translatable="yes">Connecting...</property>
                 <property name="activity_mode">True</property>
                 <property name="text" translatable="yes">Connecting...</property>

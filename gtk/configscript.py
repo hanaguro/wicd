@@ -28,7 +28,9 @@ run as the current user.
 
 import sys
 import os
-import gtk
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk as gtk
 
 from wicd import wpath
 from wicd.translations import _

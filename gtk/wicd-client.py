@@ -38,16 +38,16 @@ class TrayIcon() -- Parent class of TrayIconGUI and IconConnectionInfo.
 #
 
 import sys
-import gtk
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk as gtk
 from gi.repository import GLib as gobject
+gi.require_version('Pango', '1.0')
+from gi.repository import Pango as pango
 import getopt
 import os
-import pango
 import atexit
 from dbus import DBusException
-
-import pygtk
-pygtk.require('2.0')
 
 USE_APP_INDICATOR = True
 try:
@@ -92,7 +92,7 @@ if __name__ == '__main__':
 daemon = wireless = wired = lost_dbus_id = None
 DBUS_AVAIL = False
 
-theme = gtk.icon_theme_get_default()
+theme = gtk.IconTheme.get_default()
 theme.append_search_path(wpath.images)
 
 
@@ -527,7 +527,7 @@ class TrayIcon(object):
                     ('Quit', gtk.STOCK_QUIT, _('_Quit'), None,
                         _('Quit wicd-tray-icon'), self.on_quit),
                     ]
-            actg = gtk.ActionGroup('Actions')
+            actg = gtk.ActionGroup(name='Actions')
             actg.add_actions(actions)
             self.manager = gtk.UIManager()
             self.manager.insert_action_group(actg, 0)
@@ -945,7 +945,7 @@ TX:'''))
                 self.connect('activate', self.on_activate)
                 self.connect('popup-menu', self.on_popup_menu)
                 self.set_from_name('no-signal')
-                self.set_tooltip("Initializing wicd...")
+                self.set_tooltip_text("Initializing wicd...")
 
             def on_popup_menu(self, status, button, timestamp):
                 """ Opens the right click menu for the tray icon. """

@@ -26,8 +26,10 @@ Module containing the code for the main wicd GUI.
 import os
 import sys
 import time
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk as gtk
 from gi.repository import GLib as gobject
-import gtk
 from itertools import chain
 from dbus import DBusException
 

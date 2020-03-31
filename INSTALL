@@ -2,7 +2,7 @@ Installation of Wicd should be done using your distribution package if one
 exists.  If not, the installation is relatively straightforward, but there
 are a few dependencies:
   1. python (>=2.4, <3.0)
-  2. pygtk (>=2.10)
+  #2. pygtk (>=2.10)
   2. dbus and its glib and python bindings
   3. a dhcp client (dhclient, dhcpcd, and pump are supported)
   4. wireless-tools (iwlist, iwconfig, etcetera)

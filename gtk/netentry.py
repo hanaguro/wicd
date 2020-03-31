@@ -24,7 +24,9 @@ contained within them.
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import gtk
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk as gtk
 import os
 
 import wicd.misc as misc
