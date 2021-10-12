@@ -87,7 +87,7 @@ def setup_dbus(force=True):
     return True
 
 
-def handle_no_dbus(from_tray=False):
+def handle_no_dbus(from_tray=False):Modal
     """ Handle the case where no DBus is available. """
     global DBUS_AVAIL
     DBUS_AVAIL = False

@@ -62,9 +62,6 @@ from wicd.misc import noneToBlankString, _status_dict
 from wicd.logfile import ManagedStdio
 from wicd.configmanager import ConfigManager
 
-if __name__ == '__main__':
-    wpath.chdir(__file__)
-
 misc.RenameProcess("wicd")
 
 wireless_conf = os.path.join(wpath.etc, "wireless-settings.conf")
@@ -1778,13 +1775,23 @@ def daemonize():
     os.dup2(0, 2)
 
 
-def main(argv):
+def main():
     """ The main daemon program.
 
     Keyword arguments:
     argv -- The arguments passed to the script.
 
     """
+    if os.getuid() != 0:
+        print(("Root privileges are required for the daemon to run properly." +
+               "  Exiting."))
+        sys.exit(1)
+
+    # No more needed since PyGObject 3.11, c.f.
+    # https://wiki.gnome.org/PyGObject/Threading
+    #gobject.threads_init()
+    argv = sys.argv
+
     # back up resolv.conf before we do anything else
     try:
         backup_location = wpath.varlib + 'resolv.conf.orig'
@@ -1945,13 +1952,5 @@ def on_exit(child_pid):
     print('Shutting down...')
     sys.exit(0)
 
-
 if __name__ == '__main__':
-    if os.getuid() != 0:
-        print(("Root privileges are required for the daemon to run properly." +
-               "  Exiting."))
-        sys.exit(1)
-    # No more needed since PyGObject 3.11, c.f.
-    # https://wiki.gnome.org/PyGObject/Threading
-    #gobject.threads_init()
-    main(sys.argv)
+    main()

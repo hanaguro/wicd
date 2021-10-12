@@ -47,42 +47,36 @@ def can_use_notify():
     return use_notify and HAS_NOTIFY and not wpath.no_use_notifications
 
 
+def show_message_dialog(parent, text, message_type, block):
+    dialog = gtk.MessageDialog(
+        transient_for = parent,
+        flags         = gtk.DialogFlags.MODAL,
+        buttons       = gtk.ButtonsType.OK,
+        message_type  = message_type,
+        text = text
+    )
+
+    if block:
+        dialog.run()
+        dialog.destroy()       
+    else:
+        def destroy(dialog, i):
+            dialog.destroy()
+
+        dialog.connect("response", destroy)
+        dialog.present()
+
 def error(parent, message, block=True):
     """ Shows an error dialog. """
-    def delete_event(dialog, i):
-        """ Handle dialog destroy. """
-        dialog.destroy()
-
-    if can_use_notify() and not block:
+    if not block and can_use_notify():
         notification = pynotify.Notification("ERROR", message, "error")
         notification.show()
-        return
-    dialog = gtk.MessageDialog(parent, gtk.DIALOG_MODAL, gtk.MESSAGE_ERROR,
-                               gtk.BUTTONS_OK)
-    dialog.set_markup(message)
-    if not block:
-        dialog.present()
-        dialog.connect("response", delete_event)
     else:
-        dialog.run()
-        dialog.destroy()
-
+        show_message_dialog(parent, message, gtk.MessageType.ERROR, block)
 
 def alert(parent, message, block=True):
     """ Shows an warning dialog. """
-    def delete_event(dialog, i):
-        """ Handle dialog destroy. """
-        dialog.destroy()
-
-    dialog = gtk.MessageDialog(parent, gtk.DIALOG_MODAL, gtk.MESSAGE_WARNING,
-                               gtk.BUTTONS_OK)
-    dialog.set_markup(message)
-    if not block:
-        dialog.present()
-        dialog.connect("response", delete_event)
-    else:
-        dialog.run()
-        dialog.destroy()
+    show_message_dialog(parent, message, gtk.MessageType.WARNING, block)
 
 
 def string_input(prompt, secondary, textbox_label):
