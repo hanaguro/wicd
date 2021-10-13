@@ -19,6 +19,7 @@
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 from setuptools import setup, find_packages
+from distutils.command.build_py import build_py as _build_py
 
 data = []
 
@@ -27,9 +28,11 @@ py_modules = ['wicd.networking','wicd.misc','wicd.wnettools',
               'wicd.logfile','wicd.backend','wicd.configmanager',
               'wicd.translations']
 
+class CustomPyBuild(_build_py):
+    def run(self):
+        super().run()
+
 setup(
-    name    = 'wicd',
-    version = '1.8.0.dev1',
     description = "A wireless and wired network manager",
     long_description = """A complete network connection manager
 Wicd supports wired and wireless networks, and capable of
@@ -46,14 +49,5 @@ connect at startup to any preferred network within range.
     license = "http://www.gnu.org/licenses/old-licenses/gpl-2.0.html",
 
     packages    = find_packages("src"),
-    package_dir = {"" : "src"},
-
-    entry_points = {
-        'distutils.setup_keywords': [
-            'foo_bar = setuptools.dist:assert_string_list',
-        ],
-        'console_scripts' : [
-            'wicd = wicd.daemon:main',
-        ],
-    }
+    cmdclass    = { "build_py" : CustomPyBuild },
 )

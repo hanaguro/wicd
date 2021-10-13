@@ -33,6 +33,10 @@ class WirelessDaemon() -- DBus interface to managed the wireless network.
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import wicd.config
+import lockfile
+import argparse
+import daemon
 import os
 import shutil
 import sys
@@ -1693,200 +1697,101 @@ class WiredDaemon(dbus.service.Object, object):
         ''' Returns a list of wireless interfaces on the system. '''
         return wnettools.GetWiredInterfaces()
 
-def usage():
-    """ Print help screen. """
-    print("""
-wicd %s 
-wireless (and wired) connection daemon.
 
-Arguments:
-\t-a\t--no-autoconnect\tDon't auto-scan/auto-connect.
-\t-c\t--keep-connection\tKeep connection alive when daemon stops.
-\t-f\t--no-daemon\tDon't daemonize (run in foreground).
-\t-e\t--no-stderr\tDon't redirect stderr.
-\t-n\t--no-poll\tDon't monitor network status.
-\t-o\t--no-stdout\tDon't redirect stdout.
-\t-k\t--kill\t\tSeek & destroy wicd processes.
-\t-h\t--help\t\tPrint this help.
-""" % (wpath.version + ' (bzr-r%s)' % wpath.revision))
+def daemon_main(args):
+    print('---------------------------')
+    print('wicd initializing...')
+    print('---------------------------')
 
-def daemonize():
-    """ Disconnect from the controlling terminal.
+    print('wicd is version', wpath.version, wpath.revision)
 
-    Fork twice, once to disconnect ourselves from the parent terminal and a
-    second time to prevent any files we open from becoming our controlling
-    terminal.
+    # Open the DBUS session
+    bus = dbus.SystemBus()
+    wicd_bus = dbus.service.BusName('org.wicd.daemon', bus=bus)
+    the_daemon = WicdDaemon(wicd_bus, args)
+    child_pid = None
+    if args.monitor_status:
+        child_pid = Popen([wpath.python, "-O", 
+                          os.path.join(wpath.daemon, "monitor.py")],
+                          shell=False, close_fds=True).pid
+    atexit.register(on_exit, child_pid)
 
-    For more info see:
-    http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/66012
-
-    """
-    # Fork the first time to disconnect from the parent terminal and
-    # exit the parent process.
+    # Enter the main loop
+    mainloop = gobject.MainLoop()
     try:
-        pid = os.fork()
-        if pid > 0:
-            sys.exit(0)
-    except OSError as e:
-        print("Fork #1 failed: %d (%s)" % (e.errno, e.strerror), file=sys.stderr)
+        mainloop.run()
+    finally:
+        daemon.DaemonClosing()
+
+def run_daemon(args):
+    context = daemon.DaemonContext(
+        working_directory = wicd.config.rundir_path,
+        umask             = 0o022,
+        pidfile           = lockfile.FileLock(wicd.config.pidfile_path)
+    )
+
+    with context:
+        daemon_main(args)
+
+def run_foreground(args):
+    daemon_main(args)
+
+def kill_daemon(args):
+    try:
+        f = open(wpath.pidfile)
+    except IOError:
+        #print >> sys.stderr, "No wicd instance active, aborting."
         sys.exit(1)
 
-    # Decouple from parent environment to stop us from being a zombie.
-    os.setsid()
-
-    # Fork the second time to prevent us from opening a file that will
-    # become our controlling terminal.
-    try:
-        pid = os.fork()
-        if pid > 0:
-            dirname = os.path.dirname(wpath.pidfile)
-            if not os.path.exists(dirname):
-                os.makedirs(dirname)
-            pidfile = open(wpath.pidfile, 'w')
-            pidfile.write(str(pid) + '\n')
-            pidfile.close()
-            sys.exit(0)
-        else:
-            os.umask(0)
-            os.chdir('/')
-    except OSError as e:
-        print("Fork #2 failed: %d (%s)" % (e.errno, e.strerror), file=sys.stderr)
-        sys.exit(1)
-
-    sys.stdin.close()
-    sys.stdout.close()
-    sys.stderr.close()
-
-    try:
-        maxfd = os.sysconf("SC_OPEN_MAX")
-    except (AttributeError, ValueError):
-        maxfd = 1024
-       
-    for fd in range(0, maxfd):
-        try:
-            os.close(fd)
-        except OSError:
-            pass
-
-    os.open(os.devnull, os.O_RDWR)
-
-    # Duplicate standard input to standard output and standard error.
-    os.dup2(0, 1)
-    os.dup2(0, 2)
-
+    # connect to dbus, trigger a disconnect, then knock out the daemon
+    from wicd import dbusmanager
+    bus = dbusmanager.connect_to_dbus()
+    dbus_ifaces = dbusmanager.get_dbus_ifaces()
+    dbus_ifaces['daemon'].Disconnect()
+    pid = int(f.readline())
+    f.close()
+    os.kill(pid, signal.SIGTERM)
 
 def main():
-    """ The main daemon program.
+    """ The main daemon program. """
 
-    Keyword arguments:
-    argv -- The arguments passed to the script.
+    parser = argparse.ArgumentParser(description = u'wire-d/-less connection daemon')
 
-    """
+    parser.set_defaults(action = run_daemon)
+
+    parser.add_argument('-f', '--no-daemon', dest='action', action='store_const', const=run_foreground,
+                        help=u"Run in foreground")
+
+    parser.add_argument('-k', '--kill', dest='action', action='store_const', const=kill_daemon,
+                        help=u"Seek & destroy wicd process")
+
+    parser.add_argument('-a', '--no-autoconnect', dest='auto_connect', action='store_false', default=True,
+                        help=u"Don't auto-scan/auto-connect")
+
+    parser.add_argument('-c', '--keep-connection', dest='keep_connection', action='store_true', default=False,
+                        help=u"Keep connection alive when daemon stops")
+
+    parser.add_argument('-n', '--no-poll', dest='monitor_status', action='store_false', default=True,
+                        help=u"Don't monitor network status")
+
+    parser.add_argument('-e', '--no-stderr', dest='redirect_stderr', action='store_false', default=True,
+                        help=u"Don't redirect stderr")
+
+    parser.add_argument('-o', '--no-stdout', dest='redirect_stdout', action='store_false', default=True,
+                        help=u"Don't redirect stdout")
+
+    args = parser.parse_args()
+
+    sys.exit(args.action(args) or 0)
+
     if os.getuid() != 0:
         print(("Root privileges are required for the daemon to run properly." +
                "  Exiting."))
         sys.exit(1)
 
-    # No more needed since PyGObject 3.11, c.f.
-    # https://wiki.gnome.org/PyGObject/Threading
-    #gobject.threads_init()
-    argv = sys.argv
-
-    # back up resolv.conf before we do anything else
-    try:
-        backup_location = wpath.varlib + 'resolv.conf.orig'
-        # Don't back up if the backup already exists, either as a regular file or a symlink
-        # The backup file should have been cleaned up by wicd, so perhaps it didn't exit cleanly...
-        if not os.path.exists(backup_location) and not os.path.islink(backup_location):
-            if os.path.islink('/etc/resolv.conf'):
-                dest = os.readlink('/etc/resolv.conf')
-                os.symlink(dest, backup_location)
-            else:
-                shutil.copy2('/etc/resolv.conf', backup_location)
-            os.chmod(backup_location, 0o644)
-    except IOError:
-        print('error backing up resolv.conf')
-
-    do_daemonize = True
-    redirect_stderr = True
-    redirect_stdout = True
-    auto_connect = True
-    kill = False
-    keep_connection = False
-
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], 'fenoahkc',
-                                   ['help', 'no-daemon', 'no-poll', 'no-stderr',
-                                    'no-stdout', 'no-autoconnect', 'kill',
-                                    'keep-connection'])
-    except getopt.GetoptError:
-        # Print help information and exit
-        usage()
-        sys.exit(2)
-
-    no_poll = False
-    for o, a in opts:
-        if o in ('-h', '--help'):
-            usage()
-            sys.exit()
-        if o in ('-e', '--no-stderr'):
-            redirect_stderr = False
-        if o in ('-o', '--no-stdout'):
-            redirect_stdout = False
-        if o in ('-f', '--no-daemon'):
-            do_daemonize = False
-        if o in ('-a', '--no-autoconnect'):
-            auto_connect = False
-        if o in ('-n', '--no-poll'):
-            no_poll = True
-        if o in ('-k', '--kill'):
-            kill = True
-        if o in ('-c', '--keep-connection'):
-            keep_connection = True
-
-    if kill:
-        try:
-            f = open(wpath.pidfile)
-        except IOError:
-            #print >> sys.stderr, "No wicd instance active, aborting."
-            sys.exit(1)
-
-        # restore resolv.conf on quit
-        try:
-            backup_location = wpath.varlib + 'resolv.conf.orig'
-            if os.path.islink(backup_location):
-                dest = os.readlink(backup_location)
-                os.remove('/etc/resolv.conf')
-                os.symlink(dest, '/etc/resolv.conf')
-            else:
-                shutil.move(backup_location, '/etc/resolv.conf')
-            os.chmod('/etc/resolv.conf', 0o644)
-        except IOError:
-            print('error restoring resolv.conf')
-
-        # connect to dbus, trigger a disconnect, then knock out the daemon
-        from wicd import dbusmanager
-        bus = dbusmanager.connect_to_dbus()
-        dbus_ifaces = dbusmanager.get_dbus_ifaces()
-        dbus_ifaces['daemon'].Disconnect()
-        pid = int(f.readline())
-        f.close()
-        os.kill(pid, signal.SIGTERM)
-
-        # quit, this should be the only option specified
-        sys.exit(0)
-
-    if os.path.exists(wpath.pidfile):
-        print('It seems like the daemon is already running.')
-        print('If it is not, please remove %s and try again.' % wpath.pidfile)
-        sys.exit(1)
-
     if not os.path.exists(wpath.networks):
         os.makedirs(wpath.networks)
    
-    if do_daemonize:
-        daemonize()
-
     if redirect_stderr or redirect_stdout:
         logpath = os.path.join(wpath.log, 'wicd.log')
         if not os.path.exists(wpath.log):
@@ -1912,31 +1817,7 @@ def main():
     if redirect_stderr:
         sys.stderr = output
 
-    print('---------------------------')
-    print('wicd initializing...')
-    print('---------------------------')
 
-    print('wicd is version', wpath.version, wpath.revision)
-
-    # Open the DBUS session
-    bus = dbus.SystemBus()
-    wicd_bus = dbus.service.BusName('org.wicd.daemon', bus=bus)
-    daemon = WicdDaemon(wicd_bus, auto_connect=auto_connect,
-        keep_connection=keep_connection)
-    child_pid = None
-    if not no_poll:
-        child_pid = Popen([wpath.python, "-O", 
-                          os.path.join(wpath.daemon, "monitor.py")],
-                          shell=False, close_fds=True).pid
-    atexit.register(on_exit, child_pid)
-
-    # Enter the main loop
-    mainloop = gobject.MainLoop()
-    try:
-        mainloop.run()
-    except KeyboardInterrupt:
-        pass
-    daemon.DaemonClosing()
 
 def on_exit(child_pid):
     """ Called when a SIGTERM is caught, kills monitor.py before exiting. """

@@ -45,6 +45,8 @@ from . import wpath
 from . import misc
 from .misc import find_path 
 
+from wicd import daemon
+
 # Regular expressions.
 _re_mode = (re.I | re.M | re.S)
 essid_pattern = re.compile('\tSSID: ?(.*?)\n', _re_mode)
@@ -255,7 +257,6 @@ class BaseInterface(object):
         self.ip_cmd = None
         self.route_cmd = None
         self.wpa_cli_cmd = None
-        self.resolvconf_cmd = None
 
         self.dhclient_cmd = None
         self.dhclient_needs_verbose = False
@@ -434,11 +435,6 @@ class BaseInterface(object):
         self.CheckWirelessTools()
         self.CheckSudoApplications()
         self.CheckRouteFlushTool()
-        self.CheckResolvConf()
-
-    def CheckResolvConf(self):
-        """ Checks for the existence of resolvconf."""
-        self.resolvconf_cmd = self._find_program_path("resolvconf")
         
     def CheckDHCP(self):
         """ Check for the existence of valid DHCP clients. 
@@ -726,57 +722,12 @@ class BaseInterface(object):
         Only useful for resolvconf-based setups.
 
         """
-        if self.resolvconf_cmd:
-            cmd = [self.resolvconf_cmd, '-d', self.iface + '.wicd']
-            if self.verbose:
-                print(cmd)
-            p = misc.Run(cmd, include_stderr=True, return_obj=True)
-            p.communicate()
+        daemon.resolver.get_manager().flush_dns(self.iface)
 
     @neediface(False)
     def SetDNS(self, dns1=None, dns2=None, dns3=None, 
                dns_dom=None, search_dom=None):
-        """ Set the DNS of the system to the specified DNS servers.
-
-        Opens up resolv.conf and writes in the nameservers.
-
-        Keyword arguments:
-        dns1 -- IP address of DNS server 1
-        dns2 -- IP address of DNS server 2
-        dns3 -- IP address of DNS server 3
-        dns_dom -- DNS domain
-        search_dom -- DNS search domain
-
-        """
-        resolv_params = ""
-        if dns_dom:
-            resolv_params += 'domain %s\n' % dns_dom
-        if search_dom:
-            resolv_params += 'search %s\n' % search_dom
-
-        valid_dns_list = []
-        for dns in (dns1, dns2, dns3):
-            if dns:
-                if misc.IsValidIP(dns):
-                    if self.verbose:
-                        print('Setting DNS : ' + dns)
-                    valid_dns_list.append("nameserver %s\n" % dns)
-                else:
-                    print('DNS IP %s is not a valid IP address, skipping' % dns)
-
-        if valid_dns_list:
-            resolv_params += ''.join(valid_dns_list)
-
-        if self.resolvconf_cmd:
-            cmd = [self.resolvconf_cmd, '-a', self.iface + '.wicd']
-            if self.verbose:
-                print(cmd)
-            p = misc.Run(cmd, include_stderr=True, return_obj=True)
-            p.communicate(input=resolv_params)
-        else:
-            resolv = open("/etc/resolv.conf", "w")
-            resolv.write(resolv_params + "\n")
-            resolv.close()
+        daemon.resolver.get_manager().set_dns(self.iface, dns1 = dns1, dns2 = dns2, dns3 = dns3, dns_dom = dns_dom, search_dom = search_dom)
         
     @neediface(False)
     def FlushRoutes(self):
