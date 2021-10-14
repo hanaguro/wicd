@@ -43,9 +43,6 @@ dbus.connect_to_dbus()
 wireless = dbus.get_interface("wireless")
 wired = dbus.get_interface("wired")
 
-wireless_conf = wpath.etc + 'wireless-settings.conf'
-wired_conf = wpath.etc + 'wired-settings.conf'
-
 
 def none_to_blank(text):
     """ Converts special string cases to a blank string.
@@ -70,7 +67,7 @@ def get_script_info(network, network_type):
     """ Read script info from disk and load it into the configuration dialog """
     info = {}
     if network_type == "wired":
-        con = ConfigManager(wired_conf)
+        con = ConfigManager.get_wired_config()
         if con.has_section(network):
             info["pre_entry"] = con.get(network, "beforescript", None)
             info["post_entry"] = con.get(network, "afterscript", None)
@@ -80,7 +77,7 @@ def get_script_info(network, network_type):
                 "postdisconnectscript", None)
     else:
         bssid = wireless.GetWirelessProperty(int(network), "bssid")
-        con = ConfigManager(wireless_conf)
+        con = ConfigManager.get_wireless_config()
         if con.has_section(bssid):
             info["pre_entry"] = con.get(bssid, "beforescript", None)
             info["post_entry"] = con.get(bssid, "afterscript", None)
@@ -93,7 +90,7 @@ def get_script_info(network, network_type):
 def write_scripts(network, network_type, script_info):
     """ Writes script info to disk and loads it into the daemon. """
     if network_type == "wired":
-        con = ConfigManager(wired_conf)
+        con = ConfigManager.get_wired_config()
         con.set(network, "beforescript", script_info["pre_entry"])
         con.set(network, "afterscript", script_info["post_entry"])
         con.set(network, "predisconnectscript",
@@ -106,7 +103,7 @@ def write_scripts(network, network_type, script_info):
         wired.SaveWiredNetworkProfile(network)
     else:
         bssid = wireless.GetWirelessProperty(int(network), "bssid")
-        con = ConfigManager(wireless_conf)
+        con = ConfigManager.get_wireless_config()
         con.set(bssid, "beforescript", script_info["pre_entry"])
         con.set(bssid, "afterscript", script_info["post_entry"])
         con.set(bssid, "predisconnectscript",

@@ -59,7 +59,6 @@ else:
     DBusGMainLoop(set_as_default=True)
 
 # wicd specific libraries
-from wicd import wpath
 from wicd import networking
 from wicd import misc
 from wicd import wnettools
@@ -67,11 +66,9 @@ from wicd.misc import noneToBlankString, _status_dict
 from wicd.logfile import ManagedStdio
 from wicd.configmanager import ConfigManager
 
-misc.RenameProcess("wicd")
+import wicd.pkg_helpers
 
-wireless_conf = os.path.join(wpath.etc, "wireless-settings.conf")
-wired_conf = os.path.join(wpath.etc, "wired-settings.conf")
-dhclient_conf = os.path.join(wpath.etc, "dhclient.conf.template")
+misc.RenameProcess("wicd")
 
 class WicdDaemon(dbus.service.Object):
     """ The main wicd daemon class.
@@ -85,8 +82,7 @@ class WicdDaemon(dbus.service.Object):
         """ Initializes the daemon DBus object. """
         super().__init__(bus, object_path=object_path)
 
-        self.config = ConfigManager(os.path.join(wpath.etc,
-                                                 "manager-settings.conf"))
+        self.config = ConfigManager.get_manager_config()
         self._debug_mode = bool(self.config.get("Settings", "debug_mode"))
         self.wifi = networking.Wireless(debug=self._debug_mode)
         self.wired = networking.Wired(debug=self._debug_mode)
@@ -974,7 +970,7 @@ class WirelessDaemon(dbus.service.Object, object):
         self._debug_mode = debug
         self._scanning = False
         self.LastScan = []
-        self.config = ConfigManager(wireless_conf, debug=debug)
+        self.config = ConfigManager.get_wireless_config()
 
     def get_debug_mode(self):
         """ Getter for the debug_mode property. """
@@ -1434,7 +1430,7 @@ class WiredDaemon(dbus.service.Object, object):
         self._debug_mode = debug
         self._cur_wired_prof_name = ""
         self.WiredNetwork = {}
-        self.config = ConfigManager(wired_conf, debug=debug)
+        self.config = ConfigManager.get_wired_config()
 
     def get_debug_mode(self):
         """ Getter for debug_mode property. """
@@ -1713,7 +1709,7 @@ def daemon_main(args):
     print('wicd initializing...')
     print('---------------------------')
 
-    print('wicd is version', wpath.version, wpath.revision)
+    print('wicd is version', wicd.pkg_helpers.get_version())
 
     # Open the DBUS session
     bus = args.DBus()

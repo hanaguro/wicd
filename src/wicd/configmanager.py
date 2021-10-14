@@ -27,6 +27,8 @@ reusable for other purposes as well.
 
 import sys, os
 
+import wicd.config
+
 from configparser import RawConfigParser, ParsingError
 import codecs
 
@@ -48,19 +50,35 @@ def sanitize_config_file(path):
 
 class ConfigManager(RawConfigParser):
     """ A class that can be used to manage a given configuration file. """
-    def __init__(self, path, debug=False, mark_whitespace="`'`"):
+    @classmethod
+    def get_manager_config(cls):
+        return cls("manager-settings.conf")
+
+    @classmethod
+    def get_wired_config(cls):
+        return cls("wired-settings.conf")
+
+    @classmethod
+    def get_wireless_config(cls):
+        return cls("wireless-settings.conf")
+
+    @property
+    def config_file(self):
+        return wicd.config.etc_path + os.sep + self.config
+
+    def __init__(self, config, debug=False, mark_whitespace="`'`"):
         RawConfigParser.__init__(self)
-        self.config_file = path
+        self.config = config
         self.debug = debug
         self.mrk_ws = mark_whitespace
-        if os.path.exists(path):
-            sanitize_config_file(path)
+        if os.path.exists(self.config_file):
+            sanitize_config_file(self.config_file)
         try:
-            self.read(path)
+            self.read(self.config_file)
         except ParsingError:
             self.write()
             try:
-                self.read(path)
+                self.read(self.config_file)
             except ParsingError as p:
                 print(("Could not start wicd: %s" % p.message))
                 sys.exit(1)
@@ -238,8 +256,7 @@ class ConfigManager(RawConfigParser):
         print("in_this_file", in_this_file)
 
         # Make an instance with only these sections
-        p = ConfigManager("", self.debug, self.mrk_ws)
-        p.config_file = self.config_file
+        p = ConfigManager(self.config, self.debug, self.mrk_ws)
         for sname in in_this_file:
             p.add_section(sname)
             for (iname, value) in self.items(sname):
