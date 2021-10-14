@@ -1,3 +1,6 @@
+# allow namespace packages
+__path__ = __import__('pkgutil').extend_path(__path__, __name__)
+
 def run_tests():
     import unittest
     test_suite = unittest.TestSuite()
