@@ -5,6 +5,21 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch wicd-gtk",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/gtk/wicd-client.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Launch test daemon",
+            "type": "python",
+            "request": "launch",
+            "module":  "wicd.daemon",
+            "console": "integratedTerminal",
+            "args": [ "-f", "--session-dbus"]
+        },
+        {
             "name": "Python: Modulo",
             "type": "python",
             "request": "launch",

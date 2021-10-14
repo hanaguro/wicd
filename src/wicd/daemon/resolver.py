@@ -57,7 +57,7 @@ class ResolvConfUpdater(ResolverManager):
         valid_dns_list = []
         for dns in (dns1, dns2, dns3):
             if dns:
-                if misc.IsValidIP(dns):
+                if wicd.misc.IsValidIP(dns):
                     if self.verbose:
                         print('Setting DNS : ' + dns)
                     valid_dns_list.append("nameserver %s\n" % dns)
