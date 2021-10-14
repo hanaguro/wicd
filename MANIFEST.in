@@ -21,6 +21,8 @@ graft po
 graft tests
 graft wicd
 
+include src/wicd/daemon/files/*
+
 recursive-include man wicd-client.1
 recursive-include . *.py
 recursive-include . *.png

@@ -53,7 +53,7 @@ from functools import cmp_to_key
 # wicd imports 
 from . import misc
 from . import wpath
-from .backend import BackendManager
+from wicd.daemon.backend import BackendManager
 from .translations import _
 
 if __name__ == '__main__':

@@ -920,36 +920,25 @@ class WicdDaemon(dbus.service.Object):
                                                 default=True))
         app_conf.write()
 
-        if os.path.isfile(wireless_conf):
-            print("Wireless configuration file found...")
-        else:
-            print("Wireless configuration file not found, creating...")
-            open(wireless_conf, "w").close()
 
-        if os.path.isfile(wired_conf):
-            print("Wired configuration file found...")
-        else:
-            print("Wired configuration file not found, creating a default...")
-            # Create the file and a default profile
-            open(wired_conf, "w").close()
+        # ensure basic configuraton files exist
+        ConfigManager.get_wireless_config().create()
+        
+        if ConfigManager.get_wired_config().create():
             b_wired.CreateWiredNetworkProfile("wired-default", default=True)
 
-        if not os.path.isfile(dhclient_conf):
-            print("dhclient.conf.template not found, copying...")
-            shutil.copy(dhclient_conf + ".default", dhclient_conf)            
+
         # Hide the files, so the keys aren't exposed.
         print("chmoding configuration files 0600...")
-        os.chmod(app_conf.get_config(), 0o600)
-        os.chmod(wireless_conf, 0o600)
-        os.chmod(wired_conf, 0o600)
-        os.chmod(dhclient_conf, 0o644)
+        os.chmod(app_conf.config_file, 0o600)
+        os.chmod(ConfigManager.get_wireless_config().config_file, 0o600)
+        os.chmod(ConfigManager.get_wired_config().config_file, 0o600)
 
-        # Make root own them
-        print("chowning configuration files root:root...")
-        os.chown(app_conf.get_config(), 0, 0)
-        os.chown(wireless_conf, 0, 0)
-        os.chown(wired_conf, 0, 0)
-        os.chown(dhclient_conf, 0, 0)
+        if not os.path.isfile(wicd.config.dhclient_conf_path): 
+            with open(wicd.config.dhclient_conf_path,"wb") as f:
+                f.write(wicd.pkg_helpers.read_resource_file("wicd/daemon/files/dhclient.conf.template"))
+
+            os.chmod(wicd.config.dhclient_conf_path, 0o644)
 
         print("Using wireless interface..." + self.GetWirelessInterface())
         print("Using wired interface..." + self.GetWiredInterface())
@@ -1730,7 +1719,7 @@ def run_daemon(args):
 
     context = daemon.DaemonContext(
         working_directory = wicd.config.rundir_path,
-        umask             = 0o022,
+        umask             = 0o077,
         pidfile           = lockfile.FileLock(wicd.config.pidfile_path)
     )
 

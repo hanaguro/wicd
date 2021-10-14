@@ -71,17 +71,27 @@ class ConfigManager(RawConfigParser):
         self.config = config
         self.debug = debug
         self.mrk_ws = mark_whitespace
-        if os.path.exists(self.config_file):
-            sanitize_config_file(self.config_file)
-        try:
-            self.read(self.config_file)
-        except ParsingError:
-            self.write()
+
+        # this is really weird hack to write ourself to the file.
+        # we need a much better approach to handle config files 
+        if config:
+            if os.path.exists(self.config_file):
+                sanitize_config_file(self.config_file)
             try:
                 self.read(self.config_file)
-            except ParsingError as p:
-                print(("Could not start wicd: %s" % p.message))
-                sys.exit(1)
+            except ParsingError:
+                self.write()
+                try:
+                    self.read(self.config_file)
+                except ParsingError as p:
+                    print(("Could not start wicd: %s" % p.message))
+                    sys.exit(1)
+
+    def create(self):
+        if os.path.exists(self.config_file):
+            return
+
+        self.write()
 
     def __repr__(self):
         return self.config_file
@@ -256,7 +266,8 @@ class ConfigManager(RawConfigParser):
         print("in_this_file", in_this_file)
 
         # Make an instance with only these sections
-        p = ConfigManager(self.config, self.debug, self.mrk_ws)
+        p = ConfigManager(None, self.debug, self.mrk_ws)
+        p.config = self.config
         for sname in in_this_file:
             p.add_section(sname)
             for (iname, value) in self.items(sname):
