@@ -32,6 +32,12 @@ class CustomPyBuild(_build_py):
     def run(self):
         super().run()
 
+def version_scheme(version):
+    if version.exact:
+        return version.format_with("{tag}")
+    else:
+        return "git"
+
 setup(
     description = "A wireless and wired network manager",
     long_description = """A complete network connection manager
@@ -42,6 +48,10 @@ to easily add encryption methods used.  It ships with some common
 encryption types, such as WPA and WEP. Wicd will automatically
 connect at startup to any preferred network within range.
 """,
+    setup_requires = ['setuptools_scm'],
+    use_scm_version = {
+        "version_scheme" : version_scheme,
+    },
 
     author = "Tom Van Braeckel, Adam Blackburn, Dan O'Reilly, Andrew Psaltis, David Paleino, Andreas Messer",
     author_email = "tomvanbraeckel@gmail.com, compwiz18@gmail.com, oreilldf@gmail.com, ampsaltis@gmail.com, d.paleino@gmail.com, andi@bastelmap.de",
