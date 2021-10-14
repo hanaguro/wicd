@@ -18,6 +18,7 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import pkg_resources  # part of setuptools
+import pkgutil
 import importlib.resources
 import os.path
 
@@ -31,5 +32,5 @@ def get_dist():
 def get_version():
     return get_dist().version
 
-def read_resource_file(path):
-    return importlib.resources.read_binary("wicd", path)
+def read_resource_file(module, path):
+    return pkgutil.get_data(module, path)

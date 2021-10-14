@@ -934,9 +934,10 @@ class WicdDaemon(dbus.service.Object):
         os.chmod(ConfigManager.get_wireless_config().config_file, 0o600)
         os.chmod(ConfigManager.get_wired_config().config_file, 0o600)
 
-        if not os.path.isfile(wicd.config.dhclient_conf_path): 
+        if not os.path.isfile(wicd.config.dhclient_conf_path):
+            template = wicd.pkg_helpers.read_resource_file("wicd.daemon", "files/dhclient.conf.template")
             with open(wicd.config.dhclient_conf_path,"wb") as f:
-                f.write(wicd.pkg_helpers.read_resource_file("wicd/daemon/files/dhclient.conf.template"))
+                f.write(template)
 
             os.chmod(wicd.config.dhclient_conf_path, 0o644)
 
