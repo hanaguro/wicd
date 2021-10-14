@@ -1,8 +1,3 @@
 {
-    "python.pythonPath": ".venv/bin/python3.7",
-    "python.testing.unittestEnabled": true,
-    "python.testing.cwd": "tests/",
-    "python.testing.pytestEnabled": false,
-    "python.testing.nosetestsEnabled": false,
-    "python.linting.pylintEnabled": true
+    "python.envFile": "${workspaceFolder}/.env"
 }
