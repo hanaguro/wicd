@@ -25,11 +25,6 @@ import dbus
 import time
 import sys
 
-if getattr(dbus, 'version', (0, 0, 0)) < (0, 80, 0):
-    import dbus.glib
-else:
-    from dbus.mainloop.glib import DBusGMainLoop
-    DBusGMainLoop(set_as_default=True)
 
 try:
     dbusmanager.connect_to_dbus()

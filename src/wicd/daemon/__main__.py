@@ -51,12 +51,6 @@ from operator import itemgetter
 # DBUS
 from gi.repository import GLib as gobject
 import dbus
-import dbus.service
-if getattr(dbus, 'version', (0, 0, 0)) < (0, 80, 0):
-    import dbus.glib
-else:
-    from dbus.mainloop.glib import DBusGMainLoop
-    DBusGMainLoop(set_as_default=True)
 
 # wicd specific libraries
 from wicd import networking
@@ -66,11 +60,14 @@ from wicd.misc import noneToBlankString, _status_dict
 from wicd.logfile import ManagedStdio
 from wicd.configmanager import ConfigManager
 
+import wicd.commandline
+import wicd.dbus
+
 import wicd.pkg_helpers
 
 misc.RenameProcess("wicd")
 
-class WicdDaemon(dbus.service.Object):
+class WicdDaemon(wicd.dbus.service.Object):
     """ The main wicd daemon class.
 
     This class mostly contains exported DBus methods that are not
@@ -141,7 +138,7 @@ class WicdDaemon(dbus.service.Object):
         self.config.debug = mode
     debug_mode = property(get_debug_mode, set_debug_mode)
 
-    @dbus.service.method('org.wicd.daemon')
+    @wicd.dbus.method('org.wicd.daemon')
     def Hello(self):
         """ Returns the version number. 
 
@@ -1682,19 +1679,23 @@ class WiredDaemon(dbus.service.Object, object):
         return wnettools.GetWiredInterfaces()
 
 
-def spawn_monitor(args):
-    if not args.monitor_status:
+def spawn_monitor():
+    if not wicd.commandline.get_args().monitor_status:
         return
 
-    child_pid = Popen([sys.executable, "-m", "wicd.daemon.monitor"],
-                        shell=False, close_fds=True).pid
+    cmd = [sys.executable, "-m", "wicd.daemon.monitor"]
+
+    if wicd.dbus.dbus_manager.bus._bus_type == wicd.dbus.dbus_manager.bus.TYPE_SESSION:
+        cmd.append('--session-dbus')
+
+    child_pid = Popen(cmd, shell=False, close_fds=True).pid
 
     def daemon_killmonitor():
         os.kill(child_pid, signal.SIGTERM)
 
     atexit.register(daemon_killmonitor)
 
-def daemon_main(args):
+def daemon_main():
     print('---------------------------')
     print('wicd initializing...')
     print('---------------------------')
@@ -1702,11 +1703,11 @@ def daemon_main(args):
     print('wicd is version', wicd.pkg_helpers.get_version())
 
     # Open the DBUS session
-    bus = args.DBus()
+    bus = wicd.commandline.get_args().DBus()
     wicd_bus = dbus.service.BusName('org.wicd.daemon', bus=bus)
-    the_daemon = WicdDaemon(wicd_bus, args)
+    the_daemon = WicdDaemon(wicd_bus, wicd.commandline.get_args())
 
-    spawn_monitor(args)
+    spawn_monitor()
 
     # Enter the main loop
     mainloop = gobject.MainLoop()
@@ -1715,7 +1716,7 @@ def daemon_main(args):
     finally:
         daemon.DaemonClosing()
 
-def run_daemon(args):
+def run_daemon():
     os.makedirs(wicd.config.rundir_path, exist_ok=True)
 
     context = daemon.DaemonContext(
@@ -1725,12 +1726,12 @@ def run_daemon(args):
     )
 
     with context:
-        daemon_main(args)
+        daemon_main()
 
-def run_foreground(args):
-    daemon_main(args)
+def run_foreground():
+    daemon_main()
 
-def kill_daemon(args):
+def kill_daemon():
     try:
         f = open(wicd.config.pidfile_path)
     except IOError:
@@ -1748,8 +1749,8 @@ def kill_daemon(args):
 
 def main():
     """ The main daemon program. """
-
-    parser = argparse.ArgumentParser(description = u'wire-d/-less connection daemon')
+    parser = wicd.commandline.get_parser()
+    parser.description = u'wire-d/-less connection daemon'
 
     parser.set_defaults(action = run_daemon)
 
@@ -1774,12 +1775,8 @@ def main():
     parser.add_argument('-o', '--no-stdout', dest='redirect_stdout', action='store_false', default=True,
                         help=u"Don't redirect stdout")
 
-    parser.add_argument('--session-dbus', dest='DBus', action='store_const', const=dbus.SessionBus, default=dbus.SystemBus,
-                        help=u"Use session instead of system dbus")
 
-    args = parser.parse_args()
-
-    sys.exit(args.action(args) or 0)
+    sys.exit(wicd.commandline.get_args().action() or 0)
 
     if os.getuid() != 0:
         print(("Root privileges are required for the daemon to run properly." +

@@ -31,18 +31,17 @@ from dbus import DBusException
 
 from wicd import wpath
 from wicd import misc
-from wicd import dbusmanager
+
+import wicd.dbus
 
 misc.RenameProcess("wicd-monitor")
 
 if __name__ == '__main__':
     wpath.chdir(__file__)
 
-dbusmanager.connect_to_dbus()
-dbus_dict = dbusmanager.get_dbus_ifaces()
-daemon = dbus_dict["daemon"]
-wired = dbus_dict["wired"]
-wireless = dbus_dict["wireless"]
+daemon   = wicd.dbus.dbus_manager.ifaces["daemon"]
+wired    = wicd.dbus.dbus_manager.ifaces["wired"]
+wireless = wicd.dbus.dbus_manager.ifaces["wireless"]
 
 mainloop = None
 
@@ -92,7 +91,7 @@ class ConnectionStatus(object):
         self.update_callback = None
         
         self.add_poll_callback()
-        bus = dbusmanager.get_bus()
+        bus = wicd.dbus.dbus_manager.bus
         bus.add_signal_receiver(self._force_update_connection_status, 
                                 "UpdateState", "org.wicd.daemon")
         bus.add_signal_receiver(self._update_timeout_interval,
