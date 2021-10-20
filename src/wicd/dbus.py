@@ -18,6 +18,8 @@
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 import wicd.commandline
+import wicd.errors
+
 import dbus.service as service
 import dbus
 
@@ -31,6 +33,8 @@ else:
     from dbus.mainloop.glib import DBusGMainLoop
     DBusGMainLoop(set_as_default=True)
 
+
+
 class DBusManager(object):
     """ Manages the DBus objects used by wicd. """
 
@@ -40,28 +44,41 @@ class DBusManager(object):
         return bus
 
     @property
-    def ifaces(self):
-        bus = self.bus
+    @wicd.errors.transform_exception(dbus.exceptions.DBusException, wicd.errors.WiCDDaemonNotFound)
+    def daemon_iface(self):
+        proxy_obj = self.bus.get_object("org.wicd.daemon", '/org/wicd/daemon')
+        return dbus.Interface(proxy_obj, 'org.wicd.daemon')
 
-        proxy_obj = bus.get_object("org.wicd.daemon", '/org/wicd/daemon')
-        daemon = dbus.Interface(proxy_obj, 'org.wicd.daemon')
-        
-        proxy_obj = bus.get_object("org.wicd.daemon",
-                                         '/org/wicd/daemon/wireless')
-        wireless = dbus.Interface(proxy_obj, 'org.wicd.daemon.wireless')
-        
-        proxy_obj = bus.get_object("org.wicd.daemon",
-                                         '/org/wicd/daemon/wired')
-        wired = dbus.Interface(proxy_obj, 'org.wicd.daemon.wired')
-        
+    @property
+    @wicd.errors.transform_exception(dbus.exceptions.DBusException, wicd.errors.WiCDDaemonNotFound)
+    def wireless_iface(self):
+        proxy_obj = self.bus.get_object("org.wicd.daemon", '/org/wicd/daemon/wireless')
+        return dbus.Interface(proxy_obj, 'org.wicd.daemon.wireless')
+
+    @property
+    @wicd.errors.transform_exception(dbus.exceptions.DBusException, wicd.errors.WiCDDaemonNotFound)
+    def wired_iface(self):
+        proxy_obj = self.bus.get_object("org.wicd.daemon", '/org/wicd/daemon/wired')
+        return dbus.Interface(proxy_obj, 'org.wicd.daemon.wired')
+
+    @property
+    @wicd.errors.transform_exception(dbus.exceptions.DBusException, wicd.errors.WiCDDaemonNotFound)
+    def config_iface(self):
+        proxy_obj = self.bus.get_object("org.wicd.daemon", '/org/wicd/daemon/config')
+        return dbus.Interface(proxy_obj, 'org.wicd.daemon')
+
+
+    @property
+    def ifaces(self):
         ifaces = self.__dict__['ifaces'] = {
-            "daemon" : daemon, 
-            "wireless" : wireless,
-            "wired" : wired
+            "daemon" : self.daemon_iface, 
+            "wireless" : self.wireless_iface,
+            "wired" :    self.wired_iface,
+            "config" :   self.config_iface,
         }
 
         return ifaces
-
+    
     def get_dbus_ifaces(self):
         """ Returns a dict of dbus interfaces. """
         if not self._dbus_ifaces:

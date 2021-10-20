@@ -1,20 +1,9 @@
 #!/usr/bin/env python3
-# -*- coding: UTF-8 -*-
-
-""" Network interface control tools for wicd.
-
-This module implements functions to control and obtain information from
-network interfaces.
-
-class Interface() -- Control a network interface.
-class WiredInterface() -- Control a wired network interface.
-class WirelessInterface() -- Control a wireless network interface.
-
-"""
-
+# vim: set fileencoding=utf8
 #
 #   Copyright (C) 2008-2009 Adam Blackburn
 #   Copyright (C) 2008-2009 Dan O'Reilly
+#   Copyright (C) 2021      Andreas Messer
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License Version 2 as
@@ -28,6 +17,17 @@ class WirelessInterface() -- Control a wireless network interface.
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
+""" Network interface control tools for wicd.
+
+This module implements functions to control and obtain information from
+network interfaces.
+
+class Interface() -- Control a network interface.
+class WiredInterface() -- Control a wired network interface.
+class WirelessInterface() -- Control a wireless network interface.
+
+"""
 
 from wicd.wnettools import GetDefaultGateway, GetWiredInterfaces, \
 GetWirelessInterfaces, IsValidWpaSuppDriver, BaseWirelessInterface, \

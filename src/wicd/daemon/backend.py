@@ -1,14 +1,9 @@
 #!/usr/bin/env python3
-
-""" Backend manager for wicd.
-
-Manages and loads the pluggable backends for wicd.
-
-"""
-
+# vim: set fileencoding=utf8
 #
 #   Copyright (C) 2008-2009 Adam Blackburn
 #   Copyright (C) 2008-2009 Dan O'Reilly
+#   Copyright (C) 2021      Andreas Messer
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License Version 2 as
@@ -24,15 +19,6 @@ Manages and loads the pluggable backends for wicd.
 #
 import pkg_resources
 
-import sys
-import os
-
-def fail(backend_name, reason):
-    """ Helper to warn the user about failure in loading backend. """
-    print(("Failed to load backend %s: %s" % (backend_name, reason)))
-    return True
-
-
 class BackendManager(object):
     """ Manages, validates, and loads wicd backends. """
 
@@ -43,12 +29,6 @@ class BackendManager(object):
     })
 
     the_backend = NoneBackend()
-
-    def _valid_backend_file(self, be_file):
-        """ Make sure the backend file is valid. """
-        return (os.path.exists(be_file) and 
-                os.path.basename(be_file).startswith("be-") and
-                be_file.endswith(".py"))
     
     def get_current_backend(self):
         return self.the_backend.NAME

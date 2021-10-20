@@ -36,7 +36,6 @@ class WirelessDaemon() -- DBus interface to managed the wireless network.
 
 import wicd.config
 import lockfile
-import argparse
 import daemon
 import os
 import shutil
@@ -148,7 +147,7 @@ class WicdDaemon(wicd.dbus.service.Object):
         anything >= 0. This number is effective starting wicd v1.2.0.
 
         """
-        return wpath.version
+        return wicd.pkg_helpers.get_version()
 
     @dbus.service.method('org.wicd.daemon')
     def SetWiredInterface(self, interface):

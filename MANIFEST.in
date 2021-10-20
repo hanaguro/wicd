@@ -19,7 +19,7 @@ graft in
 graft other
 graft po
 graft tests
-graft wicd
+graft src
 
 include src/wicd/daemon/files/*
 

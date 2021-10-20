@@ -21,13 +21,6 @@
 from setuptools import setup, find_packages
 from distutils.command.build_py import build_py as _build_py
 
-data = []
-
-py_modules = ['wicd.networking','wicd.misc','wicd.wnettools',
-              'wicd.wpath','wicd.dbusmanager',
-              'wicd.logfile','wicd.backend','wicd.configmanager',
-              'wicd.translations']
-
 class CustomPyBuild(_build_py):
     def run(self):
         super().run()
@@ -58,6 +51,5 @@ connect at startup to any preferred network within range.
     url = "https://launchpad.net/wicd",
     license = "http://www.gnu.org/licenses/old-licenses/gpl-2.0.html",
 
-    packages    = find_packages("src"),
     cmdclass    = { "build_py" : CustomPyBuild },
 )
