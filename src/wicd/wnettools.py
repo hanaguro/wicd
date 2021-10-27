@@ -30,6 +30,7 @@ class BaseWirelessInterface() -- Control a wireless network interface.
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+import wicd.tools
 
 import os
 import re
@@ -46,6 +47,8 @@ from . import misc
 from .misc import find_path 
 
 from wicd import daemon
+
+ifconfig_tool = wicd.tools.ExternalCommand(["/sbin/ifconfig", "/usr/sbin/ifconfig"])
 
 # Regular expressions.
 _re_mode = (re.I | re.M | re.S)
@@ -487,10 +490,7 @@ class BaseInterface(object):
         True
         
         """
-        cmd = 'ifconfig ' + self.iface + ' up'
-        if self.verbose:
-            print(cmd)
-        misc.Run(cmd)
+        ifconfig_tool( self.iface, 'up' )
         return True
 
     @neediface(False)
@@ -501,20 +501,15 @@ class BaseInterface(object):
         True
         
         """
-        cmd = 'ifconfig ' + self.iface + ' down'
-        if self.verbose:
-            print(cmd)
-        misc.Run(cmd)
+        ifconfig_tool( self.iface, 'down' )
         return True
     
     @timedcache(2)
     @neediface("")
     def GetIfconfig(self):
         """ Runs ifconfig and returns the output. """
-        cmd = "ifconfig %s" % self.iface
-        if self.verbose:
-            print(cmd)
-        return misc.Run(cmd)
+        out, _ = ifconfig_tool( self.iface)
+        return out
 
     @neediface("")
     def SetAddress(self, ip=None, netmask=None, broadcast=None):
@@ -533,16 +528,16 @@ class BaseInterface(object):
                 print('WARNING: Invalid IP address found, aborting!')
                 return False
         
-        cmd = ''.join(['ifconfig ', self.iface, ' '])
+        args = [self.iface]
+
         if ip:
-            cmd = ''.join([cmd, ip, ' '])
+            cmd.append(ip)
         if netmask:
-            cmd = ''.join([cmd, 'netmask ', netmask, ' '])
+            cmd.append(netmask)
         if broadcast:
-            cmd = ''.join([cmd, 'broadcast ', broadcast, ' '])
-        if self.verbose:
-            print(cmd)
-        misc.Run(cmd)
+            cmd.extend(['broadcast', broadcast])
+
+        ifconfig_tool(args)
 
     def _parse_dhclient(self, pipe):
         """ Parse the output of dhclient.
