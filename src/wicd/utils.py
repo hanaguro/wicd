@@ -17,6 +17,11 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
+def singleton(cls):
+    ''' Turns a clas to an single instance during creation'''
+    return cls()
+
 class cached_property(object):
     def __init__(self, fget):
         self.fget = fget

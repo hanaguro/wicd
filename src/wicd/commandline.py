@@ -16,7 +16,6 @@
 #
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 class CommandlineManager(object):
     ''' Central point to manage & access wicd command line arguments and their values '''
     import argparse
@@ -35,8 +34,9 @@ class CommandlineManager(object):
 
         return cls.args
 
-get_parser = CommandlineManager.get_parser
+ArgumentTypeError = CommandlineManager.argparse.ArgumentTypeError
 
+get_parser = CommandlineManager.get_parser
 get_args   = CommandlineManager.get_args
 
 del CommandlineManager

@@ -34,6 +34,7 @@ class WirelessDaemon() -- DBus interface to managed the wireless network.
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import wicd.log
 import wicd.config
 import lockfile
 import daemon
@@ -66,7 +67,7 @@ import wicd.pkg_helpers
 
 misc.RenameProcess("wicd")
 
-class WicdDaemon(wicd.dbus.service.Object):
+class WicdDaemon(wicd.dbus.service.Object, wicd.log.LogAble):
     """ The main wicd daemon class.
 
     This class mostly contains exported DBus methods that are not
@@ -937,8 +938,8 @@ class WicdDaemon(wicd.dbus.service.Object):
 
             os.chmod(wicd.config.dhclient_conf_path, 0o644)
 
-        print("Using wireless interface..." + self.GetWirelessInterface())
-        print("Using wired interface..." + self.GetWiredInterface())
+        self.log.info("Using wireless interface..." + self.GetWirelessInterface())
+        self.log.info("Using wired interface..." + self.GetWiredInterface())
 
 ##############################
 ###### Wireless Daemon #######
