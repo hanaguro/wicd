@@ -34,3 +34,4 @@ wicd/wpath.py
 dist/
 MANIFEST
 debian/
+devel_tmp
