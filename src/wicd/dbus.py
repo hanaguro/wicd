@@ -81,19 +81,15 @@ class DBusManager(object):
     
     def get_dbus_ifaces(self):
         """ Returns a dict of dbus interfaces. """
-        if not self._dbus_ifaces:
-            connect_to_dbus()
-        return self._dbus_ifaces
+        return self.ifaces
     
     def get_interface(self, iface):
         """ Returns a DBus Interface. """
-        if not self._dbus_ifaces:
-            connect_to_dbus()
-        return self._dbus_ifaces[iface]
+        return self.ifaces[iface]
     
     def get_bus(self):
         """ Returns the loaded SystemBus. """
-        return self._bus
+        return self.bus
     
     def set_mainloop(self, loop):
         """ Set DBus main loop. """

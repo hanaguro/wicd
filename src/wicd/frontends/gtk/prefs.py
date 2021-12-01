@@ -30,9 +30,9 @@ from gi.repository import Gtk as gtk
 from gi.repository import GObject as gobject
 import os
 
-from wicd import misc
-from wicd import wpath
-from wicd import dbusmanager
+from wicd      import misc
+from wicd      import wpath
+from wicd.dbus import dbus_manager
 from wicd.misc import checkboxTextboxToggle, noneToBlankString
 from wicd.translations import _
 
@@ -46,9 +46,9 @@ USER_SETTINGS_DIR = os.path.expanduser('~/.wicd/')
 def setup_dbus():
     """ Initialize DBus. """
     global daemon, wireless, wired
-    daemon = dbusmanager.get_interface('daemon')
-    wireless = dbusmanager.get_interface('wireless')
-    wired = dbusmanager.get_interface('wired')
+    daemon = dbus_manager.get_interface('daemon')
+    wireless = dbus_manager.get_interface('wireless')
+    wired = dbus_manager.get_interface('wired')
 
 
 class PreferencesDialog(object):

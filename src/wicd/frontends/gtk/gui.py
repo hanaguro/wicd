@@ -35,27 +35,23 @@ from dbus import DBusException
 
 from wicd import misc
 from wicd import wpath
-from wicd import dbusmanager
+from wicd.dbus import dbus_manager
 from wicd.misc import noneToString
 from wicd.translations import _, language
-import prefs
-from prefs import PreferencesDialog
-import netentry
-from netentry import WiredNetworkEntry, WirelessNetworkEntry
-from guiutil import error, LabelEntry
-
-if __name__ == '__main__':
-    wpath.chdir(__file__)
+from . import prefs
+from .prefs import PreferencesDialog
+from . import netentry
+from .netentry import WiredNetworkEntry, WirelessNetworkEntry
+from .guiutil import error, LabelEntry
 
 proxy_obj = daemon = wireless = wired = bus = None
 DBUS_AVAIL = False
-
 
 def setup_dbus(force=True):
     """ Initialize DBus. """
     global bus, daemon, wireless, wired, DBUS_AVAIL
     try:
-        dbusmanager.connect_to_dbus()
+        dbus_manager.connect()
     except DBusException:
         if force:
             print("Can't connect to the daemon, ' + \
@@ -65,7 +61,7 @@ def setup_dbus(force=True):
                     'cannot continue.")
                 return False
             try:
-                dbusmanager.connect_to_dbus()
+                dbus_manager.connect_to_dbus()
             except DBusException:
                 error(
                     None,
@@ -77,8 +73,8 @@ def setup_dbus(force=True):
             return False
     prefs.setup_dbus()
     netentry.setup_dbus()
-    bus = dbusmanager.get_bus()
-    dbus_ifaces = dbusmanager.get_dbus_ifaces()
+    bus = dbus_manager.get_bus()
+    dbus_ifaces = dbus_manager.get_dbus_ifaces()
     daemon = dbus_ifaces['daemon']
     wireless = dbus_ifaces['wireless']
     wired = dbus_ifaces['wired']
@@ -87,7 +83,7 @@ def setup_dbus(force=True):
     return True
 
 
-def handle_no_dbus(from_tray=False):Modal
+def handle_no_dbus(from_tray=False):
     """ Handle the case where no DBus is available. """
     global DBUS_AVAIL
     DBUS_AVAIL = False

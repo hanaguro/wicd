@@ -51,5 +51,5 @@ connect at startup to any preferred network within range.
     url = "https://launchpad.net/wicd",
     license = "http://www.gnu.org/licenses/old-licenses/gpl-2.0.html",
 
-    cmdclass    = { "build_py" : CustomPyBuild },
+    #cmdclass    = { "build_py" : CustomPyBuild },
 )

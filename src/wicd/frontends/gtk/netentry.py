@@ -31,10 +31,10 @@ import os
 
 import wicd.misc as misc
 import wicd.wpath as wpath
-import wicd.dbusmanager as dbusmanager
+from   wicd.dbus  import dbus_manager
 from wicd.misc import noneToString, stringToNone, noneToBlankString, to_bool
-from guiutil import error, LabelEntry, GreyLabel, LeftAlignedLabel
-from guiutil import string_input, ProtectedLabelEntry, LabelCombo
+from .guiutil import error, LabelEntry, GreyLabel, LeftAlignedLabel
+from .guiutil import string_input, ProtectedLabelEntry, LabelCombo
 
 from wicd.translations import language, _
 
@@ -47,9 +47,9 @@ wireless = None
 def setup_dbus():
     """ Initialize DBus. """
     global daemon, wireless, wired
-    daemon = dbusmanager.get_interface('daemon')
-    wireless = dbusmanager.get_interface('wireless')
-    wired = dbusmanager.get_interface('wired')
+    daemon = dbus_manager.get_interface('daemon')
+    wireless = dbus_manager.get_interface('wireless')
+    wired = dbus_manager.get_interface('wired')
 
 
 class AdvancedSettingsDialog(gtk.Dialog):

@@ -1,28 +1,9 @@
 #!/usr/bin/env python3
-
-""" wicd - wireless connection daemon frontend implementation
-
-This module implements a usermode frontend for wicd.  It updates connection
-information, provides an (optional) tray icon, and allows for launching of
-the wicd GUI and Wired Profile Chooser.
-
-class TrayIcon() -- Parent class of TrayIconGUI and IconConnectionInfo.
-    class TrayConnectionInfo() -- Child class of TrayIcon which provides
-        and updates connection status.
-    class TrayIconGUI() -- Child class of TrayIcon which implements the tray.
-        icon itself.  Parent class of StatusTrayIconGUI and EggTrayIconGUI.
-    class IndicatorTrayIconGUI() -- Implements the tray icon using appindicator.Indicator.
-    class StatusTrayIconGUI() -- Implements the tray icon using a
-                                 gtk.StatusIcon.
-    class EggTrayIconGUI() -- Implements the tray icon using egg.trayicon.
-    def usage() -- Prints usage information.
-    def main() -- Runs the wicd frontend main loop.
-
-"""
-
+# vim: set fileencoding=utf-8
 #
 #   Copyright (C) 2007 - 2009 Adam Blackburn
 #   Copyright (C) 2007 - 2009 Dan O'Reilly
+#   Copyright (C) 2021        Andreas Messer
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License Version 2 as
@@ -36,7 +17,7 @@ class TrayIcon() -- Parent class of TrayIconGUI and IconConnectionInfo.
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-
+import wicd.commandline
 import sys
 import gi
 gi.require_version('Gtk', '3.0')
@@ -66,9 +47,9 @@ except ImportError:
 # Wicd specific imports
 from wicd import wpath
 from wicd import misc
-from wicd import dbusmanager
-import gui
-from guiutil import error, can_use_notify
+from wicd.dbus import dbus_manager
+from .        import gui
+from .guiutil import error, can_use_notify
 
 from wicd.translations import _
 
@@ -85,9 +66,6 @@ if not hasattr(gtk, "StatusIcon"):
         ICON_AVAIL = False
 
 misc.RenameProcess("wicd-client")
-
-if __name__ == '__main__':
-    wpath.chdir(__file__)
 
 daemon = wireless = wired = lost_dbus_id = None
 DBUS_AVAIL = False
@@ -1064,14 +1042,14 @@ def setup_dbus(force=True):
     global daemon, wireless, wired, DBUS_AVAIL, lost_dbus_id
     print("Connecting to daemon...")
     try:
-        dbusmanager.connect_to_dbus()
+        dbus_manager.connect()
     except DBusException:
         if force:
             print(("Can't connect to the daemon, trying to start it " + \
                 "automatically..."))
             misc.PromptToStartDaemon()
             try:
-                dbusmanager.connect_to_dbus()
+                dbus_manager.connect_to_dbus()
             except DBusException:
                 error(None,
                     _("Could not connect to wicd's D-Bus interface. Check "
@@ -1084,7 +1062,7 @@ def setup_dbus(force=True):
     if lost_dbus_id:
         gobject.source_remove(lost_dbus_id)
         lost_dbus_id = None
-    dbus_ifaces = dbusmanager.get_dbus_ifaces()
+    dbus_ifaces = dbus_manager.get_dbus_ifaces()
     daemon = dbus_ifaces['daemon']
     wireless = dbus_ifaces['wireless']
     wired = dbus_ifaces['wired']
@@ -1119,48 +1097,28 @@ def handle_no_dbus():
 
 
 @catchdbus
-def main(argv):
-    """ The main frontend program.
+def main():
+    p = wicd.commandline.get_parser()
+    p.set_defaults(visibility = 'show_and_tray')
 
-    Keyword arguments:
-    argv -- The arguments passed to the script.
+    p.add_argument('-t', '--tray', dest='visibility', action='store_const', const='hide_in_tray',
+                help = 'Minimize in tray after start')
+    p.add_argument('-n', '--no-tray', dest='visibility', action='store_const', const='show',
+                help = "Don't use tray area")
+    p.add_argument('-o', '--only-notifications', dest='visibility', action='store_const', const='only_notifications',
+                help = "Only show notifications")
+    p.add_argument('-a', '--no-animate', dest='animate', action='store_false', default=True,
+                help = "Don't show animations")
 
-    """
-    try:
-        opts, args = getopt.getopt(
-            sys.argv[1:],
-            'tnhao',
-            ['help', 'no-tray', 'tray', 'no-animate', 'only-notifications']
-        )
-    except getopt.GetoptError:
-        # Print help information and exit
-        usage()
-        sys.exit(2)
+    args = wicd.commandline.get_args()
 
-    use_tray = True
-    animate = True
-    display_app = True
-    for opt, a in opts:
-        if opt in ('-h', '--help'):
-            usage()
-            sys.exit(0)
-        elif opt in ('-t', '--tray'):
-            display_app = False
-        elif opt in ('-n', '--no-tray'):
-            use_tray = False
-        elif opt in ('-a', '--no-animate'):
-            animate = False
-        elif opt in ('-o', '--only-notifications'):
-            print("only displaying notifications")
-            use_tray = False
-            display_app = False
-        else:
-            usage()
-            sys.exit(2)
 
     print('Loading...')
     setup_dbus()
     atexit.register(on_exit)
+
+    use_tray    = 'tray' in args.visibility
+    display_app = 'show' in args.visibility
 
     if display_app and not use_tray or not ICON_AVAIL:
         gui.appGui(standalone=True)
@@ -1169,7 +1127,7 @@ def main(argv):
         sys.exit(0)
 
     # Set up the tray icon GUI and backend
-    tray_icon = TrayIcon(animate, displaytray=use_tray, displayapp=display_app)
+    tray_icon = TrayIcon(args.animate, displaytray=use_tray, displayapp=display_app)
 
     # Check to see if wired profile chooser was called before icon
     # was launched (typically happens on startup or daemon restart).
@@ -1177,7 +1135,7 @@ def main(argv):
         daemon.SetNeedWiredProfileChooser(False)
         tray_icon.icon_info.wired_profile_chooser()
 
-    bus = dbusmanager.get_bus()
+    bus = dbus_manager.get_bus()
     bus.add_signal_receiver(tray_icon.icon_info.wired_profile_chooser,
                             'LaunchChooser', 'org.wicd.daemon')
     bus.add_signal_receiver(tray_icon.icon_info.update_tray_icon,
@@ -1201,4 +1159,4 @@ def main(argv):
 
 
 if __name__ == '__main__':
-    main(sys.argv)
+    main()
