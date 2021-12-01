@@ -188,10 +188,26 @@ def GetWirelessInterfaces():
 def GetWiredInterfaces():
     """ Returns a list of wired interfaces on the system. """
     basedir = '/sys/class/net/'
-    return [iface for iface in os.listdir(basedir)
-            if os.path.isdir(basedir + iface) and not 'wireless'
-            in os.listdir(basedir + iface) and
-            open(basedir + iface + "/type").readlines()[0].strip() == "1"]
+    l = []
+
+    top, ifaces, _ = next(os.walk(basedir))
+
+    for iface in ifaces:
+        if not os.path.exists(top + iface + '/device'):
+            continue
+
+        if os.path.exists(top + iface + '/wireless'):
+            continue
+
+        with open(top + iface + '/type',"rt") as fh:
+            iface_type = fh.read().strip()
+
+        if iface_type != "1":
+            continue
+
+        l.append(iface)
+    
+    return l
 
 def NeedsExternalCalls():
     """ Returns True if the backend needs to use an external program. """
