@@ -17,7 +17,15 @@
             "request": "launch",
             "module":  "wicd.daemon",
             "console": "integratedTerminal",
-            "args": [ "-f", "--session-dbus"]
+            "args": [ "-f", "--session-dbus"],
+        },
+        {
+            "name": "Launch test cli",
+            "type": "python",
+            "request": "launch",
+            "module":  "wicd.frontends.cli",
+            "console": "integratedTerminal",
+            "args": [ "--session-dbus", "--wired", "-l"]
         },
         {
             "name": "Python: Modulo",
