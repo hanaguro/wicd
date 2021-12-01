@@ -1,2 +1,0 @@
-#!/bin/bash
-exec /usr/bin/python3 -O /usr/share/wicd/cli/wicd-cli.py $@
