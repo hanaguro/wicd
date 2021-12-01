@@ -5,11 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch wicd-gtk",
+            "name": "Launch GTK client",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/gtk/wicd-client.py",
-            "console": "integratedTerminal"
+            "module": "wicd.frontends.gtk",
+            "console": "integratedTerminal",
+            "args": [ "--session-dbus"],
         },
         {
             "name": "Launch test daemon",
