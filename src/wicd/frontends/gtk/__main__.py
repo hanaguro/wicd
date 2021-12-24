@@ -18,6 +18,7 @@
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 import wicd.commandline
+import wicd.errors
 import sys
 import gi
 gi.require_version('Gtk', '3.0')
@@ -25,24 +26,22 @@ from gi.repository import Gtk as gtk
 from gi.repository import GLib as gobject
 gi.require_version('Pango', '1.0')
 from gi.repository import Pango as pango
-import getopt
 import os
 import atexit
 from dbus import DBusException
 
-USE_APP_INDICATOR = True
 try:
     import appindicator
+    USE_APP_INDICATOR = True
 except ImportError:
     USE_APP_INDICATOR = False
 
-HAS_NOTIFY = True
 try:
     import pynotify
-    if not pynotify.init("Wicd"):
-        HAS_NOTIFY = False
 except ImportError:
     HAS_NOTIFY = False
+else:
+    HAS_NOTIFY =  pynotify.init("Wicd")
 
 # Wicd specific imports
 from wicd import wpath
@@ -212,20 +211,20 @@ class TrayIcon(object):
             Updates the trayicon tooltip based on current connection status
             """
             if (self.network_type == "none"):
-                self.tr.set_tooltip(_('Not connected'))
+                self.tr.tooltip = (_('Not connected'))
             elif (self.network_type == "wireless"):
-                self.tr.set_tooltip(_('Connected to $A at $B (IP: $C)')
+                self.tr.tooltip = (_(f'Connected to $A at $B (IP: $C)')
                         .replace('$A', self.network_name)
                         .replace('$B', self.network_str)
                         .replace('$C', self.network_addr))
             elif (self.network_type == "wired"):
-                self.tr.set_tooltip(_('Connected to wired network (IP: $A)')
+                self.tr.tooltip = (_('Connected to wired network (IP: $A)')
                         .replace('$A', self.network_addr))
             elif (self.network_type == "killswitch"):
-                self.tr.set_tooltip(_('Not connected') + "(" +
+                self.tr.tooltip = (_('Not connected') + "(" +
                         _('Wireless Kill Switch Enabled') + ")")
             elif (self.network_type == "no_daemon"):
-                self.tr.set_tooltip(_('Wicd daemon unreachable'))
+                self.tr.tooltip = (_('Wicd daemon unreachable'))
 
             return True
 
@@ -479,6 +478,8 @@ class TrayIcon(object):
 
         """
         def __init__(self, parent):
+            super().__init__()
+
             self.list = []
             self.label = None
             self.data = None
@@ -846,108 +847,58 @@ TX:'''))
                 self.gui_win.exit()
                 return True
 
-    if USE_EGG:
-        class EggTrayIconGUI(TrayIconGUI):
-            """ Tray Icon for gtk < 2.10.
+    class StatusIcon(TrayIconGUI, gtk.StatusIcon):
+        def __init__(self, parent):
+            super().__init__(parent)
 
-            Uses the deprecated egg.trayicon module to implement the tray icon.
-            Since it relies on a deprecated module, this class is only used
-            for machines running versions of GTK < 2.10.
+            self.current_icon_name = ''
 
-            """
-            def __init__(self, parent):
-                """Initializes the tray icon"""
-                TrayIcon.TrayIconGUI.__init__(self, parent)
-                self.tooltip = gtk.Tooltips()
-                self.eb = gtk.EventBox()
-                self.tray = egg.trayicon.TrayIcon("WicdTrayIcon")
-                self.pic = gtk.Image()
-                self.tooltip.set_tip(self.eb, "Initializing wicd...")
-                self.pic.set_from_name('no-signal')
+        @property
+        def tooltip(self):
+            return self.get_tooltip_text()
 
-                self.eb.connect('button_press_event', self.tray_clicked)
-                self.eb.add(self.pic)
-                self.tray.add(self.eb)
-                self.tray.show_all()
+        @tooltip.setter
+        def tooltip(self, text):
+            self.set_tooltip_text(text)
 
-            def tray_clicked(self, widget, event):
-                """ Handles tray mouse click events. """
-                if event.button == 1:
-                    self.toggle_wicd_gui()
-                elif event.button == 3:
-                    self.init_network_menu()
-                    self.menu.popup(None, None, None, event.button, event.time)
+    class StatusTrayIconGUI(StatusIcon):
+        """ Class for creating the wicd tray icon on gtk > 2.10.
 
-            def set_from_file(self, val=None):
-                """ Calls set_from_file on the gtk.Image for the tray icon. """
-                self.pic.set_from_file(
-                    os.path.join(
-                        wpath.images, 'hicolor/22x22/status/%s.png' % val
-                    )
-                )
+        Uses gtk.StatusIcon to implement a tray icon.
 
-            def set_tooltip(self, val):
-                """ Set the tooltip for this tray icon.
+        """
+        def __init__(self, parent):
+            super().__init__(parent)
 
-                Sets the tooltip for the gtk.ToolTips associated with this
-                tray icon.
+            self.set_visible(True)
+            self.connect('activate', self.on_activate)
+            self.connect('popup-menu', self.on_popup_menu)
+            self.set_from_name('no-signal')
+            self.tooltip = "Initializing wicd..."
 
-                """
-                self.tooltip.set_tip(self.eb, val)
+        def on_popup_menu(self, status, button, timestamp):
+            """ Opens the right click menu for the tray icon. """
+            self.init_network_menu()
+            self.menu.popup(None, None, gtk.status_icon_position_menu,
+                button, timestamp, self)
 
-            def visible(self, val):
-                """ Set if the icon is visible or not.
+        def set_from_name(self, name=None):
+            """ Sets a new tray icon picture. """
+            if name != self.current_icon_name:
+                self.current_icon_name = name
+                gtk.StatusIcon.set_from_icon_name(self, name)
 
-                If val is True, makes the icon visible, if val is False,
-                hides the tray icon.
+        def visible(self, val):
+            """ Set if the icon is visible or not.
 
-                """
-                if val:
-                    self.tray.show_all()
-                else:
-                    self.tray.hide_all()
-
-    if hasattr(gtk, "StatusIcon"):
-        class StatusTrayIconGUI(gtk.StatusIcon, TrayIconGUI):
-            """ Class for creating the wicd tray icon on gtk > 2.10.
-
-            Uses gtk.StatusIcon to implement a tray icon.
+            If val is True, makes the icon visible, if val is False,
+            hides the tray icon.
 
             """
-            def __init__(self, parent):
-                TrayIcon.TrayIconGUI.__init__(self, parent)
-                gtk.StatusIcon.__init__(self)
-
-                self.current_icon_name = ''
-                self.set_visible(True)
-                self.connect('activate', self.on_activate)
-                self.connect('popup-menu', self.on_popup_menu)
-                self.set_from_name('no-signal')
-                self.set_tooltip_text("Initializing wicd...")
-
-            def on_popup_menu(self, status, button, timestamp):
-                """ Opens the right click menu for the tray icon. """
-                self.init_network_menu()
-                self.menu.popup(None, None, gtk.status_icon_position_menu,
-                    button, timestamp, self)
-
-            def set_from_name(self, name=None):
-                """ Sets a new tray icon picture. """
-                if name != self.current_icon_name:
-                    self.current_icon_name = name
-                    gtk.StatusIcon.set_from_icon_name(self, name)
-
-            def visible(self, val):
-                """ Set if the icon is visible or not.
-
-                If val is True, makes the icon visible, if val is False,
-                hides the tray icon.
-
-                """
-                self.set_visible(val)
+            self.set_visible(val)
 
     if USE_APP_INDICATOR:
-        class IndicatorTrayIconGUI(gtk.StatusIcon, TrayIconGUI):
+        class IndicatorTrayIconGUI(TrayIconGUI, gtk.StatusIcon):
             """ Class for creating the wicd AppIndicator.
             This is required on recent versions of Unity (>=13.04).
             
@@ -955,10 +906,10 @@ TX:'''))
             
             """
             def __init__(self, parent):
-                TrayIcon.TrayIconGUI.__init__(self, parent)
+                super().__init__(parent)
+
                 self.ind = appindicator.Indicator(
                     "wicd", "wicd-gtk", appindicator.CATEGORY_SYSTEM_SERVICES, wpath.images)
-                self.current_icon_name = ''
 
                 # Rescaning when hovering over the net_menu doesn't work.
                 # (AFAICT, AppIndicator menus don't report PRELIGHT status.)
@@ -1011,15 +962,13 @@ TX:'''))
                 """
                 self.ind.set_status(val and appindicator.STATUS_ACTIVE or appindicator.STATUS_PASSIVE)
 
-            def set_tooltip(self, str):
-                """ Set the tooltip for this tray icon.
-                
-                Since AppIndicators do not support tooltips, actually
-                sets the label for the top menu item associated with
-                this tray icon.
+            @property
+            def tooltip(self):
+                return self.tooltip_item.get_label()
 
-                """
-                self.tooltip_item.set_label(str)
+            @tooltip.setter
+            def tooltip(self, text):
+                self.tooltip_item.set_label(text)
 
 
 def usage():
@@ -1037,20 +986,21 @@ Arguments:
 """ % wpath.version))
 
 
+
 def setup_dbus(force=True):
     """ Initialize DBus. """
     global daemon, wireless, wired, DBUS_AVAIL, lost_dbus_id
     print("Connecting to daemon...")
     try:
         dbus_manager.connect()
-    except DBusException:
+    except wicd.errors.WiCDDaemonNotFound:
         if force:
             print(("Can't connect to the daemon, trying to start it " + \
                 "automatically..."))
             misc.PromptToStartDaemon()
             try:
-                dbus_manager.connect_to_dbus()
-            except DBusException:
+                dbus_manager.connect()
+            except wicd.errors.WiCDDaemonNotFound:
                 error(None,
                     _("Could not connect to wicd's D-Bus interface. Check "
                     "the wicd log for error messages.")

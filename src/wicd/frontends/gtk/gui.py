@@ -29,22 +29,26 @@ import time
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk as gtk
+from gi.repository import Gdk
 from gi.repository import GLib as gobject
 from itertools import chain
 from dbus import DBusException
+
+import wicd.errors
 
 from wicd import misc
 from wicd import wpath
 from wicd.dbus import dbus_manager
 from wicd.misc import noneToString
 from wicd.translations import _, language
+from wicd.utils import cached_property
 from . import prefs
 from .prefs import PreferencesDialog
 from . import netentry
 from .netentry import WiredNetworkEntry, WirelessNetworkEntry
 from .guiutil import error, LabelEntry
-
-proxy_obj = daemon = wireless = wired = bus = None
+import importlib.resources
+proxy_obj = daemon = wireless = wired = None
 DBUS_AVAIL = False
 
 def setup_dbus(force=True):
@@ -52,7 +56,7 @@ def setup_dbus(force=True):
     global bus, daemon, wireless, wired, DBUS_AVAIL
     try:
         dbus_manager.connect()
-    except DBusException:
+    except wicd.errors.WiCDDaemonNotFound:
         if force:
             print("Can't connect to the daemon, ' + \
                 'trying to start it automatically...")
@@ -61,8 +65,8 @@ def setup_dbus(force=True):
                     'cannot continue.")
                 return False
             try:
-                dbus_manager.connect_to_dbus()
-            except DBusException:
+                dbus_manager.connect()
+            except wicd.errors.WiCDDaemonNotFound:
                 error(
                     None,
                     _("Could not connect to wicd's D-Bus interface. "
@@ -73,7 +77,6 @@ def setup_dbus(force=True):
             return False
     prefs.setup_dbus()
     netentry.setup_dbus()
-    bus = dbus_manager.get_bus()
     dbus_ifaces = dbus_manager.get_dbus_ifaces()
     daemon = dbus_ifaces['daemon']
     wireless = dbus_ifaces['wireless']
@@ -164,34 +167,25 @@ def get_wireless_prop(net_id, prop):
     """ Get wireless property. """
     return wireless.GetWirelessProperty(net_id, prop)
 
-class appGui(object):
+
+class WicdGtkUi(object):
+    @cached_property
+    def gladefile(self):
+        path = importlib.resources.files('wicd.frontends.gtk').joinpath('resources','wicd.ui')
+        return str(path)
+
+
+class appGui(WicdGtkUi):
+    
     """ The main wicd GUI class. """
     def __init__(self, standalone=False, tray=None):
         """ Initializes everything needed for the GUI. """
-        setup_dbus()
-
-        if not daemon:
-            errmsg = _("Error connecting to wicd service via D-Bus. "
-                     "Please ensure the wicd service is running.")
-            d = gtk.MessageDialog(parent=None,
-                                  flags=gtk.DIALOG_MODAL,
-                                  type=gtk.MESSAGE_ERROR,
-                                  buttons=gtk.BUTTONS_OK,
-                                  message_format=errmsg)
-            d.run()
-            sys.exit(1)
-
         self.tray = tray
 
-        gladefile = os.path.join(wpath.gtk, "wicd.ui")
         self.wTree = gtk.Builder()
         self.wTree.set_translation_domain('wicd')
-        self.wTree.add_from_file(gladefile)
+        self.wTree.add_from_file(self.gladefile)
         self.window = self.wTree.get_object("window1")
-        width = int(gtk.gdk.screen_width() / 2)
-        if width > 530:
-            width = 530
-        self.window.resize(width, int(gtk.gdk.screen_height() / 1.7))
 
         dic = {
             "refresh_clicked": self.refresh_clicked,
@@ -213,7 +207,7 @@ class appGui(object):
         label_instruct.set_label(_('Choose from the networks below:'))
 
         probar = self.wTree.get_object("progressbar")
-        probar.set_text(_('Connecting'))
+        #probar.set_text(_('Connecting'))
 
         self.disconnect_all_button = self.wTree.get_object('disconnect_button')
         self.rfkill_button = self.wTree.get_object("rfkill_button")
@@ -222,14 +216,14 @@ class appGui(object):
         self.wired_network_box = gtk.VBox(False, 0)
         self.wired_network_box.show_all()
         self.network_list = gtk.VBox(False, 0)
-        self.all_network_list.pack_start(self.wired_network_box, False, False)
-        self.all_network_list.pack_start(self.network_list, True, True)
+        self.all_network_list.pack_start(self.wired_network_box, False, False, 0)
+        self.all_network_list.pack_start(self.network_list, True, True, 0)
         self.network_list.show_all()
         self.status_area = self.wTree.get_object("connecting_hbox")
         self.status_bar = self.wTree.get_object("statusbar")
         menu = self.wTree.get_object("menu1")
 
-        self.status_area.hide_all()
+        #self.status_area.hide_all()
 
         self.window.set_icon_name('wicd-gtk')
         self.statusID = None
@@ -246,12 +240,14 @@ class appGui(object):
         self._wired_showing = False
         self.network_list.set_sensitive(False)
         label = gtk.Label("%s..." % _('Scanning'))
-        self.network_list.pack_start(label)
+        self.network_list.pack_start(label, False, False, 0)
         label.show()
         self.wait_for_events(0.2)
         self.window.connect('delete_event', self.exit)
         self.window.connect('key-release-event', self.key_event)
-        daemon.SetGUIOpen(True)
+        
+        bus = dbus_manager.bus
+
         bus.add_signal_receiver(self.dbus_scan_finished, 'SendEndScanSignal',
                         'org.wicd.daemon.wireless')
         bus.add_signal_receiver(self.dbus_scan_started, 'SendStartScanSignal',
@@ -268,7 +264,7 @@ class appGui(object):
             bus.add_signal_receiver(handle_no_dbus, "DaemonClosing",
                                     "org.wicd.daemon")
 
-        self._do_statusbar_update(*daemon.GetConnectionStatus())
+        #self._do_statusbar_update(*daemon.GetConnectionStatus())
         self.wait_for_events(0.1)
         self.update_cb = misc.timeout_add(2, self.update_statusbar)
         self.refresh_clicked()
@@ -930,13 +926,9 @@ class appGui(object):
         """
         self.window.hide()
         gobject.source_remove(self.update_cb)
-        bus.remove_signal_receiver(self._do_statusbar_update, 'StatusChanged',
-                                   'org.wicd.daemon')
-        [width, height] = self.window.get_size()
-        try:
-            daemon.SetGUIOpen(False)
-        except DBusException:
-            pass
+
+        dbus_manager.bus.remove_signal_receiver(self._do_statusbar_update, 'StatusChanged',
+                                               'org.wicd.daemon')
 
         if self.standalone:
             sys.exit(0)
