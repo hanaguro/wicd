@@ -5,6 +5,7 @@ wicd.egg-info/
 **/*.pyc
 .venv/
 .bzr/
+.eggs
 experimental.wpr
 install.log
 uninstall.log
