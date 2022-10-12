@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
+# vim: set fileencoding=utf8
 #
 #   Copyright (C) 2007 - 2009 Adam Blackburn
 #   Copyright (C) 2007 - 2009 Dan O'Reilly
 #   Copyright (C) 2009        Andrew Psaltis
-#   Copyright (C) 2021        Andreas Messer
+#   Copyright (C) 2021 - 2022 Andreas Messer
 #
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -19,10 +20,32 @@
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 from setuptools import setup, find_packages
-from distutils.command.build_py import build_py as _build_py
+from setuptools.command.build_py import build_py
+import os
 
-class CustomPyBuild(_build_py):
+config_file_template = '''
+import os
+
+etc_path        = "/etc/wicd"
+resolvconf_path = "/etc/resolv.conf"
+rundir_path     = "/var/run/wicd/"
+
+wireless_conf_path = etc_path + os.sep + "wireless-settings.conf"
+wired_conf_path    = etc_path + os.sep + "wired-settings.conf"
+dhclient_conf_path = etc_path + os.sep + "dhclient.conf.template"
+
+pidfile_path           = rundir_path + "wicd.pid"
+resolvconf_backup_path = rundir_path + "resolv.conf.orig"
+'''
+
+class wicd_build_py(build_py):
     def run(self):
+        config_file = os.path.join(self.build_lib, 'wicd', 'config.py')
+
+        with open(config_file, 'wt') as f:
+            print('generating ' + config_file)
+            f.write(config_file_template);
+
         super().run()
 
 def version_scheme(version):
@@ -51,5 +74,5 @@ connect at startup to any preferred network within range.
     url = "https://launchpad.net/wicd",
     license = "http://www.gnu.org/licenses/old-licenses/gpl-2.0.html",
 
-    #cmdclass    = { "build_py" : CustomPyBuild },
+    cmdclass    = { "build_py" : wicd_build_py },
 )

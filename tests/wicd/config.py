@@ -40,8 +40,9 @@ if devel_path:
             nameserver 127.0.0.1
             """)
 else:
-    resolvconf_path        = "/etc/resolv.conf"
-    rundir_path            = "/var/run/wicd/"
+    etc_path        = "/etc/wicd"
+    resolvconf_path = "/etc/resolv.conf"
+    rundir_path     = "/var/run/wicd/"
 
 wireless_conf_path = etc_path + os.sep + "wireless-settings.conf"
 wired_conf_path    = etc_path + os.sep + "wired-settings.conf"
