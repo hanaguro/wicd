@@ -36,3 +36,4 @@ dist/
 MANIFEST
 debian/
 devel_tmp
+docs/developers/_build

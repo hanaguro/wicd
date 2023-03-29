@@ -1,4 +1,24 @@
-THEORY OF OPERATION:
+wicd Network Management Daemon
+==============================
+
+..attention::
+
+   wicd is currently undergoing a major transition from python 2 to 
+   python 3. This includes major structural changes within its guts as 
+   well.
+
+   There is some attempt to create a more comprehensive user and developer 
+   documentation using the sphinx documentation system. You need to build 
+   the documentation before reading it::
+
+   ..code-block::
+
+      make -C docs/developer html
+      x-www-browser docs/developer/_build/html/index.html
+	
+
+Theory of operation
+-------------------
 
 Wicd is designed to give the user as much control over behavior of network 
 connections as possible.  Every network, both wired and wireless, has its 
@@ -36,8 +56,14 @@ can be edited, and new templates can be created by the user and imported into
 wicd, allowing connection to networks with uncommon encryption settings.
 
 
-STRUCTURE:
+Structure
+---------
 
+..warning::
+
+   This section was taken from original readme file and might be
+   outdated. Don't rely too much on its content
+   
 Wicd has two major parts: the daemon, which runs with root privileges; and the
 user interface, which runs with normal user privileges.  The two parts run as
 separate processes and make use of D-Bus to communicate.
