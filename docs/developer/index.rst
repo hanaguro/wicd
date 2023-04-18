@@ -10,6 +10,7 @@ Welcome to wicd Developer Documentation's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   testing.rst
    python3
 
 
