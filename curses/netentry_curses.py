@@ -420,19 +420,18 @@ class WirelessSettingsDialog(AdvancedSettingsDialog):
             self.set_net_prop("enctype", encrypt_methods[self.encryption_combo.get_focus()[1]]['type'])
             for entry_info in list(encrypt_info.values()):
                 if entry_info[0].get_edit_text() == "" and entry_info[1] == 'required':
-                    # 修正部分: get_captionを削除し、captionプロパティを使用
                     error(self.ui, self.parent, "%s (%s)" % (_('Required encryption information is missing.'), entry_info[0].caption[0][0][0:-2]))
                     return False
 
             for entry_key, entry_info in list(encrypt_info.items()):
-                self.set_net_prop(entry_key, noneToString(entry_info[0].get_edit_text()))
-        elif not self.encryption_chkbox.get_state() and wireless.GetWirelessProperty(self.networkid, "encryption"):
-            error(self.ui, self.parent, _('This network requires encryption to be enabled.'))
-            return False
+                if entry_key == 'apsk':
+                    # Ensure psk is not double quoted
+                    self.set_net_prop(entry_key, entry_info[0].get_edit_text().strip('"'))
+                else:
+                    self.set_net_prop(entry_key, noneToString(entry_info[0].get_edit_text()))
         else:
             self.set_net_prop("enctype", "None")
             self.set_net_prop("encryption_enabled", False)
-
         AdvancedSettingsDialog.save_settings(self)
 
         self.set_net_prop("automatic", self.autoconnect_chkbox.get_state())

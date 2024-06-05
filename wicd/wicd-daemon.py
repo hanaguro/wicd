@@ -1253,12 +1253,14 @@ class WirelessDaemon(dbus.service.Object, object):
             with open(config_file_path, 'r') as file:
                 config_data = file.read()
 
-            config_data = config_data.replace('psk=$_APSK', f'psk="{apsk}"')
+            # Ensure psk is not double quoted
+            config_data = config_data.replace('psk=$_APSK', f'psk="{apsk.strip()}"')
 
             with open(config_file_path, 'w') as file:
                 file.write(config_data)
         else:
             print(f"Error: PSK for network {self.LastScan[nid]['essid']} is None or missing")
+
 
         self.daemon.UpdateState()
 
