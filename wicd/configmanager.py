@@ -25,7 +25,6 @@ def psk_from_passphrase(passphrase, ssid):
     return binascii.hexlify(psk).decode('utf-8')
 
 def replace_apsk_value(network_config, apsk_value):
-    print("takahiro replace_apsk_value(network_config, apsk_value):")
     """Replace the placeholder '$_APSK' with the actual value of 'apsk'."""
     if apsk_value and 'ssid' in network_config:
         psk_value = psk_from_passphrase(apsk_value, network_config['ssid'])
@@ -37,7 +36,6 @@ def replace_apsk_value(network_config, apsk_value):
     return network_config
 
 def sanitize_network_dict(network):
-    print("takahiro sanitize_network_dict(network):")
     sanitized = {}
     apsk_value = None
 

@@ -215,7 +215,6 @@ class Controller(object):
 
     def Disconnect(self, nettype, name, mac):
         """ Disconnect from the network. """
-        print("takahiro Disconnect(controller)")
         iface = self.iface
         # mac and name need to be strings
         if mac in (None, ''):
@@ -1011,7 +1010,6 @@ class WirelessConnectThread(ConnectThread):
 
         # Validate Authentication.
         if self.network.get('enctype'):
-            print("takahiro self.network.get('enctype')")
             self.SetStatus('validating_authentication')
             if not wiface.ValidateAuthentication(time.time()):
                 print(("connect result is %s" % self.connect_result))
