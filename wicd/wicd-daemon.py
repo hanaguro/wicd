@@ -968,7 +968,7 @@ class WicdDaemon(dbus.service.Object, object):
 class WirelessDaemon(dbus.service.Object, object):
     """ DBus interface for wireless connection operations. """
     def __init__(self, bus_name, daemon, wifi=None, debug=False):
-        """ Intitialize the wireless DBus interface. """
+        """ Initialize the wireless DBus interface. """
         dbus.service.Object.__init__(self, bus_name=bus_name,
                                      object_path='/org/wicd/daemon/wireless')
         self.hidden_essid = None
@@ -1033,6 +1033,7 @@ class WirelessDaemon(dbus.service.Object, object):
             self.ReadWirelessNetworkProfile(i)
             print(f"Network {i}: {network}")  # Add debug message to check the content of the network scan result
         self.SendEndScanSignal()
+
 
 
     @dbus.service.method('org.wicd.daemon.wireless')
@@ -1228,7 +1229,7 @@ class WirelessDaemon(dbus.service.Object, object):
 
     @dbus.service.method('org.wicd.daemon.wireless')
     def ConnectWireless(self, nid):
-        """ Connects to the wireless network specified by nid """
+        """ Connect to the wireless network specified by nid """
         self.SaveWirelessNetworkProfile(nid)
         self.wifi.before_script = self.GetWirelessProperty(nid, 'beforescript')
         self.wifi.after_script = self.GetWirelessProperty(nid, 'afterscript')
@@ -1249,21 +1250,23 @@ class WirelessDaemon(dbus.service.Object, object):
 
         apsk = self.LastScan[nid].get('apsk')
         if apsk:
-            config_file_path = os.path.join('/var/lib/wicd/configurations', self.LastScan[nid]["bssid"].replace(":", "").lower())
-            with open(config_file_path, 'r') as file:
-                config_data = file.read()
+            bssid = self.LastScan[nid].get("bssid")
+            if bssid:
+                config_file_path = os.path.join('/var/lib/wicd/configurations', bssid.replace(":", "").lower())
+                with open(config_file_path, 'r') as file:
+                    config_data = file.read()
 
-            # Ensure psk is not double quoted
-            config_data = config_data.replace('psk=$_APSK', f'psk="{apsk.strip()}"')
+                # Ensure psk is not double quoted
+                config_data = config_data.replace('psk=$_APSK', f'psk="{apsk.strip()}"')
 
-            with open(config_file_path, 'w') as file:
-                file.write(config_data)
+                with open(config_file_path, 'w') as file:
+                    file.write(config_data)
+            else:
+                print(f"Error: BSSID for network {self.LastScan[nid]['essid']} is None or missing")
         else:
             print(f"Error: PSK for network {self.LastScan[nid]['essid']} is None or missing")
 
-
         self.daemon.UpdateState()
-
 
     @dbus.service.method('org.wicd.daemon.wireless')
     def CheckIfWirelessConnecting(self):
