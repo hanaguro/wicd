@@ -1,0 +1,21 @@
+Description: wicd-daemon: no autoconnect when GUI is open (#833929)
+Origin: https://bugs.debian.org/cgi-bin/bugreport.cgi?att=1;bug=833929;filename=44-autoconnect.patch;msg=26
+Author: Vincent Lefevre <vincent@vinc17.net>
+Bug-Debian: https://bugs.debian.org/833929
+Bug: https://launchpad.net/bugs/1709593
+Bug: https://launchpad.net/bugs/1656696
+Forwarded: https://bugs.launchpad.net/wicd/+bug/1709593
+Last-Update: 2018-11-05
+
+--- wicd-1.7.4+tb2.orig/wicd/wicd-daemon.py
++++ wicd-1.7.4+tb2/wicd/wicd-daemon.py
+@@ -457,8 +457,7 @@ class WicdDaemon(dbus.service.Object, ob
+     def ShouldAutoReconnect(self):
+         """ Returns True if it's the right time to try autoreconnecting. """
+         if self.GetAutoReconnect() and not self.CheckIfConnecting() and \
+-           not self.GetForcedDisconnect() and not self.auto_connecting and \
+-           not self.gui_open:
++           not self.GetForcedDisconnect() and not self.auto_connecting:
+             return True
+         else:
+             return False

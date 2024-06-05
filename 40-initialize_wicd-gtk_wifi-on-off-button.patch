@@ -1,0 +1,40 @@
+Description: Initialize state of Wifi On/Off button properly
+ When the wicd-gtk gui is started, the button "Switch Off/On Wi-Fi"
+ assumes that the Wi-Fi is already powered off, even when it's already
+ on.
+ .
+ To reproduce the problem encountered;
+ .
+  1) Enable the Wi-Fi in the system BIOS before booting Debian, or toggle
+     the Wi-Fi to a power on state using the Fn+F2 hot-key after Debian has
+     booted.
+ .
+  2) Start the wicd-gtk gui by clicking the applet in the taskbar.
+ .
+  3) The wicd-gtk gui displays a "Switch On Wi-Fi" button!!! This is
+     clearly incorrect since the Wi-Fi is ALREADY powered on. The gui
+     should display a "Switch Off Wi-Fi" button.
+ .
+ When the pyGTK widgets are initialized, the present state of the wifi
+ is not properly accounted for.
+Author: John C. Peterson <jcp@eskimo.com>
+Bug: https://bugs.launchpad.net/wicd/+bug/1232521
+Bug-Debian: https://bugs.debian.org/758737
+
+Index: wicd/gtk/gui.py
+===================================================================
+--- wicd.orig/gtk/gui.py	2017-01-16 04:11:33.549225518 +0100
++++ wicd/gtk/gui.py	2017-01-22 03:40:13.219349321 +0100
+@@ -219,6 +219,12 @@
+ 
+         self.disconnect_all_button = self.wTree.get_object('disconnect_button')
+         self.rfkill_button = self.wTree.get_object("rfkill_button")
++        if wireless.GetRfKillEnabled():
++            self.rfkill_button.set_stock_id(gtk.STOCK_MEDIA_PLAY)
++            self.rfkill_button.set_label(_('Switch On Wi-Fi'))
++        else:
++            self.rfkill_button.set_stock_id(gtk.STOCK_MEDIA_STOP)
++            self.rfkill_button.set_label(_('Switch Off Wi-Fi'))
+         self.all_network_list = self.wTree.get_object("network_list_vbox")
+         self.all_network_list.show_all()
+         self.wired_network_box = gtk.VBox(False, 0)

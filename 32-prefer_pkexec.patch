@@ -1,0 +1,185 @@
+Description: Replace deprecated gksu(do) with pkexec and su-to-root
+ This replaces the former 32-prefer_pkexec.patch patch by David Paleino.
+Author: Axel Beckert <abe@debian.org>
+Bug-Debian: https://bugs.debian.org/885546
+Forwarded: no
+
+Index: wicd/data/wicd.ui
+===================================================================
+--- wicd.orig/data/wicd.ui	2019-09-29 03:58:57.880111059 +0200
++++ wicd/data/wicd.ui	2019-09-29 03:58:57.860110435 +0200
+@@ -1339,8 +1339,8 @@
+                                       </packing>
+                                     </child>
+                                     <child>
+-                                      <object class="GtkRadioButton" id="gksudo_radio">
+-                                        <property name="label">gksudo</property>
++                                      <object class="GtkRadioButton" id="pkexec_radio">
++                                        <property name="label">pkexec</property>
+                                         <property name="visible">True</property>
+                                         <property name="can_focus">True</property>
+                                         <property name="receives_default">False</property>
+Index: wicd/gtk/prefs.py
+===================================================================
+--- wicd.orig/gtk/prefs.py	2019-09-29 03:58:57.880111059 +0200
++++ wicd/gtk/prefs.py	2019-09-29 03:58:57.860110435 +0200
+@@ -79,7 +79,7 @@
+         self.showlistradiobutton = None
+ 
+         self.kdesuradio = None
+-        self.gksudoradio = None
++        self.pkexecradio = None
+         self.sudoautoradio = None
+         self.ktsussradio = None
+ 
+@@ -150,7 +150,7 @@
+         self._setup_external_app_radios(
+             flush_list, daemon.GetFlushTool, daemon.SetFlushTool)
+ 
+-        sudo_list = [self.sudoautoradio, self.gksudoradio, self.kdesuradio,
++        sudo_list = [self.sudoautoradio, self.pkexecradio, self.kdesuradio,
+                      self.ktsussradio]
+         self._setup_external_app_radios(
+             sudo_list, daemon.GetSudoApp, daemon.SetSudoApp)
+@@ -304,8 +304,8 @@
+ 
+         if self.sudoautoradio.get_active():
+             sudo_tool = misc.AUTO
+-        elif self.gksudoradio.get_active():
+-            sudo_tool = misc.GKSUDO
++        elif self.pkexecradio.get_active():
++            sudo_tool = misc.PKEXEC
+         elif self.kdesuradio.get_active():
+             sudo_tool = misc.KDESU
+         else:
+@@ -449,7 +449,7 @@
+         # Graphical Sudo Apps
+         self.sudoautoradio = setup_label(
+             "sudo_auto_radio", _('Automatic (recommended)'))
+-        self.gksudoradio = setup_label("gksudo_radio")
++        self.pkexecradio = setup_label("pkexec_radio")
+         self.kdesuradio = setup_label("kdesu_radio")
+         self.ktsussradio = setup_label("ktsuss_radio")
+ 
+Index: wicd/wicd/misc.py
+===================================================================
+--- wicd.orig/wicd/misc.py	2019-09-29 03:58:57.880111059 +0200
++++ wicd/wicd/misc.py	2019-09-29 03:58:57.860110435 +0200
+@@ -72,12 +72,12 @@
+ ROUTE = 2
+ 
+ # Graphical sudo apps
+-GKSUDO = 1
++PKEXEC = 1
+ KDESU = 2
+ KTSUSS = 3
+ _sudo_dict = { 
+     AUTO : "",
+-    GKSUDO : "gksudo",
++    PKEXEC : "pkexec",
+     KDESU : "kdesu",
+     KTSUSS: "ktsuss",
+ }
+@@ -211,7 +211,7 @@
+     sudo_prog = choose_sudo_prog()
+     if not sudo_prog:
+         return False
+-    if "gksu" in sudo_prog or "ktsuss" in sudo_prog:
++    if "pkexec" in sudo_prog or "ktsuss" in sudo_prog:
+         msg = '--message'
+     else:
+         msg = '--caption'
+@@ -539,8 +539,8 @@
+     sudo_prog = choose_sudo_prog(prog_num)
+     if not sudo_prog:
+         return None
+-    if re.search("(ktsuss|gksu|gksudo)$", sudo_prog):
+-        msg_flag = "-m"
++    if re.search("(pkexec|su-to-root)$", sudo_prog):
++        msg_flag = ""
+     else:
+         msg_flag = "--caption"
+     return [sudo_prog, msg_flag, msg]
+@@ -556,7 +556,7 @@
+     if desktop_env == "kde":
+         progs = ["kdesu", "kdesudo", "ktsuss"]
+     else:
+-        progs = ["gksudo", "gksu", "ktsuss"]
++        progs = ["pkexec", "su-to-root"]
+         
+     for prog in progs:
+         paths.extend([os.path.join(p, prog) for p in env_path])
+Index: wicd/wicd/wnettools.py
+===================================================================
+--- wicd.orig/wicd/wnettools.py	2019-09-29 03:58:57.880111059 +0200
++++ wicd/wicd/wnettools.py	2019-09-29 03:58:57.864110560 +0200
+@@ -264,7 +264,7 @@
+         self.pump_cmd = None
+ 
+         self.kdesu_cmd = None
+-        self.gksudo_cmd = None
++        self.pkexec_cmd = None
+         self.ktsuss_cmd = None
+ 
+     def SetDebugMode(self, value):
+@@ -479,7 +479,7 @@
+             
+     def CheckSudoApplications(self):
+         """ Check for available root-gaining 'sudo' applications. """
+-        self.gksudo_cmd = self._find_program_path("gksudo")
++        self.pkexec = self._find_program_path("pkexec")
+         self.kdesu_cmd = self._find_program_path("kdesu")
+         self.ktsuss_cmd = self._find_program_path("ktsuss")
+ 
+Index: wicd/in/man=nl=wicd-manager-settings.conf.5.in
+===================================================================
+--- wicd.orig/in/man=nl=wicd-manager-settings.conf.5.in	2019-09-29 03:58:57.880111059 +0200
++++ wicd/in/man=nl=wicd-manager-settings.conf.5.in	2019-09-29 03:58:57.864110560 +0200
+@@ -46,7 +46,7 @@
+ .BI "sudo_app = " <0|1|2|3>
+ 0 = autodetect
+ .br
+-1 = gksu
++1 = pkexec
+ .br
+ 2 = kdesu
+ .br
+Index: wicd/in/man=nl=wicd.8.in
+===================================================================
+--- wicd.orig/in/man=nl=wicd.8.in	2019-09-29 03:58:57.880111059 +0200
++++ wicd/in/man=nl=wicd.8.in	2019-09-29 03:58:57.864110560 +0200
+@@ -85,7 +85,7 @@
+ Als het nodig is om een eigen commando uit te voeren voor of na het verbinding
+ maken of verbreken van een netwerk, dan ondersteund Wicd dit; maar je moet wel
+ een grafische sudo helper geïnstalleerd hebben (op dit moment worden kdesu,
+-gksu en ktsuss ondersteund).
++pkexec en ktsuss ondersteund).
+ .br
+ Als je geen grafische sudo helper geïnstalleerd hebt, heb je nog steeds de
+ mogelijkheid om eigen scripts te gebruiken, maar je moet ze handmatig maken.
+Index: wicd/in/man=wicd-manager-settings.conf.5.in
+===================================================================
+--- wicd.orig/in/man=wicd-manager-settings.conf.5.in	2019-09-29 03:58:57.880111059 +0200
++++ wicd/in/man=wicd-manager-settings.conf.5.in	2019-09-29 03:58:57.864110560 +0200
+@@ -46,7 +46,7 @@
+ .BI "sudo_app = " <0|1|2|3>
+ 0 = autodetect
+ .br
+-1 = gksu
++1 = pkexec
+ .br
+ 2 = kdesu
+ .br
+Index: wicd/in/man=wicd.8.in
+===================================================================
+--- wicd.orig/in/man=wicd.8.in	2019-09-29 03:58:57.880111059 +0200
++++ wicd/in/man=wicd.8.in	2019-09-29 03:58:57.868110685 +0200
+@@ -79,7 +79,7 @@
+ .br
+ If you need to run any custom commands before or after connecting to or 
+ disconnecting from a network, Wicd supports this; however, you will need to
+-have a graphical sudo helper installed (currently supported are kdesu, gksu,
++have a graphical sudo helper installed (currently supported are kdesu, pkexec,
+ and ktsuss). Also see %SCRIPTS% in FILES.
+ .br
+ If you do not have a graphical sudo helper installed, you still have the

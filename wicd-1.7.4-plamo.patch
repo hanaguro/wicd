@@ -1,0 +1,86 @@
+diff -uprN wicd-1.7.4.org/in/init=plamo=wicd.in wicd-1.7.4/in/init=plamo=wicd.in
+--- wicd-1.7.4.org/in/init=plamo=wicd.in	1970-01-01 09:00:00.000000000 +0900
++++ wicd-1.7.4/in/init=plamo=wicd.in	2018-07-04 09:24:17.369713425 +0900
+@@ -0,0 +1,60 @@
++#!/bin/sh
++########################################################################
++# Begin scriptname : wicd
++#
++# Description : start/stop wicd
++#
++# Authors     : KOJIMA
++#
++# Version     : Plamo-7.0
++#
++# Notes       :
++#
++########################################################################
++
++### BEGIN INIT INFO
++# Provides:            wicd
++# Required-Start: dbus
++# Required-Stop: sendsignals
++# Default-Start: 2 3 4 5
++# Default-Stop: 0 2 6
++# Short-Description: starts wicd network manager
++# Description: Wicd is a wireless and wired network manager for Linux.
++# X-LFS-Provided-By:
++### END INIT INFO
++
++. /lib/lsb/init-functions
++
++PIDFILE="%PIDFILE%"
++
++case "${1}" in
++   start)
++      log_info_msg "Starting wicd network manager"
++      start_daemon /usr/bin/wicd
++      evaluate_retval
++      ;;
++
++   stop)
++      log_info_msg "Stopping wicd network manager"
++      /usr/bin/wicd -k
++      evaluate_retval
++      if [ -f $PIDFILE ]; then
++	  rm -f $PIDFILE
++      fi
++      ;;
++
++   restart)
++      ${0} stop
++      sleep 1
++      ${0} start
++      ;;
++
++   *)
++      echo "Usage: ${0} {start|stop|restart}"
++      exit 1
++      ;;
++esac
++
++exit 0
++
++# End scriptname
+diff -uprN wicd-1.7.4.org/setup.py wicd-1.7.4/setup.py
+--- wicd-1.7.4.org/setup.py	2016-01-25 12:56:46.000000000 +0900
++++ wicd-1.7.4/setup.py	2018-07-04 09:23:09.340614767 +0900
+@@ -212,6 +212,8 @@ class configure(Command):
+             self.ddistro = 'crux'
+         elif os.path.exists('/etc/lunar.release'):
+             self.distro = 'lunar'
++        elif os.path.exists('/etc/plamo-release'):
++            self.ddistro = 'plamo'
+         else:
+             self.ddistro = 'FAIL'
+             #self.no_install_init = True
+@@ -311,6 +313,9 @@ class configure(Command):
+         elif self.distro in ['lunar']:
+             self.init='/etc/init.d/'
+             self.initfile = 'init/lunar/wicd'
++        elif self.distro in ['plamo']:
++            self.init='/etc/rc.d/init.d/'
++            self.initfile = 'init/plamo/wicd'
+         else :
+             if self.distro == 'auto':
+                 print "NOTICE: Automatic distro detection found: " + self.ddistro + ", retrying with that..."

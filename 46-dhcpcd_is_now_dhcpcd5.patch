@@ -1,0 +1,159 @@
+Description: Update binary names from dhcpcd to dhcpcd5
+Author: Axel Beckert <abe@debian.org>
+Bug-Debian: https://bugs.debian.org/852343
+Forwarded: no
+
+Index: wicd/data/wicd.ui
+===================================================================
+--- wicd.orig/data/wicd.ui	2019-09-29 03:59:33.265214406 +0200
++++ wicd/data/wicd.ui	2019-09-29 03:59:33.241213658 +0200
+@@ -1226,7 +1226,7 @@
+                                     </child>
+                                     <child>
+                                       <object class="GtkRadioButton" id="dhcpcd_radio">
+-                                        <property name="label">dhcpcd</property>
++                                        <property name="label">dhcpcd5</property>
+                                         <property name="visible">True</property>
+                                         <property name="can_focus">True</property>
+                                         <property name="receives_default">False</property>
+Index: wicd/in/man=nl=wicd-manager-settings.conf.5.in
+===================================================================
+--- wicd.orig/in/man=nl=wicd-manager-settings.conf.5.in	2019-09-29 03:59:33.265214406 +0200
++++ wicd/in/man=nl=wicd-manager-settings.conf.5.in	2019-09-29 03:59:33.245213783 +0200
+@@ -39,7 +39,7 @@
+ .br
+ 1 = dhclient
+ .br
+-2 = dhcpcd
++2 = dhcpcd5
+ .br
+ 3 = pump
+ .TP
+Index: wicd/in/man=nl=wicd.8.in
+===================================================================
+--- wicd.orig/in/man=nl=wicd.8.in	2019-09-29 03:59:33.265214406 +0200
++++ wicd/in/man=nl=wicd.8.in	2019-09-29 03:59:33.245213783 +0200
+@@ -37,7 +37,7 @@
+ Wicd gebruikt ingebouwde Linux draadloze netwerktools, zoals ifconfig en
+ iwconfig, om netwerkinformatie te krijgen en in te stellen. Er is enige
+ flexibiliteit in het gebruik van DHCP, door het ondersteunen van dhclient,
+-dhcpcd en pump. Wicd gebruikt wpa_supplicant voor alle draadloze
++dhcpcd5 en pump. Wicd gebruikt wpa_supplicant voor alle draadloze
+ coderingsinstellingen, en gebruikt een sjabloongebaseert systeem om de
+ configuratiebestanden te maken die door wpa_supplicant worden gebruikt. Deze
+ sjablonen kunnen worden bewerkt, en nieuwe sjablonen kunnen worden gemaakt door
+@@ -153,7 +153,7 @@
+ .BR mii-tool (8),
+ .BR ethtool (8),
+ .BR dhclient (8),
+-.BR dhcpcd (8),
++.BR dhcpcd5 (8),
+ .BR pump (8).
+ 
+ 
+Index: wicd/in/man=wicd-manager-settings.conf.5.in
+===================================================================
+--- wicd.orig/in/man=wicd-manager-settings.conf.5.in	2019-09-29 03:59:33.265214406 +0200
++++ wicd/in/man=wicd-manager-settings.conf.5.in	2019-09-29 03:59:33.245213783 +0200
+@@ -39,7 +39,7 @@
+ .br
+ 1 = dhclient
+ .br
+-2 = dhcpcd
++2 = dhcpcd5
+ .br
+ 3 = pump
+ .TP
+Index: wicd/in/man=wicd.8.in
+===================================================================
+--- wicd.orig/in/man=wicd.8.in	2019-09-29 03:59:33.265214406 +0200
++++ wicd/in/man=wicd.8.in	2019-09-29 03:59:33.245213783 +0200
+@@ -35,7 +35,7 @@
+ 
+ Wicd uses built-in linux wireless-tools, such as ifconfig and iwconfig, to
+ get and configure network info.  There is some flexibility in its use of DHCP,
+-providing support for dhclient, dhcpcd, and pump.  Wicd uses wpa_supplicant
++providing support for dhclient, dhcpcd5, and pump.  Wicd uses wpa_supplicant
+ to handle all wireless encryption settings, and uses a template-based system
+ to create the configuration files used by wpa_supplicant.  These templates
+ can be edited, and new templates can be created by the user and imported into
+@@ -178,7 +178,7 @@
+ .BR mii-tool (8),
+ .BR ethtool (8),
+ .BR dhclient (8),
+-.BR dhcpcd (8),
++.BR dhcpcd5 (8),
+ .BR pump (8).
+ 
+ 
+Index: wicd/wicd/wnettools.py
+===================================================================
+--- wicd.orig/wicd/wnettools.py	2019-09-29 03:59:33.265214406 +0200
++++ wicd/wicd/wnettools.py	2019-09-29 03:59:33.249213908 +0200
+@@ -309,7 +309,7 @@
+         def get_client_name(cl):
+             """ Converts the integer value for a dhcp client to a string. """
+             if self.dhcpcd_cmd and cl in [misc.DHCPCD, misc.AUTO]:
+-                client = "dhcpcd"
++                client = "dhcpcd5"
+                 cmd = self.dhcpcd_cmd
+             elif self.pump_cmd and cl in [misc.PUMP, misc.AUTO]: 
+                 client = "pump"
+@@ -346,7 +346,7 @@
+                   'release' : r"%(cmd)s -r -i %(iface)s",
+                   'id' : misc.PUMP,
+                 },
+-            "dhcpcd" : 
++            "dhcpcd5" : 
+                 {'connect' : r"%(cmd)s --noipv4ll %(extra)s %(iface)s",
+                  'connect_with_hostname' : r"%(cmd)s -h %(hostname)s --noipv4ll %(extra)s %(iface)s ",
+                  'release' : r"%(cmd)s -k %(iface)s",
+@@ -366,7 +366,7 @@
+         if client_name == "dhclient" and flavor:
+             if hostname:
+                 print('attempting to set hostname with dhclient')
+-                print('using dhcpcd or another supported client may work better')
++                print('using dhcpcd5 or another supported client may work better')
+ 
+                 dhclient_template = \
+                     open(os.path.join(wpath.etc, 'dhclient.conf.template'), 'r')
+@@ -394,7 +394,7 @@
+             # set up (optional) extra arguments to the dhcp client,
+             # used for disabling the resolv.conf update of dhcpd
+             extra_args = ""
+-            if staticdns and client_name == "dhcpcd":
++            if staticdns and client_name == "dhcpcd5":
+                 extra_args = "--nohook resolv.conf"
+ 
+             if hostname:
+@@ -457,7 +457,7 @@
+                 self.dhclient_needs_verbose = True
+             else:
+                 self.dhclient_needs_verbose = False
+-        self.dhcpcd_cmd = self._find_program_path("dhcpcd")
++        self.dhcpcd_cmd = self._find_program_path("dhcpcd5")
+         self.pump_cmd = self._find_program_path("pump")
+         self.udhcpc_cmd = self._find_program_path("udhcpc")
+         
+@@ -601,10 +601,10 @@
+         return self._check_dhcp_result(pump_success)
+ 
+     def _parse_dhcpcd(self, pipe):
+-        """ Determines if obtaining an IP using dhcpcd succeeded.
++        """ Determines if obtaining an IP using dhcpcd5 succeeded.
+         
+         Keyword arguments:
+-        pipe -- stdout pipe to the dhcpcd process.
++        pipe -- stdout pipe to the dhcpcd5 process.
+         
+         Returns:
+         'success' if succesful, an error code string otherwise.
+@@ -628,7 +628,7 @@
+         """ Determines if obtaining an IP using udhcpc succeeded.
+ 
+         Keyword arguments:
+-        pipe -- stdout pipe to the dhcpcd process.
++        pipe -- stdout pipe to the dhcpcd5 process.
+ 
+         Returns:
+         'success' if successful, an error code string otherwise.

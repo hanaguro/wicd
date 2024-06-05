@@ -1,0 +1,60 @@
+Description: Add WPA*-PEAP templates without domain
+Author: Axel Beckert <abe@debian.org>
+Bug: https://bugs.launchpad.net/wicd/+bug/1591489
+Bug-Debian: https://bugs.debian.org/831805
+            https://bugs.debian.org/759785
+
+--- /dev/null
++++ b/encryption/templates/wpa-peap-wo-domain
+@@ -0,0 +1,17 @@
++name = WPA1-PEAP with CCMP/MSCHAPV2 (without domain)
++author = xtaran
++version = 1
++require identity *Username password *Password
++protected password *Password
++-----
++ctrl_interface=/var/run/wpa_supplicant
++network={
++    ssid="$_ESSID"
++    proto=WPA
++    key_mgmt=WPA-EAP
++    pairwise=CCMP
++    eap=PEAP
++    identity="$_IDENTITY"
++    password="$_PASSWORD"
++    phase2="auth=MSCHAPV2"
++}
+--- /dev/null
++++ b/encryption/templates/wpa2-peap-wo-domain
+@@ -0,0 +1,17 @@
++name = WPA2-PEAP with CCMP/MSCHAPV2 (without domain)
++author = xtaran
++version = 1
++require identity *Username password *Password
++protected password *Password
++-----
++ctrl_interface=/var/run/wpa_supplicant
++network={
++    ssid="$_ESSID"
++    proto=RSN
++    key_mgmt=WPA-EAP
++    pairwise=CCMP
++    eap=PEAP
++    identity="$_IDENTITY"
++    password="$_PASSWORD"
++    phase2="auth=MSCHAPV2"
++}
+--- a/encryption/templates/active
++++ b/encryption/templates/active
+@@ -1,9 +1,11 @@
+ wpa
+ wpa-peap
++wpa-peap-wo-domain
+ wpa-psk
+ wpa-psk-hex
+ wpa2-leap
+ wpa2-peap
++wpa2-peap-wo-domain
+ wep-hex
+ wep-passphrase
+ wep-shared

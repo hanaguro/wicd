@@ -1,0 +1,79 @@
+From: David Paleino <dapal@debian.org>
+Subject: support /etc/network/ hierarchy for connection scripts
+Bug-Debian: https://bugs.debian.org/579497
+Forwarded: no
+
+---
+ wicd/networking.py |   24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+Index: wicd/wicd/networking.py
+===================================================================
+--- wicd.orig/wicd/networking.py	2019-09-29 03:58:50.871892409 +0200
++++ wicd/wicd/networking.py	2019-09-29 03:58:50.851891784 +0200
+@@ -221,6 +221,12 @@
+             mac = 'X'
+         if name in (None, ''):
+             name = 'X'
++        os.putenv("MODE", "stop")
++        os.putenv("VERBOSITY", str(int(self.debug)))
++        os.putenv("IFACE", iface.iface)
++        os.putenv("LOGICAL", iface.iface)
++        os.putenv("PHASE", "pre-down")
++        misc.ExecuteScripts('/etc/network/if-down.d/', self.debug)
+         misc.ExecuteScripts(wpath.predisconnectscripts, self.debug,
+                            extra_parameters=(nettype, name, mac))
+         if self.pre_disconnect_script:
+@@ -235,6 +241,8 @@
+         iface.FlushDNS()
+         iface.Down()
+         iface.Up()
++        os.putenv("PHASE", "post-down")
++        misc.ExecuteScripts('/etc/network/if-post-down.d/', self.debug)
+         misc.ExecuteScripts(wpath.postdisconnectscripts, self.debug,
+                             extra_parameters=(nettype, name, mac))
+         if self.post_disconnect_script:
+@@ -944,6 +952,12 @@
+         self.is_connecting = True
+         
+         # Run pre-connection script.
++        os.putenv("MODE", "start")
++        os.putenv("VERBOSITY", str(int(self.debug)))
++        os.putenv("IFACE", wiface.iface)
++        os.putenv("LOGICAL", wiface.iface)
++        os.putenv("PHASE", "pre-up")
++        self.run_global_scripts_if_needed('/etc/network/if-pre-up.d/')
+         self.run_global_scripts_if_needed(wpath.preconnectscripts,
+                                           extra_parameters=('wireless',
+                                                     self.network['essid'],
+@@ -995,6 +1009,8 @@
+         self.verify_association(wiface)
+         
+         # Run post-connection script.
++        os.putenv("PHASE", "post-up")
++        self.run_global_scripts_if_needed('/etc/network/if-up.d/')
+         self.run_global_scripts_if_needed(wpath.postconnectscripts,
+                                           extra_parameters=('wireless',
+                                                     self.network['essid'],
+@@ -1213,6 +1229,12 @@
+         self.is_connecting = True
+ 
+         # Run pre-connection script.
++        os.putenv("MODE", "start")
++        os.putenv("VERBOSITY", str(int(self.debug)))
++        os.putenv("IFACE", liface.iface)
++        os.putenv("LOGICAL", liface.iface)
++        os.putenv("PHASE", "pre-up")
++        self.run_global_scripts_if_needed('/etc/network/if-pre-up.d/')
+         self.run_global_scripts_if_needed(wpath.preconnectscripts,
+                                           extra_parameters=('wired', 'wired',
+                                                     self.network['profilename'])
+@@ -1241,6 +1263,8 @@
+         self.set_dns_addresses(liface)
+         
+         # Run post-connection script.
++        os.putenv("PHASE", "post-up")
++        self.run_global_scripts_if_needed('/etc/network/if-up.d/')
+         self.run_global_scripts_if_needed(wpath.postconnectscripts,
+                                           extra_parameters=('wired', 'wired',
+                                                 self.network['profilename'])

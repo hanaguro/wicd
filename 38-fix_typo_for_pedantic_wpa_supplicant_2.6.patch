@@ -1,0 +1,22 @@
+Description: Fix typo for pedantic wpa_supplicant 2.6
+Author: Piotr Karbowski <piotr.karbowski@gmail.com>
+Bug: https://bugs.launchpad.net/wicd/+bug/1656061
+
+--- a/encryption/templates/wpa-peap
++++ b/encryption/templates/wpa-peap
+@@ -13,5 +13,5 @@
+     eap=PEAP
+     identity="$_DOMAIN\$_IDENTITY"
+     password="$_PASSWORD"
+-    phase2="auth=MSCHAPv2"
++    phase2="auth=MSCHAPV2"
+ }
+--- a/encryption/templates/wpa2-peap
++++ b/encryption/templates/wpa2-peap
+@@ -13,5 +13,5 @@
+     eap=PEAP
+     identity="$_DOMAIN\$_IDENTITY"
+     password="$_PASSWORD"
+-    phase2="auth=MSCHAPv2"
++    phase2="auth=MSCHAPV2"
+ }

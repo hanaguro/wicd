@@ -1,0 +1,25 @@
+Description: Fix wicd-curses crashes with "AttributeError in keypress(): 'Text' object has no attribute 'keypress'"
+ These crashes happened if the wired connection is shown and the first
+ keypress happens earliest after several seconds.
+Bug-Debian: https://bugs.debian.org/814090
+Bug-Debian: https://bugs.debian.org/816597
+Bug-Debian: https://bugs.debian.org/849988
+Bug-Debian: https://bugs.debian.org/849989
+Bug-Debian: https://bugs.debian.org/849990
+Bug: https://bugs.launchpad.net/wicd/+bug/1434283
+Author: Wasif Malik <wmalik@gmail.com>
+Forwarded: no
+
+Index: wicd/curses/curses_misc.py
+===================================================================
+--- wicd.orig/curses/curses_misc.py	2017-01-22 20:40:21.000000000 +0100
++++ wicd/curses/curses_misc.py	2018-04-22 15:29:59.142756538 +0200
+@@ -461,7 +461,7 @@
+ 
+         self.cbox = DynWrap(SelText([self.list[index] + self.DOWN_ARROW]),
+             attrs=self.attrs, focus_attr=self.focus_attr)
+-        if str != '':
++        if s != '':
+             w = urwid.Columns([('fixed', len(s), self.label), self.cbox],
+                 dividechars=1)
+             self.overlay = self.ComboSpace(self.list, parent, ui, index,

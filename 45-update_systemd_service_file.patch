@@ -1,0 +1,24 @@
+Description: Fix lintian warnings in upstream .service file
+ Fixes the lintian warnings systemd-service-file-refers-to-obsolete-target
+ and systemd-service-file-missing-documentation-key.
+Author: Axel Beckert <abe@debian.org>
+Forwarded: no
+
+--- a/other/wicd.service
++++ b/other/wicd.service
+@@ -1,13 +1,13 @@
+ [Unit]
+ Description=Wicd a wireless and wired network manager for Linux
+-After=syslog.target
+ Wants=network.target
+ Before=network.target
++Documentation=man:wicd(8)
+ 
+ [Service]
+ Type=dbus
+ BusName=org.wicd.daemon
+-ExecStart=/usr/sbin/wicd --no-daemon
++ExecStart=/usr/sbin/wicd --no-daemon --keep-connection
+ 
+ [Install]
+ WantedBy=multi-user.target

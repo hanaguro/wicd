@@ -1,0 +1,19 @@
+Description: Fixed wrong Galician translation
+Author: Santiago Garcia Mantinan <manty@debian.org>
+Forwarded: https://bugs.launchpad.net/wicd/+bug/1689138
+Bug: https://bugs.launchpad.net/wicd/+bug/1689138
+Bug-Debian: https://bugs.debian.org/856690
+Bug-Ubuntu: https://launchpad.net/bugs/1689138
+Last-Update: 2017-05-07
+
+--- wicd-1.7.4+tb2.orig/po/gl.po
++++ wicd-1.7.4+tb2/po/gl.po
+@@ -459,7 +459,7 @@ msgstr "Interfaces de rede"
+ 
+ #: gtk/netentry.py:890
+ msgid "Never connect to this network"
+-msgstr "Conectar automaticamente a esta rede"
++msgstr "Non conectar nunca a esta rede"
+ 
+ #: curses/wicd-curses.py:575 gtk/gui.py:664 gtk/wicd-client.py:797
+ msgid "No wireless networks found."
