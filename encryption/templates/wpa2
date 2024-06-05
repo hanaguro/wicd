@@ -1,5 +1,5 @@
 name = WPA2 (Passphrase)
-author = Adam Blackburn
+author = Takahiro Yoshizawa
 version = 1
 require apsk *Preshared_Key
 protected apsk *Preshared_Key
