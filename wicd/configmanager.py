@@ -32,7 +32,6 @@ def replace_apsk_value(network_config, apsk_value):
             if isinstance(value, str) and '$_APSK' in value:
                 print(f"Replacing $_APSK in {key}: {value} with {psk_value}")
                 network_config[key] = value.replace('$_APSK', f'"{psk_value}"')  # 二重引用符で囲む
-    print(f"Final network_config: {network_config}")
     return network_config
 
 def sanitize_network_dict(network):
@@ -57,7 +56,6 @@ def sanitize_network_dict(network):
         else:
             if section and options:
                 sanitized[section.strip()] = str(options).strip()
-    print(f"Sanitized network: {sanitized}")
     return sanitized
 
 

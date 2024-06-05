@@ -1031,7 +1031,6 @@ class WirelessDaemon(dbus.service.Object, object):
             print('found ' + str(len(scan)) + ' networks:')
         for i, network in enumerate(scan):
             self.ReadWirelessNetworkProfile(i)
-            print(f"Network {i}: {network}")  # Add debug message to check the content of the network scan result
         self.SendEndScanSignal()
 
 
@@ -1137,9 +1136,6 @@ class WirelessDaemon(dbus.service.Object, object):
 
         # We don't write script settings here.
         prop = misc.sanitize_config(prop)
-
-        # Debug after sanitizing
-        print(f"Sanitized prop: {prop}")
 
         if prop.endswith('script'):
             print('Setting script properties through the daemon' \
@@ -1369,9 +1365,6 @@ class WirelessDaemon(dbus.service.Object, object):
             self.config.set(section, "mode", cur_network["mode"])
             self.config.set(section, "encryption", cur_network["encryption"])
             self.config.set(section, "encryption_method", cur_network["encryption_method"])
-
-            # Debugging: Check if 'apsk' is being set correctly
-            print(f"Saving 'apsk' for network {cur_network['essid']}: {cur_network.get('apsk')}")
 
             self.config.set(section, "apsk", cur_network.get("apsk", None))
 
