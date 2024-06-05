@@ -1,0 +1,1155 @@
+# Translations for Finnish (fi)
+# Translator ID 36
+# /translator/edit/36/
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-09-26 17:26+0200\n"
+"PO-Revision-Date: 2013-06-13 17:59+0000\n"
+"Last-Translator: Matias Haapalehto <matias.haapalehto@gmail.com>\n"
+"Language-Team: fi <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
+"X-Generator: Launchpad (build 17341)\n"
+"Generated-By: Babel 0.9.6\n"
+
+#: gtk/wicd-client.py:610
+msgid ""
+"$A\n"
+"$B\n"
+"$C\n"
+"$D\n"
+"$E KB/s\n"
+"$F KB/s"
+msgstr ""
+
+#: gtk/wicd-client.py:603
+msgid ""
+"$A\n"
+"$B KB/s\n"
+"$C KB/s"
+msgstr ""
+
+#: curses/wicd-curses.py:612
+msgid "About"
+msgstr "Tietoja"
+
+#: curses/wicd-curses.py:200
+msgid "About Wicd"
+msgstr "Tietoja Wicd:stä"
+
+#: curses/wicd-curses.py:465 gtk/gui.py:273
+msgid "Activate Internet Connection Sharing"
+msgstr "Internet-yhteyden jakaminen"
+
+#: curses/wicd-curses.py:378
+msgid "Add a new profile"
+msgstr "Lisää uusi profiili"
+
+#: curses/wicd-curses.py:411
+msgid "Add a new wired profile"
+msgstr "Lisää uusi langallinen profiili"
+
+#: curses/prefs_curses.py:52 data/wicd.ui:1679
+msgid "Advanced Settings"
+msgstr "Lisäasetukset"
+
+#: curses/prefs_curses.py:69 gtk/prefs.py:326 data/wicd.ui:966
+msgid "Always show wired interface"
+msgstr "Näytä aina langallinen verkkolaite"
+
+#: curses/prefs_curses.py:70
+msgid "Always switch to wired connection when available"
+msgstr "Vaihda aina langalliseen yhteyteen, jos vain mahdollista."
+
+#: curses/wicd-curses.py:947 gtk/gui.py:353
+msgid "Are you sure you want to discard settings for the selected networks?"
+msgstr ""
+
+#: wicd/translations.py:77
+msgid "Authentication"
+msgstr "Tunnistus"
+
+#: curses/prefs_curses.py:90 curses/prefs_curses.py:176 gtk/prefs.py:352
+#: gtk/prefs.py:359 gtk/prefs.py:366 gtk/prefs.py:371 data/wicd.ui:1092
+#: data/wicd.ui:1153 data/wicd.ui:1214 data/wicd.ui:1329
+msgid "Automatic (recommended)"
+msgstr "Automaattinen (suositeltava)"
+
+#: curses/prefs_curses.py:86
+msgid "Automatic Reconnection"
+msgstr "Automaattinen uudelleenyhdistäminen"
+
+#: curses/netentry_curses.py:374 gtk/netentry.py:889
+msgid "Automatically connect to this network"
+msgstr "Yhdistä automaattisesti tähän verkkoon"
+
+#: curses/prefs_curses.py:87 gtk/prefs.py:331
+msgid "Automatically reconnect on connection loss"
+msgstr "Yhdistä automaattisesti yhteyden katkettua"
+
+#: gtk/gui.py:330
+msgid "BSSID"
+msgstr ""
+
+#: curses/prefs_curses.py:113 curses/prefs_curses.py:114
+msgid "Backend"
+msgstr "Taustasovellus"
+
+#: curses/wicd-curses.py:194
+msgid "Brought to you by:"
+msgstr "Tuottajat:"
+
+#: curses/wicd-curses.py:1089
+msgid "Can't connect to the daemon, trying to start it automatically..."
+msgstr ""
+"Ei voida yhdistää taustaprosessiin; se yritetään käynnistää "
+"automaattisesti..."
+
+#: curses/configscript_curses.py:74 curses/curses_misc.py:541
+#: curses/netentry_curses.py:65 curses/wicd-curses.py:490
+#: curses/wicd-curses.py:538 curses/wicd-curses.py:653
+#: curses/wicd-curses.py:655 curses/wicd-curses.py:951
+msgid "Cancel"
+msgstr "Peruuta"
+
+#: curses/wicd-curses.py:463 gtk/gui.py:268 gtk/netentry.py:1038
+#: gtk/netentry.py:1160
+msgid "Channel"
+msgstr "Kanava"
+
+#: gtk/gui.py:189 data/wicd.ui:183
+msgid "Choose from the networks below:"
+msgstr "Valitse alla olevista verkoista:"
+
+#: curses/wicd-curses.py:604
+msgid "Config"
+msgstr ""
+
+#: curses/wicd-curses.py:225
+msgid "Configure selected network"
+msgstr "Tee asetukset valittuun verkkoon"
+
+#: curses/netentry_curses.py:267
+msgid "Configuring preferences for wired profile \"$A\""
+msgstr "Tehdään asetuksia langalliselle profiilille \"$A\""
+
+#: curses/netentry_curses.py:389
+msgid "Configuring preferences for wireless network \"$A\" ($B)"
+msgstr "Tehdään asetuksia langattomalle verkolle \"$A\" ($B)"
+
+#: wicd/misc.py:89
+msgid "Configuring wireless interface..."
+msgstr "Määritetään langattoman verkkolaitteen asetuksia..."
+
+#: curses/wicd-curses.py:607 gtk/wicd-client.py:498
+msgid "Connect"
+msgstr "Yhdistä"
+
+#: curses/wicd-curses.py:214
+msgid "Connect to selected network"
+msgstr "Yhdistä valittuun verkkoon"
+
+#: cli/wicd-cli.py:83
+msgid "Connected"
+msgstr ""
+
+#: cli/wicd-cli.py:96
+msgid "Connected to \"$A\" ($B)."
+msgstr ""
+
+#: curses/wicd-curses.py:158 gtk/gui.py:490 gtk/wicd-client.py:215
+msgid "Connected to $A at $B (IP: $C)"
+msgstr "Yhdistetty verkkoon $A, $B (IP: $C)"
+
+#: cli/wicd-cli.py:102
+msgid "Connected to $A."
+msgstr "Yhdistetty \"$A\" ($B)."
+
+#: wicd/misc.py:53
+msgid "Connected to a wired network"
+msgstr ""
+
+#: wicd/misc.py:52
+msgid "Connected to a wireless network"
+msgstr ""
+
+#: curses/wicd-curses.py:133 gtk/gui.py:483 gtk/wicd-client.py:220
+msgid "Connected to wired network (IP: $A)"
+msgstr "Langallinen yhteys (IP: $A)"
+
+#: gtk/gui.py:192 gtk/wicd-client.py:313 gtk/wicd-client.py:641
+msgid "Connecting"
+msgstr "Yhdistetään"
+
+#: cli/wicd-cli.py:107
+msgid "Connecting to wired network."
+msgstr ""
+
+#: cli/wicd-cli.py:109
+msgid "Connecting to wireless network \"$A\"."
+msgstr ""
+
+#: wicd/misc.py:86
+msgid "Connection Cancelled"
+msgstr "Yhteys peruutettu"
+
+#: wicd/misc.py:92
+msgid "Connection Failed."
+msgstr "Yhteys peruutettu"
+
+#: wicd/misc.py:88
+msgid "Connection Failed: Bad password"
+msgstr "Yhteys epäonnistui: Väärä salasana"
+
+#: wicd/misc.py:98
+msgid "Connection Failed: No DHCP offers received."
+msgstr "Yhteys epäonnistui: DHCP-palvelinta ei löytynyt."
+
+#: wicd/misc.py:90
+msgid "Connection Failed: Unable to Get IP Address"
+msgstr "Yhteys epäonnistui: IP-osoitetta ei vastaanotettu"
+
+#: gtk/wicd-client.py:269 gtk/wicd-client.py:299
+msgid "Connection established"
+msgstr "Yhteys muodostettu"
+
+#: wicd/misc.py:87
+msgid "Connection failed: Could not contact the wireless access point."
+msgstr ""
+"Yhteys epäonnistui: Ei voitu ottaa yhteyttä langattomaan liityntäpisteeseen"
+
+#: wicd/misc.py:51
+msgid "Connection in progress"
+msgstr ""
+
+#: cli/wicd-cli.py:92
+msgid "Connection status"
+msgstr ""
+
+#: wicd/misc.py:104
+msgid "Connection successful."
+msgstr "Yhteys peruutettu"
+
+#: wicd/misc.py:54
+msgid "Connection suspended"
+msgstr ""
+
+#: cli/wicd-cli.py:94
+msgid "Connection type"
+msgstr ""
+
+#: gtk/gui.py:65 gtk/wicd-client.py:955
+msgid ""
+"Could not connect to wicd's D-Bus interface. Check the wicd log for error "
+"messages."
+msgstr ""
+"Ei voitu yhdistää wicd:n DBUS-rajapintaan. Wicd:n lokista löytyy "
+"virheviestejä."
+
+#: gtk/netentry.py:379 gtk/netentry.py:522
+msgid ""
+"Could not find a graphical sudo program. The script editor could not be "
+"launched.  You'll have to edit scripts directly your configuration file."
+msgstr ""
+"Graafista sudoa ei löydetty. Skriptinmuokkkainta ei voida avata. Skriptit "
+"pitää muokata käsin asetustiedostosta."
+
+#: curses/wicd-curses.py:488 gtk/gui.py:259
+msgid "Create an Ad-Hoc Network"
+msgstr "Luo Ad-Hoc-verkko"
+
+#: curses/wicd-curses.py:98
+msgid ""
+"DBus failure! This is most likely caused by the wicd daemon stopping while "
+"wicd-curses is running. Please restart the daemon, and then restart wicd-"
+"curses."
+msgstr ""
+"DBUS-virhe. Tämä johtunee pysäytetystä wicd-palvelusta wicd-cursesin "
+"päälläollessa. Käynnistä palvelu uudestaan ja sitten wicd-curses."
+
+#: curses/prefs_curses.py:92
+msgid "DHCP Client"
+msgstr "DHCP-ohjelma"
+
+#: curses/netentry_curses.py:63
+msgid "DHCP Hostname"
+msgstr "DHCP-nimi"
+
+#: curses/netentry_curses.py:56 curses/prefs_curses.py:74 gtk/netentry.py:79
+msgid "DNS domain"
+msgstr "DNS domain"
+
+#: curses/netentry_curses.py:58 curses/netentry_curses.py:59
+#: curses/netentry_curses.py:60 curses/prefs_curses.py:76
+#: curses/prefs_curses.py:77 curses/prefs_curses.py:78 gtk/netentry.py:80
+#: gtk/netentry.py:81 gtk/netentry.py:82
+msgid "DNS server"
+msgstr "DNS-palvelin"
+
+#: curses/prefs_curses.py:117
+msgid "Debugging"
+msgstr "Virheenjäljitys"
+
+#: curses/wicd-curses.py:608
+msgid "Disconn"
+msgstr "Yhteys katkaistu"
+
+#: curses/wicd-curses.py:215
+msgid "Disconnect from all networks"
+msgstr "Katkaise kaikki verkkoyhteydet"
+
+#: gtk/wicd-client.py:340 gtk/wicd-client.py:643
+msgid "Disconnected"
+msgstr "Yhteys katkaistu"
+
+#: gtk/gui.py:785
+msgid "Disconnecting active connections..."
+msgstr "Suljetaan aktiivisia yhteyksiä..."
+
+#: curses/wicd-curses.py:226
+msgid "Display 'about' dialog"
+msgstr "Näytä tämä ohje"
+
+#: gtk/prefs.py:349 data/wicd.ui:1002
+msgid "Display notifications about connection status"
+msgstr "Näytä ilmoituksia yhteyden tilasta"
+
+#: curses/wicd-curses.py:213
+msgid "Display this help dialog"
+msgstr "Näytä tämä ohje"
+
+#: wicd/translations.py:78
+msgid "Domain"
+msgstr "DNS domain"
+
+#: wicd/misc.py:91
+msgid "Done connecting..."
+msgstr "Yhdistetty..."
+
+#: curses/wicd-curses.py:1113
+msgid ""
+"ERROR: wicd-curses was denied access to the wicd daemon: please check that "
+"your user is in the \"$A\" group."
+msgstr ""
+"Virhe. Wicd-curses ei saanut yhteyttä wicd-palveluun, tarkista että "
+"käyttäjäsi on ryhmässä $A."
+
+#: curses/wicd-curses.py:461 gtk/gui.py:267 gtk/gui.py:327
+msgid "ESSID"
+msgstr "ESSID"
+
+#: curses/prefs_curses.py:118 gtk/prefs.py:335 data/wicd.ui:1521
+msgid "Enable debug mode"
+msgstr "Käytä vianetsintätilaa"
+
+#: gtk/wicd-client.py:320 gtk/wicd-client.py:324
+msgid "Establishing connection..."
+msgstr "Muodostetaan yhteyttä..."
+
+#: curses/prefs_curses.py:51 data/wicd.ui:1408
+msgid "External Programs"
+msgstr "Ulkoiset ohjelmat"
+
+#: wicd/misc.py:93
+msgid "Flushing the routing table..."
+msgstr "Tyhjennetään reititystaulua..."
+
+#: curses/wicd-curses.py:209
+msgid "For more detailed help, consult the wicd-curses(8) man page."
+msgstr ""
+"Halutessasi yksityiskohtaisempaa tietoa tutustu wicd-curses(8) man-sivuun."
+
+#: curses/netentry_curses.py:52 gtk/netentry.py:77
+msgid "Gateway"
+msgstr "Yhdyskäytävä"
+
+#: curses/prefs_curses.py:50 data/wicd.ui:1028
+msgid "General Settings"
+msgstr "Yleiset asetukset"
+
+#: wicd/misc.py:94
+msgid "Generating PSK..."
+msgstr "Luodaan salausavainta..."
+
+#: wicd/misc.py:95
+msgid "Generating WPA configuration file..."
+msgstr "Luodaan WPA-asetustiedostoa..."
+
+#: gtk/netentry.py:234
+msgid "Global DNS has not been enabled in general preferences."
+msgstr "Globaali DNS ei ole päällä yleisasetuksissa"
+
+#: curses/prefs_curses.py:72
+msgid "Global DNS servers"
+msgstr "Globaalit DNS-palvelimet"
+
+#: gtk/gui.py:321
+msgid "Global settings for this ESSID"
+msgstr "Tämän ESSID:n yleisasetukset."
+
+#: curses/wicd-curses.py:603
+msgid "Help"
+msgstr "Ohje"
+
+#: curses/wicd-curses.py:611
+msgid "Hidden"
+msgstr ""
+
+#: gtk/gui.py:418
+msgid "Hidden Network ESSID"
+msgstr "Piilotetun verkon ESSID"
+
+#: curses/netentry_curses.py:50 curses/wicd-curses.py:462 gtk/gui.py:266
+#: gtk/netentry.py:74
+msgid "IP"
+msgstr "IP"
+
+#: wicd/translations.py:79
+msgid "Identity"
+msgstr "Identiteetti"
+
+#: gtk/wicd-client.py:500
+msgid "Information about the current connection"
+msgstr "Nykyisen yhteyden tiedot"
+
+#: gtk/netentry.py:168
+msgid "Invalid IP address entered."
+msgstr "Syötetty IP-osoite oli virheellinen."
+
+#: gtk/gui.py:691 gtk/gui.py:699
+msgid "Invalid address in $A entry."
+msgstr "Virheellinen osoite syötteessä $A."
+
+#: curses/wicd-curses.py:464 gtk/gui.py:269 wicd/translations.py:80
+msgid "Key"
+msgstr "Avain"
+
+#: wicd/translations.py:81
+msgid "Key index"
+msgstr "Avaimen indeksi."
+
+#: curses/wicd-curses.py:536 gtk/gui.py:310
+msgid "List of saved networks"
+msgstr ""
+
+#: curses/netentry_curses.py:51 gtk/netentry.py:76
+msgid "Netmask"
+msgstr "Verkon peite"
+
+#: cli/wicd-cli.py:99
+msgid "Network ID: $A"
+msgstr ""
+
+#: curses/prefs_curses.py:66
+msgid "Network Interfaces"
+msgstr "Verkkolaitteet"
+
+#: gtk/netentry.py:890
+msgid "Never connect to this network"
+msgstr "Älä yhdistä tähän verkkoon"
+
+#: curses/wicd-curses.py:575 gtk/gui.py:664 gtk/wicd-client.py:797
+msgid "No wireless networks found."
+msgstr "Langattomia verkkoa ei löytynyt"
+
+#: curses/wicd-curses.py:786 gtk/gui.py:500 gtk/wicd-client.py:213
+#: gtk/wicd-client.py:223 gtk/wicd-client.py:335 gtk/wicd-client.py:338
+#: wicd/misc.py:50
+msgid "Not connected"
+msgstr "Ei kytketty"
+
+#: curses/configscript_curses.py:73 curses/curses_misc.py:515
+#: curses/curses_misc.py:533 curses/netentry_curses.py:66
+#: curses/wicd-curses.py:490 curses/wicd-curses.py:650
+#: curses/wicd-curses.py:654 curses/wicd-curses.py:951
+msgid "OK"
+msgstr "OK"
+
+#: wicd/misc.py:100
+msgid "Obtaining IP address..."
+msgstr "Haetaan IP-osoitetta..."
+
+#: curses/wicd-curses.py:278
+msgid ""
+"Once there, you can adjust (or add) the \"beforescript\", \"afterscript\", "
+"\"predisconnectscript\" and \"postdisconnectscript\" variables as needed, to "
+"change the preconnect, postconnect, predisconnect and postdisconnect scripts "
+"respectively.  Note that you will be specifying the full path to the scripts "
+"- not the actual script contents.  You will need to add/edit the script "
+"contents separately.  Refer to the wicd manual page for more information."
+msgstr ""
+"Siinä vaiheessa voi muokata tai lisätä beforescript-, afterscript- ja "
+"disconnectscript-muuttujia tarpeen mukaan. Näillä vaikutetaan "
+"yhdistämistestä edeltävään, seuraavaan ja katkaisua seuraavaan skriptiin "
+"vastaavasti. Skripteille pitää antaa hakemistopolku, ei sisältöä. "
+"Tiedostojen sisällöt pitää tuottaa erikseen. Tarkempia tietoja löytyy wicd:n "
+"man-sivuilta."
+
+#: wicd/translations.py:82
+msgid "Passphrase"
+msgstr ""
+
+#: wicd/translations.py:83
+msgid "Password"
+msgstr "Salasana"
+
+#: wicd/translations.py:84
+msgid "Path to CA cert"
+msgstr ""
+
+#: wicd/translations.py:86
+msgid "Path to PAC file"
+msgstr "Polku PAC-tiedostoon"
+
+#: wicd/translations.py:85
+msgid "Path to client cert"
+msgstr ""
+
+#: curses/prefs_curses.py:122 gtk/prefs.py:339 data/wicd.ui:1654
+msgid "Ping static gateways after connecting to verify association"
+msgstr ""
+"Pingaa staattisia yhdyskäytäviä yhteydenmuodostuksen jälkeen yhteyden "
+"vahvistamiseksi"
+
+#: curses/wicd-curses.py:521
+msgid "Please select the networks to forget"
+msgstr "Valitse unohdettavat verkot."
+
+#: curses/configscript_curses.py:57 gtk/configscript.py:129
+msgid "Post-connection Script"
+msgstr "Aja post-disconnect-skripti"
+
+#: curses/configscript_curses.py:59 gtk/configscript.py:132
+msgid "Post-disconnection Script"
+msgstr "Aja post-disconnect-skripti"
+
+#: curses/configscript_curses.py:56 gtk/configscript.py:128
+msgid "Pre-connection Script"
+msgstr "Aja esi-katkaisuskripti"
+
+#: curses/configscript_curses.py:58 gtk/configscript.py:130
+msgid "Pre-disconnection Script"
+msgstr "Aja esi-katkaisuskripti"
+
+#: curses/prefs_curses.py:56 curses/prefs_curses.py:252 gtk/prefs.py:318
+msgid "Preferences"
+msgstr "Asetukset"
+
+#: curses/wicd-curses.py:218
+msgid "Preferences dialog"
+msgstr "Asetukset"
+
+#: curses/wicd-curses.py:610
+msgid "Prefs"
+msgstr ""
+
+#: wicd/translations.py:87
+msgid "Preshared key"
+msgstr ""
+
+#: curses/wicd-curses.py:229
+msgid "Press any key to return."
+msgstr ""
+
+#: wicd/translations.py:88
+msgid "Private key"
+msgstr "Yksityinen avain."
+
+#: wicd/translations.py:89
+msgid "Private key password"
+msgstr ""
+
+#: curses/prefs_curses.py:83 gtk/prefs.py:343
+msgid "Prompt for profile on wired autoconnect"
+msgstr ""
+"Kysy profiilia profiilia yhdistettäessä automaattisesti langalliseen verkkoon"
+
+#: gtk/netentry.py:59 gtk/netentry.py:61 gtk/netentry.py:670
+msgid "Properties"
+msgstr "Ominaisuudet"
+
+#: wicd/misc.py:96
+msgid "Putting interface down..."
+msgstr "Poistetaan verkkolaite käytöstä..."
+
+#: wicd/misc.py:97
+msgid "Putting interface up..."
+msgstr "Otetaan verkkolaite käyttöön..."
+
+#: curses/wicd-curses.py:613
+msgid "Quit"
+msgstr "Lopeta"
+
+#: curses/wicd-curses.py:227
+msgid "Quit wicd-curses"
+msgstr "Lopeta"
+
+#: gtk/wicd-client.py:502
+msgid "Quit wicd-tray-icon"
+msgstr ""
+
+#: curses/wicd-curses.py:609
+msgid "Refresh"
+msgstr "Päivitä"
+
+#: curses/wicd-curses.py:217
+msgid "Refresh network list"
+msgstr "Päivitä verkot:"
+
+#: curses/wicd-curses.py:538
+msgid "Remove"
+msgstr ""
+
+#: curses/wicd-curses.py:224 data/wicd.ui:67
+msgid "Remove settings for saved networks"
+msgstr ""
+
+#: curses/wicd-curses.py:441
+msgid "Rename wired profile"
+msgstr "Uudelleen nimeä wired profiili"
+
+#: curses/netentry_curses.py:333 curses/netentry_curses.py:467 gtk/gui.py:754
+#: gtk/netentry.py:425 gtk/netentry.py:597
+msgid "Required encryption information is missing."
+msgstr "Salausasetuksia ei ole annettu."
+
+#: wicd/misc.py:99
+msgid "Resetting IP address..."
+msgstr "Alustetaan IP-osoitetta..."
+
+#: curses/wicd-curses.py:606
+msgid "RfKill"
+msgstr ""
+
+#: curses/prefs_curses.py:103
+msgid "Route Table Flushing"
+msgstr "Reititystaulun tyhjennys"
+
+#: curses/wicd-curses.py:677
+msgid "Scan"
+msgstr "Hae"
+
+#: curses/wicd-curses.py:221
+msgid "Scan for hidden networks"
+msgstr "Etsi piilotetut verkot"
+
+#: gtk/gui.py:224 gtk/gui.py:589 gtk/wicd-client.py:810
+msgid "Scanning"
+msgstr "Etsitään"
+
+#: curses/wicd-curses.py:574
+msgid "Scanning networks... stand by..."
+msgstr "Haetaan verkkoja... odota..."
+
+#: gtk/netentry.py:102
+msgid "Scripts"
+msgstr "Skriptit"
+
+#: curses/netentry_curses.py:57 curses/prefs_curses.py:75 gtk/netentry.py:78
+msgid "Search domain"
+msgstr "Etsi verkko-osoitetta"
+
+#: gtk/netentry.py:1032 gtk/netentry.py:1154
+msgid "Secured"
+msgstr "Salattu"
+
+#: curses/wicd-curses.py:677
+msgid "Select Hidden Network ESSID"
+msgstr "Valitse piilotetun verkon ESSID"
+
+#: gtk/gui.py:103
+msgid "Select or create a wired profile to connect with"
+msgstr "Valitse tai luo langallinen profiili, jolla yhdistäminen tapahtuu"
+
+#: curses/wicd-curses.py:222
+msgid "Select scripts"
+msgstr "Valitse skriptit"
+
+#: curses/wicd-curses.py:223
+msgid "Set up Ad-hoc network"
+msgstr "Luo Ad-hoc-verkko"
+
+#: wicd/misc.py:101
+msgid "Setting broadcast address..."
+msgstr "Asetetaan Broadcast-osoitetta..."
+
+#: wicd/misc.py:102
+msgid "Setting static DNS servers..."
+msgstr "Asetetaan staattiset DNS-palvelimia..."
+
+#: wicd/misc.py:103
+msgid "Setting static IP addresses..."
+msgstr "Asetetaan staattista IP-osoitetta..."
+
+#: gtk/prefs.py:333 data/wicd.ui:581
+msgid "Show never connect networks"
+msgstr ""
+
+#: gtk/gui.py:104
+msgid "Stop Showing Autoconnect pop-up temporarily"
+msgstr "Älä näytä automaattisen yhteyden ponnahdusikkunaa"
+
+#: curses/wicd-curses.py:216
+msgid "Stop a connection in progress"
+msgstr "Pysäytä yhdistäminen"
+
+#: gtk/gui.py:376
+msgid "Switch Off Wi-Fi"
+msgstr "Sammuta Wi-Fi"
+
+#: gtk/gui.py:373
+msgid "Switch On Wi-Fi"
+msgstr ""
+
+#: curses/wicd-curses.py:651
+msgid "Tab Left"
+msgstr ""
+
+#: curses/wicd-curses.py:652
+msgid "Tab Right"
+msgstr ""
+
+#: curses/wicd-curses.py:93
+msgid "Terminated by user"
+msgstr "Käyttäjä keskeytti"
+
+#: gtk/gui.py:85 gtk/wicd-client.py:984
+msgid ""
+"The wicd daemon has shut down. The UI will not function properly until it is "
+"restarted."
+msgstr ""
+"Wicd-taustaprosessi on sulkeutunut. Käyttöliittymä ei toimi oikein ennen "
+"kuin se käynnistetään uudelleen."
+
+#: curses/netentry_curses.py:478 gtk/gui.py:761 gtk/netentry.py:436
+#: gtk/netentry.py:608
+msgid "This network requires encryption to be enabled."
+msgstr ""
+"Tämä verkko vaatii salauksasetukset, jotta se voitaisiin ottaa käyttöön."
+
+#: curses/wicd-curses.py:272
+msgid ""
+"To avoid various complications, wicd-curses does not support directly "
+"editing the scripts. However, you can edit them manually. First, (as root), "
+"open the \"$A\" config file, and look for the section labeled by the $B in "
+"question. In this case, this is:"
+msgstr ""
+"Wicd-cursesilla ei voi muokata skriptejä suoraan, koska se hankaloittaisi "
+"asioita. Skriptejä voi kuitenkin muokata käsin. Roottina pitää avata \"$A\"-"
+"tiedosto ja etsiä osio $B, tässä tapauksessa:"
+
+#: gtk/netentry.py:707
+msgid ""
+"To connect to a wired network, you must create a network profile. To create "
+"a network profile, type a name that describes this network, and press Add."
+msgstr ""
+"Yhdistääksesi langalliseen verkkoon sinun pitää luoda verkkoprofiili. "
+"Luodaksesi verkkoprofiilin kirjoita nimi, joka kuvaa tätä verkkoa, ja paina "
+"Lisää."
+
+#: gtk/wicd-client.py:94
+msgid ""
+"Unable to contact the Wicd daemon due to an access denied error from DBus. "
+"Please check that your user is in the $A group."
+msgstr ""
+"Ei voitu liittää wicd-palveluun koska DBUS antoi pääsy estetty -virheen. "
+"Tarkista että käyttäjäsi on ryhmässä $A."
+
+#: curses/wicd-curses.py:353 gtk/netentry.py:1034 gtk/netentry.py:1156
+msgid "Unsecured"
+msgstr "Salaamaton"
+
+#: curses/netentry_curses.py:62
+msgid "Use DHCP Hostname"
+msgstr "Käytä DHCP-nimeä"
+
+#: curses/netentry_curses.py:255 curses/netentry_curses.py:373
+#: gtk/netentry.py:341 gtk/netentry.py:467
+msgid "Use Encryption"
+msgstr "Käytä salausta"
+
+#: curses/wicd-curses.py:466 gtk/gui.py:264
+msgid "Use Encryption (WEP only)"
+msgstr "Käytä salausta (vain WEP)"
+
+#: curses/netentry_curses.py:54 gtk/netentry.py:89
+msgid "Use Static DNS"
+msgstr "Käytä staattista DNS:ää"
+
+#: curses/netentry_curses.py:49 gtk/netentry.py:88
+msgid "Use Static IPs"
+msgstr "Käytä staattista IP:tä"
+
+#: curses/netentry_curses.py:249 gtk/netentry.py:708
+msgid "Use as default profile (overwrites any previous default)"
+msgstr "Käytä oletusprofiilia (korvaa kaikki aikaisemmat muutokset)"
+
+#: curses/prefs_curses.py:121 gtk/prefs.py:337 data/wicd.ui:1500
+msgid "Use dBm to measure signal strength"
+msgstr "Näytä signaalin vahvuus desibeleinä"
+
+#: curses/prefs_curses.py:82 gtk/prefs.py:341
+msgid "Use default profile on wired autoconnect"
+msgstr ""
+"Käytä oletusprofiilia yhdistettäessä automaattisesti langalliseen verkkoon"
+
+#: curses/netentry_curses.py:55 curses/prefs_curses.py:73 gtk/netentry.py:90
+#: data/wicd.ui:892
+msgid "Use global DNS servers"
+msgstr "Käytä globaaleja DNS-palvelimia"
+
+#: curses/prefs_curses.py:84 gtk/prefs.py:345
+msgid "Use last used profile on wired autoconnect"
+msgstr ""
+"Käytä viimeksi käytettyä profiilia yhdistettäessä langattomaan verkkoon "
+"automaattisesti."
+
+#: curses/netentry_curses.py:372 gtk/netentry.py:468
+msgid "Use these settings for all networks sharing this essid"
+msgstr "Käytä näitä asetuksia kaikille samannimisille verkoille"
+
+#: wicd/translations.py:90
+msgid "Username"
+msgstr "Käyttäjänimi"
+
+#: wicd/misc.py:105
+msgid "Validating authentication..."
+msgstr "Varmistetaan authentikointia..."
+
+#: wicd/misc.py:106
+msgid "Verifying access point association..."
+msgstr "Varmistetaan yhteyspisteen liityntää..."
+
+#: curses/prefs_curses.py:108
+msgid "WPA Supplicant"
+msgstr "WPA Supplicant"
+
+#: curses/wicd-curses.py:576
+msgid "Wicd Curses Interface"
+msgstr "Wicd Curses -käyttöliittymä."
+
+#: gtk/wicd-client.py:226 gtk/wicd-client.py:333
+msgid "Wicd daemon unreachable"
+msgstr "Wicd-palvelu saavuttamattomissa"
+
+#: wicd/misc.py:216
+msgid "Wicd needs to access your computer's network cards."
+msgstr "Wicd tarvitsee luvan verkkokorttien käyttöön."
+
+#: cli/wicd-cli.py:85
+msgid "Wired"
+msgstr ""
+
+#: gtk/wicd-client.py:628
+msgid ""
+"Wired\n"
+"IP:\n"
+"RX:\n"
+"TX:"
+msgstr ""
+
+#: curses/prefs_curses.py:81
+msgid "Wired Autoconnect Settings"
+msgstr "Langallisen yhteyden automaattiyhdistämisen asetukset"
+
+#: curses/prefs_curses.py:67
+msgid "Wired Interface"
+msgstr "Langallinen verkkolaite"
+
+#: curses/prefs_curses.py:99
+msgid "Wired Link Detection"
+msgstr "Langallinen linkki tunnistettu"
+
+#: curses/wicd-curses.py:802 gtk/gui.py:534 gtk/netentry.py:333
+#: gtk/netentry.py:701 gtk/wicd-client.py:268 gtk/wicd-client.py:309
+msgid "Wired Network"
+msgstr "Langallinen verkko"
+
+#: curses/wicd-curses.py:581
+msgid "Wired Networks"
+msgstr "Langalliset verkot"
+
+#: gtk/gui.py:97
+msgid "Wired connection detected"
+msgstr "Langallinen yhteys tunnistettu"
+
+#: cli/wicd-cli.py:87
+msgid "Wireless"
+msgstr ""
+
+#: gtk/wicd-client.py:633
+msgid ""
+"Wireless\n"
+"SSID:\n"
+"Speed:\n"
+"IP:\n"
+"Strength:\n"
+"RX:\n"
+"TX:"
+msgstr "Langaton SSID: Nopeus: IP: Vahvuus: RX: TX:"
+
+#: curses/prefs_curses.py:68 curses/prefs_curses.py:120
+msgid "Wireless Interface"
+msgstr "Langaton verkkolaite"
+
+#: gtk/gui.py:662 gtk/wicd-client.py:224 gtk/wicd-client.py:336
+msgid "Wireless Kill Switch Enabled"
+msgstr "Langattoman verkkolaitteen radio kytketty päälle"
+
+#: curses/wicd-curses.py:583
+msgid "Wireless Networks"
+msgstr "Langattomat verkot"
+
+#: curses/wicd-curses.py:277
+msgid ""
+"You can also configure the wireless networks by looking for the "
+"\"[<ESSID>]\" field in the config file."
+msgstr ""
+"Voit myös säätää langattomien verkkojen asetukset etsimällä \"[<ESSID>]\"-"
+"kenttää asetustiedostosta."
+
+#: gtk/netentry.py:376 gtk/netentry.py:519
+msgid "You must enter your password to configure scripts"
+msgstr "Salasana tarvitaan configure-skripteille"
+
+#: curses/prefs_curses.py:111
+msgid "You should almost always use wext as the WPA supplicant driver"
+msgstr "Lähes aina wext on oikea WPA supplicantin ajuri"
+
+#: gtk/wicd-client.py:499
+msgid "_Connection Info"
+msgstr ""
+
+#: gtk/wicd-client.py:502 data/wicd.ui:161
+msgid "_Quit"
+msgstr ""
+
+#: curses/wicd-curses.py:428
+msgid ""
+"wicd-curses does not support deleting the last wired profile.  Try renaming "
+"it (\"F2\")"
+msgstr ""
+"wicd-curses ei tue viimeisen langallisen profiilin poistoa. Yritä nimetä se "
+"uudelleen ('F2')"
+
+#: curses/wicd-curses.py:205
+msgid "wicd-curses help"
+msgstr ""
+
+#: data/wicd.ui:9
+msgid "Wicd Network Manager"
+msgstr ""
+
+#: data/wicd.ui:46
+msgid "Create an ad-hoc network"
+msgstr "Luo ad-hoc -verkko"
+
+#: data/wicd.ui:55
+msgid "Find a hidden network"
+msgstr "Etsi piilotettu verkko"
+
+#: data/wicd.ui:57
+msgid "Enter a hidden network to try to locate."
+msgstr ""
+
+#: data/wicd.ui:65
+msgid "Forget network settings"
+msgstr "Unohda verkon asetukset"
+
+#: data/wicd.ui:89
+msgid "_Switch Off Wi-Fi"
+msgstr ""
+
+#: data/wicd.ui:104
+msgid "_Disconnect All"
+msgstr "Yhteys katkaistu"
+
+#: data/wicd.ui:118
+msgid "_Refresh"
+msgstr "_Päivitä"
+
+#: data/wicd.ui:132
+msgid "_Preferences"
+msgstr "Asetukset"
+
+#: data/wicd.ui:146
+msgid "_About"
+msgstr "_Tietoja"
+
+#: data/wicd.ui:223 data/wicd.ui:225
+msgid "Connecting..."
+msgstr "Yhdistetty..."
+
+#: data/wicd.ui:238
+msgid "Cancel the current connection attempt"
+msgstr ""
+
+#: data/wicd.ui:270
+msgid "Configure Scripts"
+msgstr "Palauta skripti ajoon"
+
+#: data/wicd.ui:289
+msgid "Configure scripts to run for this network:"
+msgstr ""
+
+#: data/wicd.ui:306
+msgid "Pre-connection Script:"
+msgstr "Aja esi-katkaisuskripti"
+
+#: data/wicd.ui:339
+msgid "Post-connection Script:"
+msgstr "Aja post-disconnect-skripti"
+
+#: data/wicd.ui:372
+msgid "Pre-disconnection Script:"
+msgstr "Aja esi-katkaisuskripti"
+
+#: data/wicd.ui:405
+msgid "Post-disconnection Script:"
+msgstr "Aja post-disconnect-skripti"
+
+#: data/wicd.ui:524
+msgid "Always switch to a wired connection when available"
+msgstr "Vaihda aina langalliseen yhteyteen, jos vain mahdollista."
+
+#: data/wicd.ui:529
+msgid ""
+"If selected, wicd will automatically connect to a wired network\n"
+"as soon as a cable is plugged in, even if a wireless connection \n"
+"is already active."
+msgstr ""
+"tämä valittuna wicd yhdistää automaattisesti lankaverkkoon \n"
+"kun kaapeli yhdistetään, vaikka langaton verkko olisi jo käytössä."
+
+#: data/wicd.ui:552
+msgid "DNS domain:"
+msgstr "DNS domain"
+
+#: data/wicd.ui:600
+msgid "<b>Never Connect</b>"
+msgstr ""
+
+#: data/wicd.ui:616
+msgid "Automatically reconnect on network connection loss"
+msgstr "Yhdistä automaattisesti yhteyden katkettua"
+
+#: data/wicd.ui:635
+msgid "<b>Automatic Reconnection</b>"
+msgstr "<b>Automaattinen uudelleenyhdistäminen</b>"
+
+#: data/wicd.ui:651
+msgid "Use last wired network profile"
+msgstr "Uudelleen nimeä wired profiili"
+
+#: data/wicd.ui:673
+msgid "Prompt for wired network profile"
+msgstr ""
+
+#: data/wicd.ui:696
+msgid "Use default wired network profile"
+msgstr "Uudelleen nimeä wired profiili"
+
+#: data/wicd.ui:717
+msgid "<b>Wired automatic connection</b>"
+msgstr "Automaattinen uudelleenyhdistäminen"
+
+#: data/wicd.ui:735
+msgid "Wired interface:"
+msgstr "Langallinen verkkolaite"
+
+#: data/wicd.ui:753
+msgid "Wireless interface:"
+msgstr "Langaton verkkolaite"
+
+#: data/wicd.ui:793
+msgid "<b>Network Interfaces</b>"
+msgstr "Verkkolaitteet"
+
+#: data/wicd.ui:809
+msgid "DNS server 3:"
+msgstr "DNS-palvelin"
+
+#: data/wicd.ui:840
+msgid "DNS server 2:"
+msgstr "DNS-palvelin"
+
+#: data/wicd.ui:858
+msgid "DNS server 1:"
+msgstr "DNS-palvelin"
+
+#: data/wicd.ui:876
+msgid "Search domain:"
+msgstr "Etsi verkko-osoitetta"
+
+#: data/wicd.ui:911
+msgid "<b>Global DNS Servers</b>"
+msgstr "Globaalit DNS-palvelimet"
+
+#: data/wicd.ui:970
+msgid ""
+"If enabled, the wired network interface will always be displayed in the main "
+"window. This can be useful if your wired network card does not detect when "
+"the interface is connected to a cable."
+msgstr ""
+"Tämä käytössä lankaverkkosovitin näytetään aina pääikkunassa. Tämä voi olla "
+"hyödyllinen, jos sovitin ei havaitse kaapelin kytkemistä."
+
+#: data/wicd.ui:986
+msgid "<b>Notifications</b>"
+msgstr "<b>Ilmoitukset</b>"
+
+#: data/wicd.ui:1060
+msgid "<b>Route Table Flushing</b>"
+msgstr "Reititystaulun tyhjennys"
+
+#: data/wicd.ui:1073
+msgid "<b>Wired Link Detection</b>"
+msgstr "Langallinen linkki tunnistettu"
+
+#: data/wicd.ui:1299
+msgid "<b>DHCP Client</b>"
+msgstr ""
+
+#: data/wicd.ui:1310
+msgid "<b>Graphical Sudo Application</b>"
+msgstr ""
+
+#: data/wicd.ui:1431
+msgid ""
+"Hover your mouse over the selected backend \n"
+"to read its description."
+msgstr ""
+
+#: data/wicd.ui:1484
+msgid "Driver:"
+msgstr ""
+
+#: data/wicd.ui:1540
+msgid "<b>Wireless Interface</b>"
+msgstr "Langaton verkkolaite"
+
+#: data/wicd.ui:1554
+msgid "<b>WPA Supplicant</b>"
+msgstr ""
+
+#: data/wicd.ui:1566
+msgid "<b>Debugging</b>"
+msgstr "Virheenjäljitys"
+
+#: data/wicd.ui:1584
+msgid "Backend:"
+msgstr "Taustasovellus"
+
+#: data/wicd.ui:1611
+msgid "<b>Backend</b>"
+msgstr ""
+
+#: data/wicd.ui:1625
+msgid ""
+"You should almost always use wext as the\n"
+"WPA supplicant driver."
+msgstr "Lähes aina wext on oikea WPA supplicantin ajuri"

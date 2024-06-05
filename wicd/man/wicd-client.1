@@ -1,0 +1,25 @@
+.TH WICD-CLIENT "1" "November 2011"
+.SH NAME
+wicd-client \- frontend to the WICD daemon
+.SH DESCRIPTION
+wireless (and wired) connection daemon front\-end.
+
+If \fBwicd-curses\fR is installed, and you attempt to run wicd-client without
+an active X server on the current terminal, wicd-client will attempt to run
+\fBwicd-curses\fR instead.  It will warn you the first time this happens.
+.SH OPTIONS
+.TP
+.B \-t, \-\-tray
+Run the wicd tray icon only.
+.TP
+.B \-n, \-\-no\-tray
+Run wicd without the tray icon.
+.TP
+.B \-h, \-\-help
+Print this help information.
+.TP
+.B \-a, \-\-no\-animate
+Run the tray without network traffic tray animations.
+.SH SEE ALSO
+.BR wicd-curses (8)
+.BR wicd (8)

@@ -1,0 +1,178 @@
+Wicd 1.7 Series
+---------------
+
+1.7.4:
+	- Bugfix for WEP hexadecimal network configurations (thanks, Axel Beckert!)
+
+1.7.3:
+	- New feature: you can now manually control the speed of the wireless connection
+	- Lots (30+) of bugfixes (see launchpad or the CHANGES file for details)
+
+1.7.2.4:
+	Minor Changes:
+	- Really fix local privilege escalation (CVE-2012-2095).
+	- Removed unmaintained language variants.
+
+1.7.2.3:
+	Minor Changes:
+	- Fixed crash of wicd-curses with (again) UTF-8 locales. This should fix
+	  it all now. Hopefully.
+
+1.7.2.2:
+	Minor Changes:
+	- Encryption templates were broken by the fix for CVE-2012-2095; fixed.
+
+1.7.2.1:
+	Minor Changes:
+	- Fix typo in wicd-curses, which made it crash with UTF-8 locales.
+
+1.7.2:
+	Major Changes:
+	- Fix local privilege escalation when setting configuration properties
+	  through the daemon's DBus interface (CVE-2012-2095).
+	- Support passing no driver to wpa_supplicant.
+
+	Minor Changes:
+	- Fixed installation instructions, with the new >= 1.7.1 commands.
+	- Fixed typo preventing DHCP hostname from properly working.
+	- Renamed wpa templates to clarify usage.
+	- Fixed wicd-cli crash when switching wired network profiles.
+	- Fallback to mode 'Master' if 'None' is detected when scanning wifi
+	  networks.
+	- Fixed bug when trying to start wicd multiple times.
+	- Fixed wicd-curses crash when trying to select wired encryption type,
+	  thanks to Joe MacMahon.
+	- Fixed wicd-curses crash with UTF-8 encryption types.
+	- Fixed wicd-daemon crash when child_pid is undefined, thanks to
+	  David Cantrell.
+
+1.7.1:
+	Changes for Packagers:
+	- You will now want to use the --python option to setup.py configure to 
+	  make sure the right Python (python2.x) is used. With the Python 3
+	  transition in progress, the lack of uniformity across distros made it 
+	  difficult to find a solution that works everywhere. As a result, the 
+	  python executable path can be set (for subprocesses launched by Wicd)
+	  with the --python option to setup.py configure, and patching of the
+	  shebang lines may be required if `which python` is not python2.x.
+	- If you handle translations in your packaging process, setup.py now
+	  needs 'pybabel' and 'xgettext' binaries. Please provide them during
+	  the build process.
+	- setup.py now accepts three more parameters: --dbus-service=, --systemd=
+	  and --logrotate=. Please set them accordingly to the paths of your
+	  distribution.
+
+	Major Changes:
+	- (New) upstream author: David Paleino :)
+	- The translations are now handled by Rosetta, in Launchpad.
+	- Implemented support for wired connections needing authentication with
+	  wpa_supplicant (thanks Joe MacMahon!)
+	- Support 'Never show networks' (thanks Robin Becker!)
+	- Mask out sensitive information in the logfile (CVE-2012-0813)
+
+	Minor Changes:
+	- Now uses gtkbuilder instead of libglade
+	- Fixed bug in script macro expansion
+	- Fixed typo in EAP-fast template
+	- Applied 1 patch from Archlinux (thanks Rémy Oudompheng)
+	  - Fixed Python 2.7 support
+	  - Works if Python3 is the default Python
+	- Applied 14 patches from Debian (big thank you to everyone
+							who contributed):
+	  - Includes translations in source tarball
+	  - Improved documentation
+	  - Fixed resolv.conf permissions
+	  - Ignore configparser errors
+	  - Several others, please see CHANGES for more details
+	- Proper localization of all the code has been put in place -- every part
+	  of the UIs and the daemon should be translated/translatable now!
+	- Fixed various bugs with 'unicode in ESSID' handling
+	- Implemented rfkill-support
+	- Generalized libc linking using ctypes' find_library()
+	- Fixed wireless connecting status message, now shows the correct ESSID
+	- Support wifi-channels with more than 2 digits
+	- Implemented in-GUI password hiding
+	- Implemented -t/--tray to only run the wicd-gtk tray icon
+	- Support alternative ifconfig output style
+
+1.7.0:
+	Changes for Packagers:
+	- Wicd now supports a -k option, which should be run by the init script
+	  when the daemon is stopped to release the DHCP lease but should not
+	  be run on a restart of the daemon.
+	- The ability has been added to split Wicd's components into multiple
+	  directories. Use --gtk, --cli, --curses, and --daemon to
+	  setup.py configure to specify the locations of the respective
+	  components.
+	- The preferred way to run the GTK UI is now to use wicd-gtk, not
+	  wicd-client. wicd-gtk is a new addition to 1.7 that will never
+	  run wicd-curses. wicd-client will automatically decide to run
+	  wicd-curses if there is no X session available.
+
+	Major Changes:
+	- Connection information is available by right clicking the tray icon
+	- Can set the hostname per network for all DHCP clients
+	- urwid 0.9.9 is now supported
+	- Added wicd-cli, a command line interface for use in scripts
+	- Global scripts are now passed parameters specifying the network
+
+	Minor Changes:
+	- Support for only displaying notifications using -o to wicd-client
+	- Reconnecting now works when measuring signal strength in dBm
+	- ESSIDs made of numbers now work properly
+	- All valid wpa_supplicant drivers are now displayed
+	- Wired network is now displayed while scanning wireless networks
+	- Added wicd-gtk, a command to always and only run the GTK UI
+	- Marked ioctl backend not supported
+	- Use dhcpcd-bin on Debian instead of dhcpcd script
+
+Wicd 1.6 Series
+---------------
+
+1.6.2:
+	Minor Changes:
+	- Now deals better if the interface disappears while running
+	- Will now start if the global script directories don't exist
+	- Adhoc window will now work correctly
+	- PSK can be generated from non-ASCII characters
+	- Fix a minor wicd-curses crash while connecting during a scan
+
+1.6.1:
+	Minor Changes:
+	- User is told if the lack permission to access the daemon
+	- Support for wireless cards that don't report signal strength added
+	- Enhanced network configuration dialog title
+
+1.6.0:
+	Major Changes:
+	- Improved tray icon and GUI images (thanks to Martin Sagastume)
+	- Reorganized network list in the GUI for easier navigation
+	- New experimental ioctl backend, which is more cpu-friendly than the 
+	  previous one 
+	- Added a curses client (thanks to Andrew Psaltis)
+	- Added a right-click connection menu to the tray icon
+	- Added options to specify a DNS domain and search domain for static networks
+	- Reworked the Preferences menu to be more in line with GNOME standards
+	- Added support for global scripts
+	- Made it possible to have optional entries in encryption templates
+	- Added ability to show libnotify notifications on status change
+
+	Minor Changes and Other Enhancements:
+	- Better autoconnection behavior
+	- Tray/GUI will survive the daemon being killed
+	- Reasons for connection failures will now bubble back to the GUI
+	- Add/remove wired profile system is now more user-friendly
+	- Support for using resolvconf instead of directly editing /etc/resolv.conf
+	- Wicd won't blindly kill dhcp clients / wpa_supplicant any more
+	- Added an option to automatically switch from a wireless network to a wired 
+	  one as soon as a cable is plugged in
+	- Moved scanning to its own thread, which makes GUI and daemon more responsive
+	  during scans
+	- Made it possible to specify macros in script entries
+	- The GUI will now display the encryption entry dialog if you attempt to 
+	  connect to an encrypted network without entering a password
+	- Static gateway entry is now optional
+	- Passwords with leading or trailing whitespace are now stored properly
+	- Many init/config script, man page, and setup.py fixes/updates, including
+	  better autodetection of file placement with regard to sleep hooks and 
+	  KDE autostart files (thanks to Robby Workman)

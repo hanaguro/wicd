@@ -1,0 +1,3 @@
+#!/bin/sh
+# Put wifi interface down
+%DAEMON%suspend.py

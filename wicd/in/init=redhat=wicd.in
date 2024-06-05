@@ -1,0 +1,77 @@
+#! /bin/sh
+#
+# /etc/init.d/wicd
+#
+# chkconfig: - 98 02
+# description: Wicd is a wireless and wired network manager for Linux.
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+
+WICD_BIN=%SBIN%wicd
+
+pidfile=%PIDFILE%
+servicename=wicd
+processname=wicd
+start()
+{
+        echo -n "Starting wicd service: "
+        daemon $WICD_BIN 2> /dev/null
+        RETVAL=$?
+        echo
+        [ "$RETVAL" = "0" ] && touch /var/lock/subsys/$servicename
+}
+stop() 
+{
+	echo -n "Stopping wicd service and closing connections: "
+	$WICD_BIN -k
+	RETVAL=$?
+        if [ $RETVAL -eq 0 ]; then
+		echo_success
+                rm -f /var/lock/subsys/$servicename
+                rm -f $pidfile
+	else
+		echo_failure
+	fi
+	echo
+}
+
+force_stop()
+{
+        echo -n "Stopping wicd service: "
+        killproc -p $pidfile wicd
+        RETVAL=$?
+        echo
+        if [ $RETVAL -eq 0 ]; then
+                rm -f /var/lock/subsys/$servicename
+                rm -f $pidfile
+        fi
+}
+
+
+case "$1" in
+        start)
+                start
+        ;;
+        stop)
+                stop
+        ;;
+	force_stop)
+		force_stop
+	;;
+        status)
+                status -p $pidfile $processname
+                RETVAL=$?
+        ;;
+        restart | reload)
+                force_stop
+                start
+        ;;
+        *)
+                echo "Usage: wicd {start|stop|force_stop|status|reload|restart}"
+                exit 1
+        ;;
+esac
+exit $RETVAL
+

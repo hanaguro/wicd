@@ -1,0 +1,1176 @@
+# Translations for Polish (pl)
+# Translator ID 3
+# /translator/edit/3/
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-09-26 17:26+0200\n"
+"PO-Revision-Date: 2016-02-17 10:12+0000\n"
+"Last-Translator: Mateusz Łukasik <Unknown>\n"
+"Language-Team: pl <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2016-02-18 05:24+0000\n"
+"X-Generator: Launchpad (build 17925)\n"
+"Generated-By: Babel 0.9.6\n"
+
+#: gtk/wicd-client.py:610
+msgid ""
+"$A\n"
+"$B\n"
+"$C\n"
+"$D\n"
+"$E KB/s\n"
+"$F KB/s"
+msgstr ""
+"$A\n"
+"$B\n"
+"$C\n"
+"$D\n"
+"$E KB/s\n"
+"$F KB/s"
+
+#: gtk/wicd-client.py:603
+msgid ""
+"$A\n"
+"$B KB/s\n"
+"$C KB/s"
+msgstr ""
+"$A\n"
+"$B KB/s\n"
+"$C KB/s"
+
+#: curses/wicd-curses.py:612
+msgid "About"
+msgstr "O programie"
+
+#: curses/wicd-curses.py:200
+msgid "About Wicd"
+msgstr "O programie Wicd"
+
+#: curses/wicd-curses.py:465 gtk/gui.py:273
+msgid "Activate Internet Connection Sharing"
+msgstr "Włączenie dzielenia połączenia internetowego"
+
+#: curses/wicd-curses.py:378
+msgid "Add a new profile"
+msgstr "Dodaj profil"
+
+#: curses/wicd-curses.py:411
+msgid "Add a new wired profile"
+msgstr "Dodaj profil sieci przewodowej"
+
+#: curses/prefs_curses.py:52 data/wicd.ui:1679
+msgid "Advanced Settings"
+msgstr "Ustawienia zaawansowane"
+
+#: curses/prefs_curses.py:69 gtk/prefs.py:326 data/wicd.ui:966
+msgid "Always show wired interface"
+msgstr "Wyświetlanie interfejsu przewodowego"
+
+#: curses/prefs_curses.py:70
+msgid "Always switch to wired connection when available"
+msgstr "Przełączanie na połączenie przewodowe, gdy jest dostępne"
+
+#: curses/wicd-curses.py:947 gtk/gui.py:353
+msgid "Are you sure you want to discard settings for the selected networks?"
+msgstr ""
+"Czy jesteś pewien, że chcesz cofnąć ustawienia dla zaznaczonych sieci ?"
+
+#: wicd/translations.py:77
+msgid "Authentication"
+msgstr "Uwierzytelnienie"
+
+#: curses/prefs_curses.py:90 curses/prefs_curses.py:176 gtk/prefs.py:352
+#: gtk/prefs.py:359 gtk/prefs.py:366 gtk/prefs.py:371 data/wicd.ui:1092
+#: data/wicd.ui:1153 data/wicd.ui:1214 data/wicd.ui:1329
+msgid "Automatic (recommended)"
+msgstr "Automatycznie (zalecane)"
+
+#: curses/prefs_curses.py:86
+msgid "Automatic Reconnection"
+msgstr "Automatyczne łączenie po rozłączeniu"
+
+#: curses/netentry_curses.py:374 gtk/netentry.py:889
+msgid "Automatically connect to this network"
+msgstr "Automatyczne połączenie z tą siecią"
+
+#: curses/prefs_curses.py:87 gtk/prefs.py:331
+msgid "Automatically reconnect on connection loss"
+msgstr "Automatyczne ponowne połączenie po utracie połączenia"
+
+#: gtk/gui.py:330
+msgid "BSSID"
+msgstr "BSSID"
+
+#: curses/prefs_curses.py:113 curses/prefs_curses.py:114
+msgid "Backend"
+msgstr "Zaplecze"
+
+#: curses/wicd-curses.py:194
+msgid "Brought to you by:"
+msgstr "Dostarczone przez:"
+
+#: curses/wicd-curses.py:1089
+msgid "Can't connect to the daemon, trying to start it automatically..."
+msgstr ""
+"Nie można połączyć się z usługą, nastąpi próba jej automatycznego "
+"uruchomienia..."
+
+#: curses/configscript_curses.py:74 curses/curses_misc.py:541
+#: curses/netentry_curses.py:65 curses/wicd-curses.py:490
+#: curses/wicd-curses.py:538 curses/wicd-curses.py:653
+#: curses/wicd-curses.py:655 curses/wicd-curses.py:951
+msgid "Cancel"
+msgstr "Anuluj"
+
+#: curses/wicd-curses.py:463 gtk/gui.py:268 gtk/netentry.py:1038
+#: gtk/netentry.py:1160
+msgid "Channel"
+msgstr "Kanał"
+
+#: gtk/gui.py:189 data/wicd.ui:183
+msgid "Choose from the networks below:"
+msgstr "Proszę wybrać sieć z poniższych:"
+
+#: curses/wicd-curses.py:604
+msgid "Config"
+msgstr "Ustawienia"
+
+#: curses/wicd-curses.py:225
+msgid "Configure selected network"
+msgstr "Skonfiguruj wybraną sieć"
+
+#: curses/netentry_curses.py:267
+msgid "Configuring preferences for wired profile \"$A\""
+msgstr "Konfigurowanie preferencji dla profilu sieci przewodowej \"$A\""
+
+#: curses/netentry_curses.py:389
+msgid "Configuring preferences for wireless network \"$A\" ($B)"
+msgstr "Konfigurowanie preferencji dla sieci bezprzewodowej \"$A\" ($B)"
+
+#: wicd/misc.py:89
+msgid "Configuring wireless interface..."
+msgstr "Konfigurowanie interfejsu bezprzewodowego..."
+
+#: curses/wicd-curses.py:607 gtk/wicd-client.py:498
+msgid "Connect"
+msgstr "Połącz"
+
+#: curses/wicd-curses.py:214
+msgid "Connect to selected network"
+msgstr "Połącz z wybraną siecią"
+
+#: cli/wicd-cli.py:83
+msgid "Connected"
+msgstr "Połączony"
+
+#: cli/wicd-cli.py:96
+msgid "Connected to \"$A\" ($B)."
+msgstr "Połączono do \"$A\" ($B)."
+
+#: curses/wicd-curses.py:158 gtk/gui.py:490 gtk/wicd-client.py:215
+msgid "Connected to $A at $B (IP: $C)"
+msgstr "Połączono z siecią $A o sygnale $B (IP: $C)"
+
+#: cli/wicd-cli.py:102
+msgid "Connected to $A."
+msgstr "Połączono do  $A."
+
+#: wicd/misc.py:53
+msgid "Connected to a wired network"
+msgstr "Połączono do sieci kablowej"
+
+#: wicd/misc.py:52
+msgid "Connected to a wireless network"
+msgstr "Połaczono do sieci bezprzewodowej"
+
+#: curses/wicd-curses.py:133 gtk/gui.py:483 gtk/wicd-client.py:220
+msgid "Connected to wired network (IP: $A)"
+msgstr "Połączono z siecią przewodową (IP: $A)"
+
+#: gtk/gui.py:192 gtk/wicd-client.py:313 gtk/wicd-client.py:641
+msgid "Connecting"
+msgstr "Łączenie"
+
+#: cli/wicd-cli.py:107
+msgid "Connecting to wired network."
+msgstr "Łączenie do sieci przewodowej"
+
+#: cli/wicd-cli.py:109
+msgid "Connecting to wireless network \"$A\"."
+msgstr "Łączenie do sieci bezprzewodowej \"$A\"."
+
+#: wicd/misc.py:86
+msgid "Connection Cancelled"
+msgstr "Anulowano połączenie"
+
+#: wicd/misc.py:92
+msgid "Connection Failed."
+msgstr "Anulowano połączenie"
+
+#: wicd/misc.py:88
+msgid "Connection Failed: Bad password"
+msgstr "Połączenie nieudane: błędne hasło"
+
+#: wicd/misc.py:98
+msgid "Connection Failed: No DHCP offers received."
+msgstr "Połączenie nie powiodło się: nie otrzymano odpowiedzi DHCP."
+
+#: wicd/misc.py:90
+msgid "Connection Failed: Unable to Get IP Address"
+msgstr "Połączenie nie powiodło się: nie można pobrać adresu IP"
+
+#: gtk/wicd-client.py:269 gtk/wicd-client.py:299
+msgid "Connection established"
+msgstr "Nawiązano połączenie"
+
+#: wicd/misc.py:87
+msgid "Connection failed: Could not contact the wireless access point."
+msgstr ""
+"Połączanie nie powiodło się: nie można połączyć się z bezprzewodowym punktem "
+"dostępowym."
+
+#: wicd/misc.py:51
+msgid "Connection in progress"
+msgstr "Trwa łączenie"
+
+#: cli/wicd-cli.py:92
+msgid "Connection status"
+msgstr "Status połączenia"
+
+#: wicd/misc.py:104
+msgid "Connection successful."
+msgstr "Anulowano połączenie"
+
+#: wicd/misc.py:54
+msgid "Connection suspended"
+msgstr "Połączenie uśpione"
+
+#: cli/wicd-cli.py:94
+msgid "Connection type"
+msgstr "Typ połączenia"
+
+#: gtk/gui.py:65 gtk/wicd-client.py:955
+msgid ""
+"Could not connect to wicd's D-Bus interface. Check the wicd log for error "
+"messages."
+msgstr ""
+"Nie można połączyć się z interfejsem D-Bus usługi wicd. Proszę sprawdzić "
+"dziennik usługi wicd, aby uzyskać komunikaty błędów."
+
+#: gtk/netentry.py:379 gtk/netentry.py:522
+msgid ""
+"Could not find a graphical sudo program. The script editor could not be "
+"launched.  You'll have to edit scripts directly your configuration file."
+msgstr ""
+"Nie można odnaleźć graficznego programu sudo. Edytor skryptów nie mógł "
+"zostać uruchomiony. Należy zmodyfikować skrypty bezpośrednio w pliku "
+"konfiguracyjnym."
+
+#: curses/wicd-curses.py:488 gtk/gui.py:259
+msgid "Create an Ad-Hoc Network"
+msgstr "Utwórz sieć Ad-hoc"
+
+#: curses/wicd-curses.py:98
+msgid ""
+"DBus failure! This is most likely caused by the wicd daemon stopping while "
+"wicd-curses is running. Please restart the daemon, and then restart wicd-"
+"curses."
+msgstr ""
+"Niepowodzenie DBus. Jest to najprawdopodobniej spowodowane zatrzymaniem "
+"usługi wicd podczas działania wicd-curses. Proszę uruchomić ponownie usługę, "
+"a następnie wicd-curses."
+
+#: curses/prefs_curses.py:92
+msgid "DHCP Client"
+msgstr "Klient DHCP"
+
+#: curses/netentry_curses.py:63
+msgid "DHCP Hostname"
+msgstr "Nazwa serwera DHCP"
+
+#: curses/netentry_curses.py:56 curses/prefs_curses.py:74 gtk/netentry.py:79
+msgid "DNS domain"
+msgstr "Domena DNS"
+
+#: curses/netentry_curses.py:58 curses/netentry_curses.py:59
+#: curses/netentry_curses.py:60 curses/prefs_curses.py:76
+#: curses/prefs_curses.py:77 curses/prefs_curses.py:78 gtk/netentry.py:80
+#: gtk/netentry.py:81 gtk/netentry.py:82
+msgid "DNS server"
+msgstr "Serwer DNS"
+
+#: curses/prefs_curses.py:117
+msgid "Debugging"
+msgstr "Debugowanie"
+
+#: curses/wicd-curses.py:608
+msgid "Disconn"
+msgstr "Rozłączono"
+
+#: curses/wicd-curses.py:215
+msgid "Disconnect from all networks"
+msgstr "Rozłącz ze wszystkich sieci"
+
+#: gtk/wicd-client.py:340 gtk/wicd-client.py:643
+msgid "Disconnected"
+msgstr "Rozłączono"
+
+#: gtk/gui.py:785
+msgid "Disconnecting active connections..."
+msgstr "Rozłączanie aktywnych połączeń..."
+
+#: curses/wicd-curses.py:226
+msgid "Display 'about' dialog"
+msgstr "Wyświetla ten ekran pomocy"
+
+#: gtk/prefs.py:349 data/wicd.ui:1002
+msgid "Display notifications about connection status"
+msgstr "Wyświetlanie powiadomień o stanie połączenia"
+
+#: curses/wicd-curses.py:213
+msgid "Display this help dialog"
+msgstr "Wyświetla ten ekran pomocy"
+
+#: wicd/translations.py:78
+msgid "Domain"
+msgstr "Domena DNS"
+
+#: wicd/misc.py:91
+msgid "Done connecting..."
+msgstr "Połączono..."
+
+#: curses/wicd-curses.py:1113
+msgid ""
+"ERROR: wicd-curses was denied access to the wicd daemon: please check that "
+"your user is in the \"$A\" group."
+msgstr ""
+"BŁĄD: odmówiono dostępu wicd-curses do usługi wicd: proszę sprawdzić, czy "
+"użytkownik znajduje się w grupie \"$A\"."
+
+#: curses/wicd-curses.py:461 gtk/gui.py:267 gtk/gui.py:327
+msgid "ESSID"
+msgstr "ESSID"
+
+#: curses/prefs_curses.py:118 gtk/prefs.py:335 data/wicd.ui:1521
+msgid "Enable debug mode"
+msgstr "Włącz tryb debugowania"
+
+#: gtk/wicd-client.py:320 gtk/wicd-client.py:324
+msgid "Establishing connection..."
+msgstr "Nawiązywanie połączenia..."
+
+#: curses/prefs_curses.py:51 data/wicd.ui:1408
+msgid "External Programs"
+msgstr "Programy zewnętrzne"
+
+#: wicd/misc.py:93
+msgid "Flushing the routing table..."
+msgstr "Czyszczenie tablicy trasowania..."
+
+#: curses/wicd-curses.py:209
+msgid "For more detailed help, consult the wicd-curses(8) man page."
+msgstr ""
+"Aby uzyskać szczegółową pomoc, należy zajrzeć do podręcznika wicd-curses(8)."
+
+#: curses/netentry_curses.py:52 gtk/netentry.py:77
+msgid "Gateway"
+msgstr "Brama"
+
+#: curses/prefs_curses.py:50 data/wicd.ui:1028
+msgid "General Settings"
+msgstr "Ustawienia ogólne"
+
+#: wicd/misc.py:94
+msgid "Generating PSK..."
+msgstr "Tworzenie PSK..."
+
+#: wicd/misc.py:95
+msgid "Generating WPA configuration file..."
+msgstr "Tworzenie pliku konfiguracyjnego WPA..."
+
+#: gtk/netentry.py:234
+msgid "Global DNS has not been enabled in general preferences."
+msgstr "Globalny DNS nie został włączony w preferencjach ogólnych."
+
+#: curses/prefs_curses.py:72
+msgid "Global DNS servers"
+msgstr "Globalne serwery DNS"
+
+#: gtk/gui.py:321
+msgid "Global settings for this ESSID"
+msgstr "Globalne ustawienia dla tego ESSID"
+
+#: curses/wicd-curses.py:603
+msgid "Help"
+msgstr "Pomoc"
+
+#: curses/wicd-curses.py:611
+msgid "Hidden"
+msgstr "Ukryte"
+
+#: gtk/gui.py:418
+msgid "Hidden Network ESSID"
+msgstr "ESSID ukrytej sieci"
+
+#: curses/netentry_curses.py:50 curses/wicd-curses.py:462 gtk/gui.py:266
+#: gtk/netentry.py:74
+msgid "IP"
+msgstr "IP"
+
+#: wicd/translations.py:79
+msgid "Identity"
+msgstr "Tożsamość"
+
+#: gtk/wicd-client.py:500
+msgid "Information about the current connection"
+msgstr "Informacje o bieżącym połączeniu"
+
+#: gtk/netentry.py:168
+msgid "Invalid IP address entered."
+msgstr "Podany adres IP jest nieprawidłowy."
+
+#: gtk/gui.py:691 gtk/gui.py:699
+msgid "Invalid address in $A entry."
+msgstr "Nieprawidłowy adres w polu $A."
+
+#: curses/wicd-curses.py:464 gtk/gui.py:269 wicd/translations.py:80
+msgid "Key"
+msgstr "Klucz"
+
+#: wicd/translations.py:81
+msgid "Key index"
+msgstr "Indeks kluczy"
+
+#: curses/wicd-curses.py:536 gtk/gui.py:310
+msgid "List of saved networks"
+msgstr "Lista zapisanych sieci"
+
+#: curses/netentry_curses.py:51 gtk/netentry.py:76
+msgid "Netmask"
+msgstr "Maska sieci"
+
+#: cli/wicd-cli.py:99
+msgid "Network ID: $A"
+msgstr "Identyfikator sieci: $A"
+
+#: curses/prefs_curses.py:66
+msgid "Network Interfaces"
+msgstr "Interfejsy sieciowe"
+
+#: gtk/netentry.py:890
+msgid "Never connect to this network"
+msgstr "Nigdy nie łącz z tą siecią"
+
+#: curses/wicd-curses.py:575 gtk/gui.py:664 gtk/wicd-client.py:797
+msgid "No wireless networks found."
+msgstr "Nie odnaleziono sieci bezprzewodowych."
+
+#: curses/wicd-curses.py:786 gtk/gui.py:500 gtk/wicd-client.py:213
+#: gtk/wicd-client.py:223 gtk/wicd-client.py:335 gtk/wicd-client.py:338
+#: wicd/misc.py:50
+msgid "Not connected"
+msgstr "Brak połączenia"
+
+#: curses/configscript_curses.py:73 curses/curses_misc.py:515
+#: curses/curses_misc.py:533 curses/netentry_curses.py:66
+#: curses/wicd-curses.py:490 curses/wicd-curses.py:650
+#: curses/wicd-curses.py:654 curses/wicd-curses.py:951
+msgid "OK"
+msgstr "OK"
+
+#: wicd/misc.py:100
+msgid "Obtaining IP address..."
+msgstr "Ustalanie adresu IP..."
+
+#: curses/wicd-curses.py:278
+msgid ""
+"Once there, you can adjust (or add) the \"beforescript\", \"afterscript\", "
+"\"predisconnectscript\" and \"postdisconnectscript\" variables as needed, to "
+"change the preconnect, postconnect, predisconnect and postdisconnect scripts "
+"respectively.  Note that you will be specifying the full path to the scripts "
+"- not the actual script contents.  You will need to add/edit the script "
+"contents separately.  Refer to the wicd manual page for more information."
+msgstr ""
+"Następnie można zmienić (lub dodać) zmienne \"beforescript\", "
+"\"afterscript\", \"disconnectscript\", aby zmienić odpowiednio skrypty "
+"preconnect, postconnect, i disconnect. Proszę zauważyć, że podawane są pełne "
+"ścieżki do skryptów, a nie ich zawartość. Należy dodawać/zmieniać ich "
+"zawartość osobno. Proszę zobaczyć podręcznik usługi wicd, aby uzyskać więcej "
+"informacji."
+
+#: wicd/translations.py:82
+msgid "Passphrase"
+msgstr "Hasło"
+
+#: wicd/translations.py:83
+msgid "Password"
+msgstr "Hasło"
+
+#: wicd/translations.py:84
+msgid "Path to CA cert"
+msgstr "Ścieżka do certyfikatu CA"
+
+#: wicd/translations.py:86
+msgid "Path to PAC file"
+msgstr "Ścieżka do pliku PAC"
+
+#: wicd/translations.py:85
+msgid "Path to client cert"
+msgstr "Ścieżka do certyfikatu klienta"
+
+#: curses/prefs_curses.py:122 gtk/prefs.py:339 data/wicd.ui:1654
+msgid "Ping static gateways after connecting to verify association"
+msgstr "Odpytywanie statycznych bram po połączeniu, aby sprawdzić powiązanie"
+
+#: curses/wicd-curses.py:521
+msgid "Please select the networks to forget"
+msgstr "Proszę wybrać sieć do usunięcia"
+
+#: curses/configscript_curses.py:57 gtk/configscript.py:129
+msgid "Post-connection Script"
+msgstr "Uruchomienie skryptu po rozłączeniu"
+
+#: curses/configscript_curses.py:59 gtk/configscript.py:132
+msgid "Post-disconnection Script"
+msgstr "Uruchomienie skryptu po rozłączeniu"
+
+#: curses/configscript_curses.py:56 gtk/configscript.py:128
+msgid "Pre-connection Script"
+msgstr "Uruchomienie skryptu przed rozłączeniem"
+
+#: curses/configscript_curses.py:58 gtk/configscript.py:130
+msgid "Pre-disconnection Script"
+msgstr "Uruchomienie skryptu przed rozłączeniem"
+
+#: curses/prefs_curses.py:56 curses/prefs_curses.py:252 gtk/prefs.py:318
+msgid "Preferences"
+msgstr "Preferencje"
+
+#: curses/wicd-curses.py:218
+msgid "Preferences dialog"
+msgstr "Preferencje"
+
+#: curses/wicd-curses.py:610
+msgid "Prefs"
+msgstr "Preferencje"
+
+#: wicd/translations.py:87
+msgid "Preshared key"
+msgstr "Klucz współdzielony"
+
+#: curses/wicd-curses.py:229
+msgid "Press any key to return."
+msgstr "Naciśnij dowolny klawisz, aby powrócić."
+
+#: wicd/translations.py:88
+msgid "Private key"
+msgstr "Klucz prywatny"
+
+#: wicd/translations.py:89
+msgid "Private key password"
+msgstr "Hasło klucza prywatnego"
+
+#: curses/prefs_curses.py:83 gtk/prefs.py:343
+msgid "Prompt for profile on wired autoconnect"
+msgstr "Pytanie o profil dla automatycznego połączenia przewodowego"
+
+#: gtk/netentry.py:59 gtk/netentry.py:61 gtk/netentry.py:670
+msgid "Properties"
+msgstr "Właściwości"
+
+#: wicd/misc.py:96
+msgid "Putting interface down..."
+msgstr "Wyłączanie interfejsu..."
+
+#: wicd/misc.py:97
+msgid "Putting interface up..."
+msgstr "Włączanie interfejsu..."
+
+#: curses/wicd-curses.py:613
+msgid "Quit"
+msgstr "Zakończ"
+
+#: curses/wicd-curses.py:227
+msgid "Quit wicd-curses"
+msgstr "Zakończ wicd-curses"
+
+#: gtk/wicd-client.py:502
+msgid "Quit wicd-tray-icon"
+msgstr "Zamknij ikonę wicd"
+
+#: curses/wicd-curses.py:609
+msgid "Refresh"
+msgstr "Odśwież"
+
+#: curses/wicd-curses.py:217
+msgid "Refresh network list"
+msgstr "Odśwież listę sieci"
+
+#: curses/wicd-curses.py:538
+msgid "Remove"
+msgstr "Usuń"
+
+#: curses/wicd-curses.py:224 data/wicd.ui:67
+msgid "Remove settings for saved networks"
+msgstr "Usuń ustawienia dla zapisanych sieci"
+
+#: curses/wicd-curses.py:441
+msgid "Rename wired profile"
+msgstr "Zmień nazwę profilu sieci przewodowej"
+
+#: curses/netentry_curses.py:333 curses/netentry_curses.py:467 gtk/gui.py:754
+#: gtk/netentry.py:425 gtk/netentry.py:597
+msgid "Required encryption information is missing."
+msgstr "Brak wymaganej informacji o szyfrowaniu."
+
+#: wicd/misc.py:99
+msgid "Resetting IP address..."
+msgstr "Przywracanie adresu IP..."
+
+#: curses/wicd-curses.py:606
+msgid "RfKill"
+msgstr "RfKill"
+
+#: curses/prefs_curses.py:103
+msgid "Route Table Flushing"
+msgstr "Czyszczenie tabeli trasowania"
+
+#: curses/wicd-curses.py:677
+msgid "Scan"
+msgstr "Przeskanuj"
+
+#: curses/wicd-curses.py:221
+msgid "Scan for hidden networks"
+msgstr "Przeskanuj w poszukiwaniu ukrytych sieci"
+
+#: gtk/gui.py:224 gtk/gui.py:589 gtk/wicd-client.py:810
+msgid "Scanning"
+msgstr "Wyszukiwanie"
+
+#: curses/wicd-curses.py:574
+msgid "Scanning networks... stand by..."
+msgstr "Wyszukiwanie sieci, proszę czekać..."
+
+#: gtk/netentry.py:102
+msgid "Scripts"
+msgstr "Skrypty"
+
+#: curses/netentry_curses.py:57 curses/prefs_curses.py:75 gtk/netentry.py:78
+msgid "Search domain"
+msgstr "Wyszukanie domeny"
+
+#: gtk/netentry.py:1032 gtk/netentry.py:1154
+msgid "Secured"
+msgstr "Zabezpieczona"
+
+#: curses/wicd-curses.py:677
+msgid "Select Hidden Network ESSID"
+msgstr "Proszę wybrać ESSID ukrytej sieci"
+
+#: gtk/gui.py:103
+msgid "Select or create a wired profile to connect with"
+msgstr "Proszę wybrać lub utworzyć profil połączenia przewodowego"
+
+#: curses/wicd-curses.py:222
+msgid "Select scripts"
+msgstr "Wybór skryptów"
+
+#: curses/wicd-curses.py:223
+msgid "Set up Ad-hoc network"
+msgstr "Ustaw sieć Ad-hoc"
+
+#: wicd/misc.py:101
+msgid "Setting broadcast address..."
+msgstr "Ustawianie adresu rozgłaszania..."
+
+#: wicd/misc.py:102
+msgid "Setting static DNS servers..."
+msgstr "Ustawianie statycznych serwerów DNS..."
+
+#: wicd/misc.py:103
+msgid "Setting static IP addresses..."
+msgstr "Ustawianie statycznych adresów IP..."
+
+#: gtk/prefs.py:333 data/wicd.ui:581
+msgid "Show never connect networks"
+msgstr "Pokaż sieci z którymi nie wolno łączyć"
+
+#: gtk/gui.py:104
+msgid "Stop Showing Autoconnect pop-up temporarily"
+msgstr "Tymczasowe wyłączenie wyświetlania okna automatycznego łączenia"
+
+#: curses/wicd-curses.py:216
+msgid "Stop a connection in progress"
+msgstr "Przerwij łączenie z siecią"
+
+#: gtk/gui.py:376
+msgid "Switch Off Wi-Fi"
+msgstr "Wyłącz Wi-Fi"
+
+#: gtk/gui.py:373
+msgid "Switch On Wi-Fi"
+msgstr "Włącz Wi-Fi"
+
+#: curses/wicd-curses.py:651
+msgid "Tab Left"
+msgstr "Lewa zakładka"
+
+#: curses/wicd-curses.py:652
+msgid "Tab Right"
+msgstr "Prawa zakładka"
+
+#: curses/wicd-curses.py:93
+msgid "Terminated by user"
+msgstr "Przerwane przez użytkownika"
+
+#: gtk/gui.py:85 gtk/wicd-client.py:984
+msgid ""
+"The wicd daemon has shut down. The UI will not function properly until it is "
+"restarted."
+msgstr ""
+"Usługa wicd został wyłączona. Interfejs użytkownika nie będzie działać "
+"poprawnie, dopóki nie zostanie uruchomiona ponownie."
+
+#: curses/netentry_curses.py:478 gtk/gui.py:761 gtk/netentry.py:436
+#: gtk/netentry.py:608
+msgid "This network requires encryption to be enabled."
+msgstr "Ta sieć wymaga włączonego szyfrowania."
+
+#: curses/wicd-curses.py:272
+msgid ""
+"To avoid various complications, wicd-curses does not support directly "
+"editing the scripts. However, you can edit them manually. First, (as root), "
+"open the \"$A\" config file, and look for the section labeled by the $B in "
+"question. In this case, this is:"
+msgstr ""
+"Aby uniknąć różnych komplikacji, wicd-cursed nie obsługuje bezpośredniego "
+"modyfikowania skryptów. Jednakże, można je ręcznie modyfikować. Najpierw "
+"(jako użytkownik root) należy otworzyć plik konfiguracyjny \"$A\" i poszukać "
+"sekcji oznaczonej jako $B. W tym przypadku, jest to:"
+
+#: gtk/netentry.py:707
+msgid ""
+"To connect to a wired network, you must create a network profile. To create "
+"a network profile, type a name that describes this network, and press Add."
+msgstr ""
+"Aby połączyć się z siecią przewodową, należy utworzyć profil sieci. Aby "
+"utworzyć taki profil, należy wpisać nazwę opisującą tę sieć i nacisnąć "
+"przycisk Dodaj."
+
+#: gtk/wicd-client.py:94
+msgid ""
+"Unable to contact the Wicd daemon due to an access denied error from DBus. "
+"Please check that your user is in the $A group."
+msgstr ""
+"Nie można połączyć się z usługą wicd z powodu odmowy dostępu od magistrali D-"
+"Bus. Proszę sprawdzić, czy użytkownik znajduje się w grupie $A."
+
+#: curses/wicd-curses.py:353 gtk/netentry.py:1034 gtk/netentry.py:1156
+msgid "Unsecured"
+msgstr "Niezabezpieczona"
+
+#: curses/netentry_curses.py:62
+msgid "Use DHCP Hostname"
+msgstr "Użyj serwera DHCP"
+
+#: curses/netentry_curses.py:255 curses/netentry_curses.py:373
+#: gtk/netentry.py:341 gtk/netentry.py:467
+msgid "Use Encryption"
+msgstr "Użycie szyfrowania"
+
+#: curses/wicd-curses.py:466 gtk/gui.py:264
+msgid "Use Encryption (WEP only)"
+msgstr "Użycie szyfrowania (tylko WEP)"
+
+#: curses/netentry_curses.py:54 gtk/netentry.py:89
+msgid "Use Static DNS"
+msgstr "Użycie statycznego DNS"
+
+#: curses/netentry_curses.py:49 gtk/netentry.py:88
+msgid "Use Static IPs"
+msgstr "Użycie statycznych adresów IP"
+
+#: curses/netentry_curses.py:249 gtk/netentry.py:708
+msgid "Use as default profile (overwrites any previous default)"
+msgstr "Użycie jako domyślny profil (zastępuje poprzedni profil)"
+
+#: curses/prefs_curses.py:121 gtk/prefs.py:337 data/wicd.ui:1500
+msgid "Use dBm to measure signal strength"
+msgstr "Użycie dBm do pomiaru siły sygnału"
+
+#: curses/prefs_curses.py:82 gtk/prefs.py:341
+msgid "Use default profile on wired autoconnect"
+msgstr "Użycie domyślnego profilu dla automatycznego połączenia przewodowego"
+
+#: curses/netentry_curses.py:55 curses/prefs_curses.py:73 gtk/netentry.py:90
+#: data/wicd.ui:892
+msgid "Use global DNS servers"
+msgstr "Użycie globalnych serwerów DNS"
+
+#: curses/prefs_curses.py:84 gtk/prefs.py:345
+msgid "Use last used profile on wired autoconnect"
+msgstr ""
+"Użycie poprzedniego profilu dla automatycznego połączenia przewodowego"
+
+#: curses/netentry_curses.py:372 gtk/netentry.py:468
+msgid "Use these settings for all networks sharing this essid"
+msgstr "Użycie tych ustawień dla wszystkich sieci o tym ESSID"
+
+#: wicd/translations.py:90
+msgid "Username"
+msgstr "Nazwa użytkownika"
+
+#: wicd/misc.py:105
+msgid "Validating authentication..."
+msgstr "Sprawdzanie uwierzytelnienia..."
+
+#: wicd/misc.py:106
+msgid "Verifying access point association..."
+msgstr "Sprawdzanie powiązania punktów dostępowych..."
+
+#: curses/prefs_curses.py:108
+msgid "WPA Supplicant"
+msgstr "Suplikant WPA:"
+
+#: curses/wicd-curses.py:576
+msgid "Wicd Curses Interface"
+msgstr "Interfejs Wicd Curses"
+
+#: gtk/wicd-client.py:226 gtk/wicd-client.py:333
+msgid "Wicd daemon unreachable"
+msgstr "Usługa wicd jest niedostępna"
+
+#: wicd/misc.py:216
+msgid "Wicd needs to access your computer's network cards."
+msgstr "Program wicd musi mieć dostęp do kart sieciowych komputera."
+
+#: cli/wicd-cli.py:85
+msgid "Wired"
+msgstr "Przewodowe"
+
+#: gtk/wicd-client.py:628
+msgid ""
+"Wired\n"
+"IP:\n"
+"RX:\n"
+"TX:"
+msgstr ""
+"Przewodowe\n"
+"IP:\n"
+"RX:\n"
+"TX:"
+
+#: curses/prefs_curses.py:81
+msgid "Wired Autoconnect Settings"
+msgstr "Ustawienia automatycznego łączenia sieci przewodowej"
+
+#: curses/prefs_curses.py:67
+msgid "Wired Interface"
+msgstr "Interfejs przewodowy"
+
+#: curses/prefs_curses.py:99
+msgid "Wired Link Detection"
+msgstr "Wykrywanie sieci przewodowej"
+
+#: curses/wicd-curses.py:802 gtk/gui.py:534 gtk/netentry.py:333
+#: gtk/netentry.py:701 gtk/wicd-client.py:268 gtk/wicd-client.py:309
+msgid "Wired Network"
+msgstr "Sieć przewodowa"
+
+#: curses/wicd-curses.py:581
+msgid "Wired Networks"
+msgstr "Sieci przewodowe"
+
+#: gtk/gui.py:97
+msgid "Wired connection detected"
+msgstr "Wykryto połączenie przewodowe"
+
+#: cli/wicd-cli.py:87
+msgid "Wireless"
+msgstr "Bezprzewodowe"
+
+#: gtk/wicd-client.py:633
+msgid ""
+"Wireless\n"
+"SSID:\n"
+"Speed:\n"
+"IP:\n"
+"Strength:\n"
+"RX:\n"
+"TX:"
+msgstr ""
+"SSID sieci bezprzewodowej: Prędkość: IP: Siła sygnału: Odebrano: Wysłano:"
+
+#: curses/prefs_curses.py:68 curses/prefs_curses.py:120
+msgid "Wireless Interface"
+msgstr "Interfejs bezprzewodowy"
+
+#: gtk/gui.py:662 gtk/wicd-client.py:224 gtk/wicd-client.py:336
+msgid "Wireless Kill Switch Enabled"
+msgstr "Wyłącznik sieci bezprzewodowej jest aktywny"
+
+#: curses/wicd-curses.py:583
+msgid "Wireless Networks"
+msgstr "Sieci bezprzewodowe"
+
+#: curses/wicd-curses.py:277
+msgid ""
+"You can also configure the wireless networks by looking for the "
+"\"[<ESSID>]\" field in the config file."
+msgstr ""
+"Można także skonfigurować sieci bezprzewodowe przez szukanie pola "
+"\"[<ESSID>]\" w pliku konfiguracyjnym."
+
+#: gtk/netentry.py:376 gtk/netentry.py:519
+msgid "You must enter your password to configure scripts"
+msgstr "Należy wpisać hasło, aby skonfigurować skrypty"
+
+#: curses/prefs_curses.py:111
+msgid "You should almost always use wext as the WPA supplicant driver"
+msgstr "Prawie zawsze należy używać wext jako sterownika suplikanta WPA"
+
+#: gtk/wicd-client.py:499
+msgid "_Connection Info"
+msgstr "_Informacje o połączeniu"
+
+#: gtk/wicd-client.py:502 data/wicd.ui:161
+msgid "_Quit"
+msgstr "_Wyjście"
+
+#: curses/wicd-curses.py:428
+msgid ""
+"wicd-curses does not support deleting the last wired profile.  Try renaming "
+"it (\"F2\")"
+msgstr ""
+"wircd-curses nie obsługuje usuwania ostatniego profilu przewodowego. Należy "
+"spróbować zmienić jego nazwę (\"F2\")"
+
+#: curses/wicd-curses.py:205
+msgid "wicd-curses help"
+msgstr "Pomoc wicd-curses"
+
+#: data/wicd.ui:9
+msgid "Wicd Network Manager"
+msgstr "Menedżer sieci Wicd"
+
+#: data/wicd.ui:46
+msgid "Create an ad-hoc network"
+msgstr "Stwórz sieć ad-hoc"
+
+#: data/wicd.ui:55
+msgid "Find a hidden network"
+msgstr "Szukaj ukryte sieci"
+
+#: data/wicd.ui:57
+msgid "Enter a hidden network to try to locate."
+msgstr "Wpisz nazwę ukrytej sieci, aby ją wykryć."
+
+#: data/wicd.ui:65
+msgid "Forget network settings"
+msgstr "Usuń ustawienia sieci"
+
+#: data/wicd.ui:89
+msgid "_Switch Off Wi-Fi"
+msgstr "Wyłącz Wi-Fi"
+
+#: data/wicd.ui:104
+msgid "_Disconnect All"
+msgstr "Rozłącz"
+
+#: data/wicd.ui:118
+msgid "_Refresh"
+msgstr "Odśwież"
+
+#: data/wicd.ui:132
+msgid "_Preferences"
+msgstr "Preferencje"
+
+#: data/wicd.ui:146
+msgid "_About"
+msgstr "O progr_amie"
+
+#: data/wicd.ui:223 data/wicd.ui:225
+msgid "Connecting..."
+msgstr "Połączono..."
+
+#: data/wicd.ui:238
+msgid "Cancel the current connection attempt"
+msgstr "Anuluj próbę włączenia bieżącego połączenia"
+
+#: data/wicd.ui:270
+msgid "Configure Scripts"
+msgstr "Wznów skrypt"
+
+#: data/wicd.ui:289
+msgid "Configure scripts to run for this network:"
+msgstr "Skonfiguruj skrypt startowy dla tej sieci:"
+
+#: data/wicd.ui:306
+msgid "Pre-connection Script:"
+msgstr "Uruchomienie skryptu przed rozłączeniem"
+
+#: data/wicd.ui:339
+msgid "Post-connection Script:"
+msgstr "Uruchomienie skryptu po rozłączeniu"
+
+#: data/wicd.ui:372
+msgid "Pre-disconnection Script:"
+msgstr "Uruchomienie skryptu przed rozłączeniem"
+
+#: data/wicd.ui:405
+msgid "Post-disconnection Script:"
+msgstr "Uruchomienie skryptu po rozłączeniu"
+
+#: data/wicd.ui:524
+msgid "Always switch to a wired connection when available"
+msgstr "Przełączanie na połączenie przewodowe, gdy jest dostępne"
+
+#: data/wicd.ui:529
+msgid ""
+"If selected, wicd will automatically connect to a wired network\n"
+"as soon as a cable is plugged in, even if a wireless connection \n"
+"is already active."
+msgstr ""
+"Jeżeli jest zaznaczone, wicd automatycznie połączy się z siecią przewodową\n"
+"jak tylko kabel sieciowy będzie podłączony, nawet jeśli połączenie "
+"bezprzewodowe\n"
+"jest już aktywne."
+
+#: data/wicd.ui:552
+msgid "DNS domain:"
+msgstr "Domena DNS"
+
+#: data/wicd.ui:600
+msgid "<b>Never Connect</b>"
+msgstr "<b>Nowsze połączenie</b>"
+
+#: data/wicd.ui:616
+msgid "Automatically reconnect on network connection loss"
+msgstr "Automatyczne ponowne połączenie po utracie połączenia"
+
+#: data/wicd.ui:635
+msgid "<b>Automatic Reconnection</b>"
+msgstr "<b>Automatyczne łączenie po rozłączeniu</b>"
+
+#: data/wicd.ui:651
+msgid "Use last wired network profile"
+msgstr "Zmień nazwę profilu sieci przewodowej"
+
+#: data/wicd.ui:673
+msgid "Prompt for wired network profile"
+msgstr "Zapytaj o profil sieci przewodowej"
+
+#: data/wicd.ui:696
+msgid "Use default wired network profile"
+msgstr "Zmień nazwę profilu sieci przewodowej"
+
+#: data/wicd.ui:717
+msgid "<b>Wired automatic connection</b>"
+msgstr "Automatyczne łączenie po rozłączeniu"
+
+#: data/wicd.ui:735
+msgid "Wired interface:"
+msgstr "Interfejs przewodowy"
+
+#: data/wicd.ui:753
+msgid "Wireless interface:"
+msgstr "Interfejs bezprzewodowy"
+
+#: data/wicd.ui:793
+msgid "<b>Network Interfaces</b>"
+msgstr "Interfejsy sieciowe"
+
+#: data/wicd.ui:809
+msgid "DNS server 3:"
+msgstr "Serwer DNS"
+
+#: data/wicd.ui:840
+msgid "DNS server 2:"
+msgstr "Serwer DNS"
+
+#: data/wicd.ui:858
+msgid "DNS server 1:"
+msgstr "Serwer DNS"
+
+#: data/wicd.ui:876
+msgid "Search domain:"
+msgstr "Wyszukanie domeny"
+
+#: data/wicd.ui:911
+msgid "<b>Global DNS Servers</b>"
+msgstr "Globalne serwery DNS"
+
+#: data/wicd.ui:970
+msgid ""
+"If enabled, the wired network interface will always be displayed in the main "
+"window. This can be useful if your wired network card does not detect when "
+"the interface is connected to a cable."
+msgstr ""
+"Jeżeli jest zaznaczone, interfejs przewodowy będzie zawsze widoczny w "
+"głównym oknie. Może to być przydatne, jeżeli twoja karta przewodowa nie "
+"wykrywa połączenia kablowego."
+
+#: data/wicd.ui:986
+msgid "<b>Notifications</b>"
+msgstr "<b>Powiadomienia</b>"
+
+#: data/wicd.ui:1060
+msgid "<b>Route Table Flushing</b>"
+msgstr "Czyszczenie tabeli trasowania"
+
+#: data/wicd.ui:1073
+msgid "<b>Wired Link Detection</b>"
+msgstr "Wykrywanie sieci przewodowej"
+
+#: data/wicd.ui:1299
+msgid "<b>DHCP Client</b>"
+msgstr "<b>Klient DHCP</b>"
+
+#: data/wicd.ui:1310
+msgid "<b>Graphical Sudo Application</b>"
+msgstr "<b>Graficzna aplikacja sudo</b>"
+
+#: data/wicd.ui:1431
+msgid ""
+"Hover your mouse over the selected backend \n"
+"to read its description."
+msgstr ""
+"Przejedź kursorem myszy nad wybranym backendem,\n"
+"aby przeczytać jego opis"
+
+#: data/wicd.ui:1484
+msgid "Driver:"
+msgstr "Sterownik"
+
+#: data/wicd.ui:1540
+msgid "<b>Wireless Interface</b>"
+msgstr "Interfejs bezprzewodowy"
+
+#: data/wicd.ui:1554
+msgid "<b>WPA Supplicant</b>"
+msgstr "<b>WPA Suplikant</b>"
+
+#: data/wicd.ui:1566
+msgid "<b>Debugging</b>"
+msgstr "Debugowanie"
+
+#: data/wicd.ui:1584
+msgid "Backend:"
+msgstr "Zaplecze"
+
+#: data/wicd.ui:1611
+msgid "<b>Backend</b>"
+msgstr "<b>Backend</b>"
+
+#: data/wicd.ui:1625
+msgid ""
+"You should almost always use wext as the\n"
+"WPA supplicant driver."
+msgstr "Prawie zawsze należy używać wext jako sterownika suplikanta WPA"
+
+#~ msgid "Help)"
+#~ msgstr "Pomoc)"

@@ -1,0 +1,58 @@
+Installation of Wicd should be done using your distribution package if one
+exists.  If not, the installation is relatively straightforward, but there
+are a few dependencies:
+  1. python (>=2.4, <3.0)
+  2. pygtk (>=2.10)
+  2. dbus and its glib and python bindings
+  3. a dhcp client (dhclient, dhcpcd, and pump are supported)
+  4. wireless-tools (iwlist, iwconfig, etcetera)
+  5. net-tools (ip, route, etcetera)
+  6. a graphical sudo application (gksu, kdesu, and ktsuss are supported),
+     while optional, is strongly recommended
+  7. urwid (if you want to use the curses client - needs version >=0.9.8.3)
+  8. pm-utils (optional for suspend/resume integration)
+     Wicd supports using versions >=1.2.4 -- earlier versions may work just
+     fine, but they are completely unsupported here.
+  9. pybabel
+ 10. rfkill
+ 11. python-appindicator if you want the Unity-compatible appindicator notifications
+
+Next, configure Wicd for installation.  Wicd will, by default, follow the 
+FHS guidelines <http://www.pathname.com/fhs/> (or distribution standards 
+where applicable if we know about them and it's feasible to implement them).
+You can specify exactly where every non-Python file (and some Python files) 
+in Wicd will be placed.  Pass "--help" as an option to the following command
+for more information, otherwise run it as is to configure Wicd for installation.
+  python setup.py configure
+
+Note that setup.py will try to determine if and where to install the autostart
+desktop file for kde (either kde3 or kde4, but not both) and where to install
+the sleep hook for pm-utils.  
+
+If you want native language translations, please remember to run:
+  python setup.py compile_translations
+before the next step.
+
+Finally, do the actual installation.  This step will need to be done as
+root or with sudo in most cases:
+  python setup.py install
+If you are packaging Wicd, you will almost surely want to use the "--root"
+option; for example:
+  python setup.py install --root=/package-dir
+
+To uninstall, you can use (using root or sudo):
+  python setup.py uninstall
+
+You *MUST* run "python setup.py configure" before "python setup.py install" -
+the "configure" step generates wpath.py from wpath.py.in using the paths 
+specified from the arguments to "python setup.py configure". 
+As noted above in the configure step, "python setup.py configure" will use 
+acceptable defaults, so it is usually not necessary to specify any arguments 
+at all.
+
+After installation, especially if Wicd has not been installed before, you 
+will probably need to restart the system message bus (dbus) or reload its 
+configuration.  You will also need to make sure the Wicd init script is
+started at boot.  How to do those things is distribution-dependent, so if 
+you're not sure, ask in your distribution's support area(s).
+

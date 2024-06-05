@@ -1,0 +1,32 @@
+include AUTHORS
+include CHANGES
+include INSTALL
+include LICENSE
+include MANIFEST.in
+include NEWS
+include README
+include uninstall.sh
+include vcsinfo.py
+
+graft cli
+graft curses
+graft data
+graft encryption
+graft gtk
+graft icons
+graft images
+graft in
+graft other
+graft po
+graft tests
+graft wicd
+
+recursive-include man wicd-client.1
+recursive-include . *.py
+recursive-include . *.png
+recursive-include . *.svg
+
+prune build/
+prune .bzr*
+prune .git*
+prune *.log

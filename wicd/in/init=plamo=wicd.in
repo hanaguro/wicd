@@ -1,0 +1,60 @@
+#!/bin/sh
+########################################################################
+# Begin scriptname : wicd
+#
+# Description : start/stop wicd
+#
+# Authors     : KOJIMA
+#
+# Version     : Plamo-7.0
+#
+# Notes       :
+#
+########################################################################
+
+### BEGIN INIT INFO
+# Provides:            wicd
+# Required-Start: dbus
+# Required-Stop: sendsignals
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 2 6
+# Short-Description: starts wicd network manager
+# Description: Wicd is a wireless and wired network manager for Linux.
+# X-LFS-Provided-By:
+### END INIT INFO
+
+. /lib/lsb/init-functions
+
+PIDFILE="%PIDFILE%"
+
+case "${1}" in
+   start)
+      log_info_msg "Starting wicd network manager"
+      start_daemon /usr/bin/wicd
+      evaluate_retval
+      ;;
+
+   stop)
+      log_info_msg "Stopping wicd network manager"
+      /usr/bin/wicd -k
+      evaluate_retval
+      if [ -f $PIDFILE ]; then
+	  rm -f $PIDFILE
+      fi
+      ;;
+
+   restart)
+      ${0} stop
+      sleep 1
+      ${0} start
+      ;;
+
+   *)
+      echo "Usage: ${0} {start|stop|restart}"
+      exit 1
+      ;;
+esac
+
+exit 0
+
+# End scriptname
