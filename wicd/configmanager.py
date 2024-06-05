@@ -115,7 +115,6 @@ class ConfigManager(RawConfigParser):
             if value.startswith(' ') or value.endswith(' '):
                 value = "%(ws)s%(value)s%(ws)s" % {"value" : value,
                                                 "ws" : self.mrk_ws}
-        print(f"Setting option {option} in section {section} to value {value}")
         RawConfigParser.set(self, section, str(option), value)
         if write:
             self.write()
