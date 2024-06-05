@@ -997,9 +997,7 @@ class WirelessConnectThread(ConnectThread):
 
         # Generate PSK and authenticate if needed.
         if self.wpa_driver != 'ralink legacy':
-            print(f"Debug: About to call generate_psk_and_authenticate with wiface = {wiface}")
             success = self.generate_psk_and_authenticate(wiface)
-            print(f"Debug: generate_psk_and_authenticate returned {success}")
 
 
         # Associate.
@@ -1078,11 +1076,9 @@ class WirelessConnectThread(ConnectThread):
 
     @abortable
     def generate_psk_and_authenticate(self, wiface):
-        print(f"Debug: generate_psk_and_authenticate called with wiface = {wiface}")  # デバッグ用のログを追加
         network = self.network
 
         enctype = network.get('enctype')
-        print(f"Debug: enctype = {enctype}")  # デバッグ用のログを追加
 
         if enctype is None:
             print("Error: Encryption type is None")  # エラーメッセージを追加
