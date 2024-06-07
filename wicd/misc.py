@@ -333,6 +333,9 @@ def ParseEncryption(network):
                             elif cur_val == 'KEY_INDEX':
                                 rep_val = '0'
                         if rep_val:
+                            if cur_val == 'APSK' and rep_val:
+                                if not (rep_val.startswith('"') and rep_val.endswith('"')):
+                                    rep_val = f'"{rep_val}"'
                             line = line.replace("$_%s" % cur_val, str(rep_val))
                         else:
                             print(("Ignoring template line: '%s'" % line))
@@ -355,7 +358,6 @@ def ParseEncryption(network):
         # We could do this above, but we'd like to read protect
         # them before we write, so that it can't be read.
         f.write(config_file)
-
 
 
 def LoadEncryptionMethods(wired=False):

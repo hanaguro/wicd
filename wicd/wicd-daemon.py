@@ -1128,13 +1128,8 @@ class WirelessDaemon(dbus.service.Object, object):
     @dbus.service.method('org.wicd.daemon.wireless', in_signature='iss', out_signature='b')
     def SetWirelessProperty(self, netid, prop, value):
         """ Sets property to value in network specified. """
-        # Debug messages
         print(f"SetWirelessProperty called with netid={netid}, prop={prop}, value={value}")
 
-        # Debug before sanitizing
-        print(f"Original prop: {prop}")
-
-        # We don't write script settings here.
         prop = misc.sanitize_config(prop)
 
         if prop.endswith('script'):
@@ -1142,16 +1137,12 @@ class WirelessDaemon(dbus.service.Object, object):
                 + ' is not permitted.')
             return False
 
-        if prop in ('key_index', 'apsk'):
-            # For 'apsk', add quotes around the value
-            if prop == 'apsk':
-                value = f'"{value}"'
-            self.LastScan[netid][prop] = misc.to_unicode(misc.Noneify(value, False))
-        else:
-            self.LastScan[netid][prop] = misc.to_unicode(misc.Noneify(value))
+        self.LastScan[netid][prop] = misc.to_unicode(misc.Noneify(value))
 
         print(f"Property set: {self.LastScan[netid]}")
         return True
+
+
 
 
 
@@ -1246,23 +1237,33 @@ class WirelessDaemon(dbus.service.Object, object):
 
         apsk = self.LastScan[nid].get('apsk')
         if apsk:
+            if not (apsk.startswith('"') and apsk.endswith('"')):
+                apsk = f'"{apsk}"'
             bssid = self.LastScan[nid].get("bssid")
             if bssid:
                 config_file_path = os.path.join('/var/lib/wicd/configurations', bssid.replace(":", "").lower())
-                with open(config_file_path, 'r') as file:
-                    config_data = file.read()
+                if os.path.exists(config_file_path):
+                    with open(config_file_path, 'r') as file:
+                        config_data = file.read()
+                else:
+                    # Create the file if it does not exist
+                    config_data = f'ap_scan=1\nctrl_interface=/var/run/wpa_supplicant\nnetwork={{\n       ssid="{self.LastScan[nid]["essid"]}"\n       scan_ssid=1\n       proto=RSN\n       key_mgmt=WPA-PSK\n       pairwise=CCMP TKIP\n       group=CCMP TKIP\n       psk={apsk}\n}}'
 
-                # Ensure psk is not double quoted
-                config_data = config_data.replace('psk=$_APSK', f'psk="{apsk.strip()}"')
+                # Update the psk line to ensure it is correctly quoted
+                lines = config_data.split('\n')
+                for i, line in enumerate(lines):
+                    if line.strip().startswith('psk='):
+                        lines[i] = f'       psk={apsk}'
 
                 with open(config_file_path, 'w') as file:
-                    file.write(config_data)
+                    file.write('\n'.join(lines))
             else:
                 print(f"Error: BSSID for network {self.LastScan[nid]['essid']} is None or missing")
         else:
             print(f"Error: PSK for network {self.LastScan[nid]['essid']} is None or missing")
 
         self.daemon.UpdateState()
+
 
     @dbus.service.method('org.wicd.daemon.wireless')
     def CheckIfWirelessConnecting(self):
@@ -1336,10 +1337,6 @@ class WirelessDaemon(dbus.service.Object, object):
     @dbus.service.method('org.wicd.daemon.wireless')
     def SaveWirelessNetworkProfile(self, nid):
         """ Writes a wireless profile to disk. """
-        def write_script_ent(prof, script):
-            if not self.config.has_option(prof, script):
-                self.config.set(prof, script, None)
-
         cur_network = self.LastScan[nid]
         bssid_key = cur_network["bssid"]
         essid_key = "essid:%s" % cur_network["essid"]
@@ -1347,8 +1344,6 @@ class WirelessDaemon(dbus.service.Object, object):
         self.config.remove_section(bssid_key)
         self.config.add_section(bssid_key)
 
-        # We want to write the essid in addition to bssid
-        # sections if global settings are enabled.
         self.config.remove_section(essid_key)
         if cur_network.get("use_settings_globally", False):
             self.config.add_section(essid_key)
@@ -1358,23 +1353,13 @@ class WirelessDaemon(dbus.service.Object, object):
             profile_sections.append(essid_key)
 
         for section in profile_sections:
-            self.config.set(section, "essid", cur_network["essid"])
-            self.config.set(section, "hidden", cur_network["hidden"])
-            self.config.set(section, "channel", cur_network["channel"])
-            self.config.set(section, "bssid", cur_network["bssid"])
-            self.config.set(section, "mode", cur_network["mode"])
-            self.config.set(section, "encryption", cur_network["encryption"])
-            self.config.set(section, "encryption_method", cur_network["encryption_method"])
+            for key, value in cur_network.items():
+                if key == 'apsk' and value is not None:
+                    if not (value.startswith('"') and value.endswith('"')):
+                        value = f'"{value}"'
+                self.config.set(section, key, str(value))
 
-            self.config.set(section, "apsk", cur_network.get("apsk", None))
-
-            write_script_ent(section, "beforescript")
-            write_script_ent(section, "afterscript")
-            write_script_ent(section, "predisconnectscript")
-            write_script_ent(section, "postdisconnectscript")
-
-        # Save the configuration to file
-        with open(wireless_conf, 'wb') as configfile:
+        with open(wireless_conf, 'w') as configfile:
             self.config.write(configfile)
 
         print(f"Profile saved: {profile_sections}")
