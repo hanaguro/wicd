@@ -263,7 +263,7 @@ class ConnectionStatus:
             from_wireless = True
         else:
             from_wireless = False
-        self.auto_reconnect(from_wireless)
+            self.auto_reconnect(from_wireless)
         return self.update_state(state)
 
     def update_state(self, state, wired_ip=None, wifi_ip=None):
