@@ -7,6 +7,25 @@ reusable for other purposes as well.
 
 """
 
+#
+#   Copyright (C) 2008-2009 Adam Blackburn
+#   Copyright (C) 2008-2009 Dan O'Reilly
+#   Copyright (C) 2011      David Paleino
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License Version 2 as
+#   published by the Free Software Foundation.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+
 import sys, os
 import hashlib
 import binascii
@@ -137,7 +156,7 @@ class ConfigManager(RawConfigParser):
 
         if self.has_option(section, option):
             ret = RawConfigParser.get(self, section, option)
-            if (isinstance(ret, str) and ret.startswith(self.mrk_ws)
+            if (isinstance(ret, str) and ret.startswith(self.mrk_ws) 
                 and ret.endswith(self.mrk_ws)):
                 ret = ret[3:-3]
             ret = to_unicode(ret)
@@ -279,7 +298,3 @@ class ConfigManager(RawConfigParser):
 
         p._write_one()
 
-# デバッグ用プリントステートメントを追加して動作確認
-if __name__ == "__main__":
-    config = ConfigManager("/var/lib/wicd/configurations/5041b92461a1", debug=True)
-    print(config)
