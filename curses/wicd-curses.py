@@ -173,6 +173,8 @@ class NetLabel(urwid.WidgetWrap):
 class appGUI():
     """The UI itself, all glory belongs to it!"""
     def __init__(self):
+        self.conn_status = False
+        self.tcount = 0  # Counter for connection twirl indicator
         self.size = ui.get_cols_rows()
         self.screen_locker = urwid.Filler(urwid.Text(('important', _('Scanning networks... stand by...')), align='center'))
         self.no_wlan = urwid.Filler(urwid.Text(('important', _('No wireless networks found.')), align='center'))
