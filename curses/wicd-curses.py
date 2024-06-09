@@ -2,24 +2,70 @@
 
 CURSES_REV = "1.0.0"  # 適切なバージョン番号を設定
 
+""" wicd-curses. (curses/urwid-based) console interface to wicd
+
+Provides a console UI for wicd, so that people with broken X servers can
+at least get a network connection.  Or those who don't like using X and/or GTK.
+
+"""
+
+#       Copyright (C) 2008-2009 Andrew Psaltis
+
+#       This program is free software; you can redistribute it and/or modify
+#       it under the terms of the GNU General Public License as published by
+#       the Free Software Foundation; either version 2 of the License, or
+#       (at your option) any later version.
+#
+#       This program is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#       GNU General Public License for more details.
+#
+#       You should have received a copy of the GNU General Public License
+#       along with this program; if not, write to the Free Software
+#       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#       MA 02110-1301, USA.
+
+
+# This contains/will contain A LOT of code from the other parts of wicd.
+#
+# This is probably due to the fact that I did not really know what I was doing
+# when I started writing this.  It works, so I guess that's all that matters.
+#
+# Comments, criticisms, patches, bug reports all welcome!
+
+# Filter out a confusing urwid warning in python 2.6.
+# This is valid as of urwid version 0.9.8.4
 import warnings
 warnings.filterwarnings(
     "ignore",
     "The popen2 module is deprecated.  Use the subprocess module."
 )
 import urwid
+# DBus communication stuff
 from dbus import DBusException
 from gi.repository import GLib as gobject
+
+
+# Other important wicd-related stuff
 from wicd import wpath
 from wicd import misc
 from wicd import dbusmanager
+
+# Internal Python stuff
 import sys
+
+# SIGQUIT signal handling
 import signal
+
+# Curses UIs for other stuff
 from curses_misc import ComboBox, Dialog2, NSelListBox, SelText, OptCols
 from curses_misc import TextDialog, InputDialog, error, DynEdit, DynIntEdit
 from prefs_curses import PrefsDialog
+
 import netentry_curses
 from netentry_curses import WirelessSettingsDialog, WiredSettingsDialog
+
 from optparse import OptionParser
 from wicd.translations import _
 
@@ -27,6 +73,10 @@ ui = None
 loop = None
 bus = daemon = wireless = wired = None
 
+########################################
+##### SUPPORT CLASSES
+########################################
+# Yay for decorators!
 def wrap_exceptions(func):
     """ Decorator to wrap exceptions. """
     def wrapper(*args, **kargs):
@@ -45,9 +95,20 @@ def wrap_exceptions(func):
                 'Please restart the daemon, and then restart wicd-curses.'), file=sys.stderr)
             raise
         except:
+            # Quit the loop
+            #if 'loop' in locals():
             loop.quit()
+            # Zap the screen
             ui.stop()
+            # Print out standard notification:
+            # This message was far too scary for humans, so it's gone now.
+            # print >> sys.stderr, "\n" + _('EXCEPTION! Please report this '
+            # 'to the maintainer and file a bug report with the backtrace '
+            # 'below:')
+            # Flush the buffer so that the notification is always above the
+            # backtrace
             sys.stdout.flush()
+            # Raise the exception
             raise
 
     wrapper.__name__ = func.__name__
@@ -64,18 +125,23 @@ class WiredComboBox(ComboBox):
         self.set_list(l)
 
 class NetLabel(urwid.WidgetWrap):
+    """ Wireless network label. """
     def __init__(self, i, is_active):
+        # Pick which strength measure to use based on what the daemon says
+        # gap allocates more space to the first module
         if daemon.GetSignalDisplayType() == 0:
             strenstr = 'quality'
-            gap = 4
+            gap = 4  # Allow for 100%
         else:
             strenstr = 'strength'
-            gap = 7
+            gap = 7  # -XX dbm = 7
         self.id = i
+        # All of that network property stuff
         self.stren = daemon.FormatSignalForPrinting(
                 str(wireless.GetWirelessProperty(self.id, strenstr)))
         self.essid = wireless.GetWirelessProperty(self.id, 'essid')
         self.bssid = wireless.GetWirelessProperty(self.id, 'bssid')
+
         if wireless.GetWirelessProperty(self.id, 'encryption'):
             self.encrypt = wireless.GetWirelessProperty(self.id, 'encryption_method')
         else:
@@ -93,18 +159,20 @@ class NetLabel(urwid.WidgetWrap):
         super().__init__(w)
 
     def selectable(self):
+        """ Return whether the widget is selectable. """
         return True
 
     def keypress(self, size, key):
+        """ Handle keypresses. """
         return self._w.keypress(size, key)
 
     def connect(self):
+        """ Execute connection. """
         wireless.ConnectWireless(self.id)
 
 class appGUI():
+    """The UI itself, all glory belongs to it!"""
     def __init__(self):
-        self.conn_status = False
-        self.tcount = 0
         self.size = ui.get_cols_rows()
         self.screen_locker = urwid.Filler(urwid.Text(('important', _('Scanning networks... stand by...')), align='center'))
         self.no_wlan = urwid.Filler(urwid.Text(('important', _('No wireless networks found.')), align='center'))
@@ -152,11 +220,15 @@ class appGUI():
         self.pref = None
         self.update_status()
 
+
+
     def doScan(self, sync=False):
+        """ Start wireless scan. """
         self.scanning = True
         wireless.Scan(False)
 
     def init_other_optcols(self):
+        """ Init "tabbed" preferences dialog. """
         self.prefCols = OptCols([
             ('S', _('Save')),
             ('page up', _('Tab Left'), ),
@@ -169,6 +241,7 @@ class appGUI():
         ], self.handle_keys)
 
     def lock_screen(self):
+        """ Lock the screen. """
         if self.diag_type == 'pref':
             self.do_diag_lock = True
             return True
@@ -177,6 +250,7 @@ class appGUI():
         self.update_ui()
 
     def unlock_screen(self):
+        """ Unlock the screen. """
         if self.do_diag_lock:
             self.do_diag_lock = False
             return True
@@ -187,12 +261,14 @@ class appGUI():
         self.update_ui()
 
     def raise_hidden_network_dialog(self):
+        """ Show hidden network dialog. """
         dialog = InputDialog(
             ('header', _('Select Hidden Network ESSID')),
             7, 30, _('Scan')
         )
         exitcode, hidden = dialog.run(ui, self.frame)
         if exitcode != -1:
+            # That dialog will sit there for a while if I don't get rid of it
             self.update_ui()
             wireless.SetHiddenNetworkESSID(misc.noneToString(hidden))
             wireless.Scan(False)
@@ -210,13 +286,20 @@ class appGUI():
                 where = self.thePile.get_focus().get_focus()[1]
         self.focusloc = [wlessorwired, where]
 
+    # Be clunky until I get to a later stage of development.
+    # Update the list of networks.  Usually called by DBus.
     @wrap_exceptions
     def update_netlist(self, state=None, x=None, force_check=False, firstrun=False):
+        """ Update the list of networks. """
+        # Don't even try to do this if we are running a dialog
         if self.diag:
             return
+        # Run focus-collecting code if we are not running this for the first
+        # time
         if not firstrun:
             self.update_focusloc()
             self.list_header.original_widget.set_text(gen_list_header())
+        # Updates the overall network list.
         if not state:
             state, trash = daemon.GetConnectionStatus()
         if force_check or self.prev_state != state:
@@ -239,11 +322,13 @@ class appGUI():
                 )
                 if not firstrun:
                     self.frame.body = self.thePile
+
                 self.thePile.set_focus(self.focusloc[0])
                 if self.focusloc[0] == self.WIRED_IDX:
                     self.thePile.get_focus().original_widget.set_focus(self.focusloc[1])
                 else:
                     if self.wlessLB != self.no_wlan:
+                        # Set the focus to the last selected item, but never past the length of the list
                         self.thePile.get_focus().set_focus(min(self.focusloc[1], len(wlessL) - 1))
                     else:
                         self.thePile.set_focus(self.wiredCB)
@@ -257,7 +342,9 @@ class appGUI():
                 if self.focusloc[1] is None:
                     self.focusloc[1] = 0
                 if self.wlessLB != self.no_wlan:
+                    # Set the focus to the last selected item, but never past the length of the list
                     self.wlessLB.set_focus(min(self.focusloc[1], len(wlessL) - 1))
+
         self.prev_state = state
         if not firstrun:
             self.update_ui()
@@ -265,11 +352,14 @@ class appGUI():
             if wired.GetDefaultWiredNetwork() is not None:
                 self.wiredCB.original_widget.set_focus(wired.GetWiredProfileList().index(wired.GetDefaultWiredNetwork()))
 
+
     @wrap_exceptions
     def update_status(self):
+        """ Update the footer / statusbar. """
         wired_connecting = wired.CheckIfWiredConnecting()
         wireless_connecting = wireless.CheckIfWirelessConnecting()
         self.connecting = wired_connecting or wireless_connecting
+
         fast = not daemon.NeedsExternalCalls()
         if self.connecting:
             if not self.conn_status:
@@ -291,6 +381,7 @@ class appGUI():
                 return True
 
     def set_connecting_status(self, fast):
+        """ Set connecting status. """
         wired_connecting = wired.CheckIfWiredConnecting()
         wireless_connecting = wireless.CheckIfWirelessConnecting()
         if wireless_connecting:
@@ -302,20 +393,33 @@ class appGUI():
             stat = wireless.CheckWirelessConnectingMessage()
             return self.set_status("%s: %s" % (essid, stat), True)
         if wired_connecting:
-            return self.set_status(_('Wired Network') +
-                    ': ' + wired.CheckWiredConnectingMessage(), True)
+            return self.set_status(_('Wired Network') + ': ' + wired.CheckWiredConnectingMessage(), True)
         else:
             self.conn_status = False
             return False
 
+
     def set_status(self, text, from_idle=False):
+        """ Set the status text. """
+        # Set the status text, usually called by the update_status method
+        # from_idle : a check to see if we are being called directly from the
+        # mainloop
+        # If we are being called as the result of trying to connect to
+        # something, and we aren't connecting to something, return False
+        # immediately.
+
+        # Cheap little indicator stating that we are actually connecting
         twirl = ['|', '/', '-', '\\']
+
         if from_idle and not self.connecting:
             self.update_status()
             self.conn_status = False
             return False
         toAppend = ''
+        # If we are connecting and being called from the idle function, spin
+        # the wheel.
         if from_idle and self.connecting:
+            # This is probably the wrong way to do this, but it works for now.
             self.tcount += 1
             toAppend = twirl[self.tcount % 4]
         self.status_label.original_widget.set_text(text + ' ' + toAppend)
@@ -323,16 +427,22 @@ class appGUI():
         return True
 
     def dbus_scan_finished(self):
+        """ Handle DBus scan finish. """
+        # I'm pretty sure that I'll need this later.
+        #if not self.connecting:
+        #    gobject.idle_add(self.refresh_networks, None, False, None)
         self.unlock_screen()
         self.scanning = False
 
     def dbus_scan_started(self):
+        """ Handle DBus scan start. """
         self.scanning = True
         if self.diag_type == 'conf':
             self.restore_primary()
         self.lock_screen()
 
     def restore_primary(self):
+        """ Restore screen. """
         self.diag_type = 'none'
         if self.do_diag_lock or self.scanning:
             self.frame.set_body(self.screen_locker)
@@ -344,7 +454,9 @@ class appGUI():
         self.update_ui()
 
     def handle_keys(self, keys):
+        """ Handle keys. """
         if not self.diag:
+            # Handle keystrokes
             if "f8" in keys or 'Q' in keys or 'q' in keys:
                 loop.quit()
             if "f5" in keys or 'R' in keys:
@@ -370,6 +482,7 @@ class appGUI():
                         self.diag.ready_widgets(ui, self.frame)
                         self.frame.set_body(self.diag)
                     else:
+                        # wireless list only other option
                         trash, pos = self.thePile.get_focus().get_focus()
                         self.diag = WirelessSettingsDialog(pos, self.frame)
                         self.diag.ready_widgets(ui, self.frame)
@@ -382,12 +495,15 @@ class appGUI():
                         self.special = focus
                         self.connect("wired", 0)
                     else:
+                        # wless list only other option, if it is around
                         if self.wlessLB != self.no_wlan:
                             wid, pos = self.thePile.get_focus().get_focus()
                             self.connect("wireless", pos)
             if "esc" in keys:
+                # Force disconnect here if connection in progress
                 if self.connecting:
                     daemon.CancelConnect()
+                    # Prevents automatic reconnecting if that option is enabled
                     daemon.SetForcedDisconnect(True)
             if "P" in keys:
                 if not self.pref:
@@ -403,12 +519,15 @@ class appGUI():
                 self.diag = self.pref
                 self.diag_type = 'pref'
                 self.frame.set_body(self.diag)
+                # Halt here, keypress gets passed to the dialog otherwise
                 return True
             if "A" in keys:
                 about_dialog(self.frame)
             if "I" in keys:
                 self.raise_hidden_network_dialog()
             if "H" in keys or 'h' in keys or '?' in keys:
+                # FIXME I shouldn't need this, OptCols messes up this one
+                # particular button
                 if not self.diag:
                     help_dialog(self.frame)
             if "S" in keys:
@@ -444,6 +563,7 @@ class appGUI():
                     if confirm == 1:
                         for x in data['bssid']:
                             wireless.DeleteWirelessNetwork(x)
+
         for k in keys:
             if urwid.VERSION < (1, 0, 0):
                 check_mouse_event = urwid.is_mouse_event
@@ -459,6 +579,9 @@ class appGUI():
                 if  k == 'esc' or k == 'q' or k == 'Q':
                     self.restore_primary()
                     break
+                # F10 has been changed to S to avoid using function keys,
+                # which are often caught by the terminal emulator.
+                # But F10 still works, because it doesn't hurt and some users might be used to it.
                 if k == 'f10' or k == 'S' or k == 's':
                     self.diag.save_settings()
                     self.restore_primary()
@@ -468,9 +591,11 @@ class appGUI():
                 continue
 
     def call_update_ui(self, source, cb_condition):
+        """ Update UI. """
         self.update_ui(True)
         return True
 
+    # Redraw the screen
     @wrap_exceptions
     def update_ui(self, from_key=False):
         if not ui._started:
@@ -483,7 +608,9 @@ class appGUI():
             gobject.source_remove(self.update_tag)
         return False
 
+
     def connect(self, nettype, networkid, networkentry=None):
+        """ Initiates the connection process in the daemon. """
         if nettype == "wireless":
             wireless.ConnectWireless(networkid)
         elif nettype == "wired":
@@ -726,9 +853,14 @@ class ForgetDialog(Dialog2):
     def on_exit(self, exitcode):
         return exitcode, self.to_remove
 
+########################################
+##### INITIALIZATION FUNCTIONS
+########################################
 def main():
-    global ui, dlogger
+    """ Main function. """
+    global ui, loop
     misc.RenameProcess('wicd-curses')
+
     ui = urwid.raw_display.Screen()
     ui.register_palette([
         ('body', 'default', 'default'),
@@ -752,11 +884,9 @@ def main():
     signal.signal(signal.SIGQUIT, handle_sigquit)
     urwid.set_encoding('utf8')
 
-    # run_wrapper をコンテキストマネージャに置き換え
     with ui.start():
         run()
 
-@wrap_exceptions
 def run():
     global loop
     loop = gobject.MainLoop()
@@ -769,10 +899,15 @@ def run():
     fds = ui.get_input_descriptors()
     for fd in fds:
         gobject.io_add_watch(fd, gobject.IO_IN, app.call_update_ui)
-    app.update_ui()
+    app.update_ui()  # Ensure UI is drawn initially
     loop.run()
 
+
+
+
+# Mostly borrowed from gui.py
 def setup_dbus(force=True):
+    """ Initialize DBus. """
     global bus, daemon, wireless, wired
     try:
         dbusmanager.connect_to_dbus()
@@ -793,8 +928,12 @@ def setup_dbus(force=True):
     netentry_curses.dbus_init(dbus_ifaces)
     return True
 
+
 setup_dbus()
 
+########################################
+##### MAIN ENTRY POINT
+########################################
 if __name__ == '__main__':
     try:
         parser = OptionParser(
