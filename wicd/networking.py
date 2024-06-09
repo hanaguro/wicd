@@ -933,6 +933,7 @@ class WirelessConnectThread(ConnectThread):
         self.bitrate = bitrate
         self.allow_lower_bitrates = allow_lower_bitrates
 
+        """ takahiro
         # ネットワーク辞書にenctypeを追加
         if 'encryption_method' in self.network:
             encryption_method = self.network['encryption_method'].lower()
@@ -946,6 +947,7 @@ class WirelessConnectThread(ConnectThread):
                 self.network['enctype'] = 'none'
         else:
             self.network['enctype'] = 'none'
+        takahiro """
 
     def _connect(self):
         """ The main function of the connection thread.
@@ -1076,11 +1078,13 @@ class WirelessConnectThread(ConnectThread):
     def generate_psk_and_authenticate(self, wiface):
         network = self.network
 
+        """ takahiro
         enctype = network.get('enctype')
 
         if enctype is None:
             print("Error: Encryption type is None")  # エラーメッセージを追加
             return False
+        takahiro """
 
         """ Generates a PSK and authenticates if necessary.
 
