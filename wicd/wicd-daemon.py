@@ -1128,23 +1128,18 @@ class WirelessDaemon(dbus.service.Object, object):
     @dbus.service.method('org.wicd.daemon.wireless', in_signature='iss', out_signature='b')
     def SetWirelessProperty(self, netid, prop, value):
         """ Sets property to value in network specified. """
-        print(f"SetWirelessProperty called with netid={netid}, prop={prop}, value={value}")
-
+        # We don't write script settings here.
         prop = misc.sanitize_config(prop)
-
         if prop.endswith('script'):
             print('Setting script properties through the daemon' \
                 + ' is not permitted.')
             return False
-
-        self.LastScan[netid][prop] = misc.to_unicode(misc.Noneify(value))
-
-        print(f"Property set: {self.LastScan[netid]}")
-        return True
-
-
-
-
+        # whitelist some props that need different handling
+        if prop in ('key_index', ):
+            self.LastScan[netid][prop] = \
+                misc.to_unicode(misc.Noneify(value, False))
+        else:
+            self.LastScan[netid][prop] = misc.to_unicode(misc.Noneify(value))
 
     @dbus.service.method('org.wicd.daemon.wireless')
     def DetectWirelessInterface(self):
@@ -1218,13 +1213,20 @@ class WirelessDaemon(dbus.service.Object, object):
     def ConnectWireless(self, nid):
         """ Connect to the wireless network specified by nid """
         self.SaveWirelessNetworkProfile(nid)
+        # Will returned instantly, that way we don't hold up dbus.
+        # CheckIfWirelessConnecting can be used to test if the connection
+        # is done.
         self.wifi.before_script = self.GetWirelessProperty(nid, 'beforescript')
         self.wifi.after_script = self.GetWirelessProperty(nid, 'afterscript')
-        self.wifi.pre_disconnect_script = self.GetWirelessProperty(nid, 'predisconnectscript')
-        self.wifi.post_disconnect_script = self.GetWirelessProperty(nid, 'postdisconnectscript')
+        self.wifi.pre_disconnect_script = self.GetWirelessProperty(nid,
+                                                        'predisconnectscript')
+        self.wifi.post_disconnect_script = self.GetWirelessProperty(nid,
+                                                        'postdisconnectscript')
         self.wifi.bitrate = self.GetWirelessProperty(nid, 'bitrate')
-        self.wifi.allow_lower_bitrates = self.GetWirelessProperty(nid, 'allow_lower_bitrates')
+        self.wifi.allow_lower_bitrates = self.GetWirelessProperty(nid,
+                                                        'allow_lower_bitrates')
         print(f'Connecting to wireless network {self.LastScan[nid]["essid"]}')
+        # disconnect to make sure that scripts are run
         self.wifi.Disconnect()
         self.daemon.wired_bus.wired.Disconnect()
         self.daemon.SetForcedDisconnect(False)
@@ -1284,12 +1286,9 @@ class WirelessDaemon(dbus.service.Object, object):
         """ Returns the wireless interface's status code. """
         if self.wifi.connecting_thread:
             stat = self.wifi.connecting_thread.GetStatus()
-#            print(f"Current wireless connecting status: {stat}")
             return stat
         else:
-            print("No active wireless connection thread.")
             return False
-
 
     @dbus.service.method('org.wicd.daemon.wireless')
     def CheckWirelessConnectingMessage(self):
@@ -1297,7 +1296,6 @@ class WirelessDaemon(dbus.service.Object, object):
         if self.wifi.connecting_thread:
             stat = self.CheckWirelessConnectingStatus()
             message = _status_dict.get(stat, "Unknown status")
-            print(f"Current wireless connecting message: {message}")
             return message
         else:
             print("No active wireless connection thread.")
@@ -1337,6 +1335,10 @@ class WirelessDaemon(dbus.service.Object, object):
     @dbus.service.method('org.wicd.daemon.wireless')
     def SaveWirelessNetworkProfile(self, nid):
         """ Writes a wireless profile to disk. """
+        def write_script_ent(prof, script):
+            if not self.config.has_option(prof, script):
+                self.config.set(prof, script, None)
+
         cur_network = self.LastScan[nid]
         bssid_key = cur_network["bssid"]
         essid_key = "essid:%s" % cur_network["essid"]
@@ -1344,6 +1346,8 @@ class WirelessDaemon(dbus.service.Object, object):
         self.config.remove_section(bssid_key)
         self.config.add_section(bssid_key)
 
+        # We want to write the essid in addition to bssid
+        # sections if global settings are enabled.
         self.config.remove_section(essid_key)
         if cur_network.get("use_settings_globally", False):
             self.config.add_section(essid_key)
@@ -1351,19 +1355,29 @@ class WirelessDaemon(dbus.service.Object, object):
         profile_sections = [bssid_key]
         if cur_network.get("use_settings_globally", False):
             profile_sections.append(essid_key)
-
         for section in profile_sections:
             for key, value in cur_network.items():
                 if key == 'apsk' and value is not None:
                     if not (value.startswith('"') and value.endswith('"')):
                         value = f'"{value}"'
-                self.config.set(section, key, str(value))
+                if key not in ['quality', 'strength', 'bitrates', 'has_profile']:
+                    self.config.set(section, key, str(value))
+
+
+        write_script_ent(bssid_key, "beforescript")
+        write_script_ent(bssid_key, "afterscript")
+        write_script_ent(bssid_key, "predisconnectscript")
+        write_script_ent(bssid_key, "postdisconnectscript")
+
+        if cur_network.get("use_settings_globally", False):
+            write_script_ent(essid_key, "beforescript")
+            write_script_ent(essid_key, "afterscript")
+            write_script_ent(essid_key, "predisconnectscript")
+            write_script_ent(essid_key, "postdisconnectscript")
 
         with open(wireless_conf, 'w') as configfile:
-            self.config.write(configfile)
-
-        print(f"Profile saved: {profile_sections}")
-
+            self.config.write(configfile) # Caution! If you do not use self.config.write(configfile), the apsk will become invalid.
+            print(f"Profile saved: {profile_sections}")
 
 
     @dbus.service.method('org.wicd.daemon.wireless')
