@@ -11,7 +11,6 @@ class TrayIcon() -- Parent class of TrayIconGUI and IconConnectionInfo.
         and updates connection status.
     class TrayIconGUI() -- Child class of TrayIcon which implements the tray.
         icon itself.  Parent class of StatusTrayIconGUI and EggTrayIconGUI.
-    class IndicatorTrayIconGUI() -- Implements the tray icon using appindicator.Indicator.
     class StatusTrayIconGUI() -- Implements the tray icon using a
                                  gtk.StatusIcon.
     class EggTrayIconGUI() -- Implements the tray icon using egg.trayicon.
@@ -38,28 +37,16 @@ class TrayIcon() -- Parent class of TrayIconGUI and IconConnectionInfo.
 #
 
 import sys
-import gtk
-from gi.repository import GLib as gobject
+from gi.repository import Gtk as gtk, Pango as pango, GObject as gobject
 import getopt
 import os
-import pango
 import atexit
 from dbus import DBusException
 
-import pygtk
-pygtk.require('2.0')
-
-USE_APP_INDICATOR = True
-try:
-    import appindicator
-except ImportError:
-    USE_APP_INDICATOR = False
-
 HAS_NOTIFY = True
 try:
-    import pynotify
-    if not pynotify.init("Wicd"):
-        HAS_NOTIFY = False
+    from gi.repository import Notify
+    Notify.init("Wicd")
 except ImportError:
     HAS_NOTIFY = False
 
@@ -74,15 +61,6 @@ from wicd.translations import _
 
 ICON_AVAIL = True
 USE_EGG = False
-# Import egg.trayicon if we're using an older gtk version
-if not hasattr(gtk, "StatusIcon"):
-    try:
-        import egg.trayicon
-        USE_EGG = True
-    except ImportError:
-        print(('Unable to load tray icon: Missing both egg.trayicon and ' + \
-            'gtk.StatusIcon modules.'))
-        ICON_AVAIL = False
 
 misc.RenameProcess("wicd-client")
 
@@ -92,7 +70,7 @@ if __name__ == '__main__':
 daemon = wireless = wired = lost_dbus_id = None
 DBUS_AVAIL = False
 
-theme = gtk.icon_theme_get_default()
+theme = gtk.IconTheme.get_default()
 theme.append_search_path(wpath.images)
 
 
@@ -127,13 +105,14 @@ class NetworkMenuItem(gtk.ImageMenuItem):
     """ Network menu item. """
     def __init__(self, lbl, is_active=False):
         gtk.ImageMenuItem.__init__(self)
-        self.label = gtk.Label(lbl)
+        self.label = gtk.Label(label=lbl)
+        self.label.set_xalign(0.0)  # Left-align the label
         if is_active:
             atrlist = pango.AttrList()
-            atrlist.insert(pango.AttrWeight(pango.WEIGHT_BOLD, 0, 50))
+            atrlist.insert(pango.AttrWeight(pango.Weight.BOLD, 0, 50))
             self.label.set_attributes(atrlist)
-        self.label.set_justify(gtk.JUSTIFY_LEFT)
-        self.label.set_alignment(0, 0)
+        self.label.set_justify(gtk.Justification.LEFT)
+        self.label.set_xalign(0)
         self.add(self.label)
         self.label.show()
 
@@ -152,9 +131,7 @@ class TrayIcon(object):
         self.max_snd_gain = 10000
         self.max_rcv_gain = 10000
 
-        if USE_APP_INDICATOR:
-            self.tr = self.IndicatorTrayIconGUI(self)
-        elif USE_EGG:
+        if USE_EGG:
             self.tr = self.EggTrayIconGUI(self)
         else:
             self.tr = self.StatusTrayIconGUI(self)
@@ -202,7 +179,7 @@ class TrayIcon(object):
             self.tr = tr
             self.last_sndbytes = -1
             self.last_rcvbytes = -1
-            self.max_snd_gain = 10000
+            self.max_snd_gain = 100
             self.max_rcv_gain = 10000
             self.animate = animate
 
@@ -234,28 +211,29 @@ class TrayIcon(object):
             Updates the trayicon tooltip based on current connection status
             """
             if (self.network_type == "none"):
-                self.tr.set_tooltip(_('Not connected'))
+                self.tr.set_tooltip_text(_('Not connected'))
             elif (self.network_type == "wireless"):
-                self.tr.set_tooltip(_('Connected to $A at $B (IP: $C)')
+                self.tr.set_tooltip_text(_('Connected to $A at $B (IP: $C)')
                         .replace('$A', self.network_name)
                         .replace('$B', self.network_str)
                         .replace('$C', self.network_addr))
             elif (self.network_type == "wired"):
-                self.tr.set_tooltip(_('Connected to wired network (IP: $A)')
+                self.tr.set_tooltip_text(_('Connected to wired network (IP: $A)')
                         .replace('$A', self.network_addr))
             elif (self.network_type == "killswitch"):
-                self.tr.set_tooltip(_('Not connected') + "(" +
+                self.tr.set_tooltip_text(_('Not connected') + "(" +
                         _('Wireless Kill Switch Enabled') + ")")
             elif (self.network_type == "no_daemon"):
-                self.tr.set_tooltip(_('Wicd daemon unreachable'))
+                self.tr.set_tooltip_text(_('Wicd daemon unreachable'))
 
             return True
+
 
         def _show_notification(self, title, details, image=None):
             if self.should_notify:
                 try:
                     if not self._last_bubble:
-                        self._last_bubble = pynotify.Notification(
+                        self._last_bubble = Notify.Notification.new(
                             title, details, image)
                         self._last_bubble.show()
                     else:
@@ -313,11 +291,6 @@ class TrayIcon(object):
 
             if wireless.GetWirelessProperty(cur_net_id, "encryption"):
                 lock = "-lock"
-            # status_string = (_('Connected to $A at $B (IP: $C)')
-            #.replace('$A', self.network)
-            #                    .replace('$B', sig_string)
-            #                    .replace('$C', str(wireless_ip)))
-            #self.tr.set_tooltip(status_string)
             self.set_signal_image(int(strength), lock)
             self._show_notification(self.network,
                                     _('Connection established'),
@@ -336,7 +309,6 @@ class TrayIcon(object):
             status_string = _('Connecting') + " to " + \
                                 cur_network + "..."
             self.update_tooltip()
-            # self.tr.set_tooltip(status_string)
             self.tr.set_from_name('no-signal')
             if wired:
                 self._show_notification(cur_network,
@@ -358,7 +330,6 @@ class TrayIcon(object):
                          _('Wireless Kill Switch Enabled') + ")")
             else:
                 status = _('Not connected')
-            # self.tr.set_tooltip(status)
             self._show_notification(_('Disconnected'), None, 'stop')
             self.update_tooltip()
 
@@ -481,6 +452,7 @@ class TrayIcon(object):
             3) an int specifying the last recorded number of bytes sent.
 
             """
+
             active = False
             if last_bytes == -1:
                 last_bytes = bytes
@@ -532,14 +504,14 @@ class TrayIcon(object):
             self.manager = gtk.UIManager()
             self.manager.insert_action_group(actg, 0)
             self.manager.add_ui_from_string(menu)
-            self.menu = (self.manager.get_widget('/Menubar/Menu/Quit').
-                                                                  props.parent)
+            self.menu = self.manager.get_widget('/Menubar/Menu/Quit').props.parent
+
             self.gui_win = None
             self.current_icon_name = None
             self._is_scanning = False
-            net_menuitem = self.manager.get_widget("/Menubar/Menu/Connect/")
-            if not USE_APP_INDICATOR:
-                net_menuitem.connect("activate", self.on_net_menu_activate)
+
+            net_menuitem = self.manager.get_widget("/Menubar/Menu/Connect")
+            net_menuitem.connect("activate", self.on_net_menu_activate)
 
             self.parent = parent
             self.time = 2           # Time between updates
@@ -565,9 +537,6 @@ class TrayIcon(object):
             if DBUS_AVAIL:
                 self.toggle_wicd_gui()
             else:
-                #error(None,
-                    #_('The wicd daemon is unavailable, so your request '
-                    # 'cannot be completed'))
                 pass
 
         def on_quit(self, widget=None):
@@ -590,7 +559,7 @@ class TrayIcon(object):
                 "Wicd Connection Info",
                 None,
                 0,
-                (gtk.STOCK_OK, gtk.RESPONSE_CLOSE)
+                (gtk.STOCK_OK, gtk.ResponseType.CLOSE)
             )
 
             # Create labels
@@ -698,7 +667,7 @@ TX:'''))
             return (rx_rate, tx_rate)
 
         def _add_item_to_menu(self, net_menu, lbl, type_, n_id, is_connecting,
-                              is_active):
+                            is_active):
             """ Add an item to the network list submenu. """
             def network_selected(widget, net_type, net_id):
                 """ Callback method for a menu item selection. """
@@ -712,10 +681,10 @@ TX:'''))
 
             if type_ == "__wired__":
                 image.set_from_icon_name("network-wired",
-                    gtk.ICON_SIZE_SMALL_TOOLBAR)
+                    gtk.IconSize.SMALL_TOOLBAR)
             else:
                 image.set_from_icon_name(self._get_img(n_id),
-                    gtk.ICON_SIZE_SMALL_TOOLBAR)
+                    gtk.IconSize.SMALL_TOOLBAR)
             item.set_image(image)
             del image
             item.connect("activate", network_selected, type_, n_id)
@@ -730,7 +699,10 @@ TX:'''))
             """ Determines which image to use for the wireless entries. """
             def fix_strength(val, default):
                 """ Assigns given strength to a default value if needed. """
-                return val and int(val) or default
+                try:
+                    return int(float(val))
+                except ValueError:
+                    return default
 
             def get_prop(prop):
                 return wireless.GetWirelessProperty(net_id, prop)
@@ -739,24 +711,24 @@ TX:'''))
             dbm_strength = fix_strength(get_prop('strength'), -100)
 
             if daemon.GetWPADriver() == 'ralink legacy' or \
-               daemon.GetSignalDisplayType() == 1:
+            daemon.GetSignalDisplayType() == 1:
                 if dbm_strength >= -60:
-                    signal_img = 'signal-100'
+                    signal_img = "signal-100"
                 elif dbm_strength >= -70:
-                    signal_img = 'signal-75'
+                    signal_img = "signal-75"
                 elif dbm_strength >= -80:
-                    signal_img = 'signal-50'
+                    signal_img = "signal-50"
                 else:
-                    signal_img = 'signal-25'
+                    signal_img = "signal-25"
             else:
                 if strength > 75:
-                    signal_img = 'signal-100'
+                    signal_img = "signal-100"
                 elif strength > 50:
-                    signal_img = 'signal-75'
+                    signal_img = "signal-75"
                 elif strength > 25:
-                    signal_img = 'signal-50'
+                    signal_img = "signal-50"
                 else:
-                    signal_img = 'signal-25'
+                    signal_img = "signal-25"
             return signal_img
 
         @catchdbus
@@ -784,7 +756,7 @@ TX:'''))
             """ Trigger a scan if the network menu is being hovered over. """
             while gtk.events_pending():
                 gtk.main_iteration()
-            if item.state != gtk.STATE_PRELIGHT:
+            if item.get_state() != gtk.StateType.PRELIGHT:
                 return True
             wireless.Scan(False)
             return False
@@ -807,13 +779,13 @@ TX:'''))
             [status, info] = daemon.GetConnectionStatus()
 
             if daemon.GetAlwaysShowWiredInterface() or \
-               wired.CheckPluggedIn():
+            wired.CheckPluggedIn():
                 if status == misc.WIRED:
                     is_active = True
                 else:
                     is_active = False
                 self._add_item_to_menu(submenu, "Wired Network", "__wired__", 0,
-                                       is_connecting, is_active)
+                                    is_connecting, is_active)
                 sep = gtk.SeparatorMenuItem()
                 submenu.append(sep)
                 sep.show()
@@ -822,7 +794,7 @@ TX:'''))
                 skip_never_connect = not daemon.GetShowNeverConnect()
                 for x in range(0, num_networks):
                     if skip_never_connect and \
-                      misc.to_bool(get_prop(x,"never")):
+                    misc.to_bool(get_prop(x,"never")):
                         continue
                     essid = get_prop(x, "essid")
                     if status == misc.WIRELESS and info[1] == essid:
@@ -830,9 +802,9 @@ TX:'''))
                     else:
                         is_active = False
                     self._add_item_to_menu(submenu, essid, "wifi", x,
-                                           is_connecting, is_active)
+                                        is_connecting, is_active)
             else:
-                no_nets_item = gtk.MenuItem(_('No wireless networks found.'))
+                no_nets_item = gtk.MenuItem(label=_('No wireless networks found.'))
                 no_nets_item.set_sensitive(False)
                 no_nets_item.show()
                 submenu.append(no_nets_item)
@@ -846,7 +818,7 @@ TX:'''))
             submenu = net_menuitem.get_submenu()
             self._clear_menu(submenu)
 
-            loading_item = gtk.MenuItem(_('Scanning') + "...")
+            loading_item = gtk.MenuItem(label=_('Scanning') + "...")
             loading_item.set_sensitive(False)
             loading_item.show()
             submenu.append(loading_item)
@@ -867,6 +839,7 @@ TX:'''))
             else:
                 self.gui_win.exit()
                 return True
+
 
     if USE_EGG:
         class EggTrayIconGUI(TrayIconGUI):
@@ -908,7 +881,7 @@ TX:'''))
                     )
                 )
 
-            def set_tooltip(self, val):
+            def set_tooltip_text(self, val):
                 """ Set the tooltip for this tray icon.
 
                 Sets the tooltip for the gtk.ToolTips associated with this
@@ -945,12 +918,12 @@ TX:'''))
                 self.connect('activate', self.on_activate)
                 self.connect('popup-menu', self.on_popup_menu)
                 self.set_from_name('no-signal')
-                self.set_tooltip("Initializing wicd...")
+                self.set_tooltip_text("Initializing wicd...")
 
             def on_popup_menu(self, status, button, timestamp):
                 """ Opens the right click menu for the tray icon. """
                 self.init_network_menu()
-                self.menu.popup(None, None, gtk.status_icon_position_menu,
+                self.menu.popup(None, None, gtk.StatusIcon.position_menu,
                     button, timestamp, self)
 
             def set_from_name(self, name=None):
@@ -967,81 +940,6 @@ TX:'''))
 
                 """
                 self.set_visible(val)
-
-    if USE_APP_INDICATOR:
-        class IndicatorTrayIconGUI(gtk.StatusIcon, TrayIconGUI):
-            """ Class for creating the wicd AppIndicator.
-            This is required on recent versions of Unity (>=13.04).
-            
-            Uses appindicator.Indicator to implement a tray icon.
-            
-            """
-            def __init__(self, parent):
-                TrayIcon.TrayIconGUI.__init__(self, parent)
-                self.ind = appindicator.Indicator(
-                    "wicd", "wicd-gtk", appindicator.CATEGORY_SYSTEM_SERVICES, wpath.images)
-                self.current_icon_name = ''
-
-                # Rescaning when hovering over the net_menu doesn't work.
-                # (AFAICT, AppIndicator menus don't report PRELIGHT status.)
-                # We use a separate menu item instead.
-                rescan = gtk.MenuItem("Rescan")
-                self.menu.prepend(rescan)
-                rescan.connect("activate", self.on_rescan)
-                rescan.show()
-
-                sep = gtk.SeparatorMenuItem()
-                self.menu.prepend(sep)
-                sep.show()
-
-                # AppIndicator does not support tooltips so we use a
-                # menu item to contain what was the tooltip.
-                #
-                # Also, since AppIndicator does not support actions on
-                # clicking the tray icon, we use this tooltip menu
-                # item to toggle the GUI
-                self.tooltip_item = gtk.MenuItem("Initializing wicd...")
-                self.menu.prepend(self.tooltip_item)
-                self.tooltip_item.connect("activate", self.on_activate)
-                self.tooltip_item.show()
-
-                self.ind.set_menu(self.menu)
-
-            def on_rescan(self, *data):
-                """ Triggers a network rescan that updates the 'Connect' menu when the 'Rescan' menu item is selected. """
-                self.init_network_menu()
-                wireless.Scan(False)
-
-            def set_from_file(self, path=None):
-                """ Sets a new tray icon picture. """
-                if path != self.current_icon_path:
-                    self.current_icon_path = path
-                    self.ind.set_icon(path)
-                    
-            def set_from_name(self, name=None):
-                """ Sets a new tray icon picture. """
-                if name != self.current_icon_name:
-                    self.current_icon_name = name
-                    self.ind.set_icon(name)
-
-            def visible(self, val):
-                """ Set if the icon is visible or not.
-
-                If val is True, makes the icon visible, if val is False,
-                hides the tray icon.
-
-                """
-                self.ind.set_status(val and appindicator.STATUS_ACTIVE or appindicator.STATUS_PASSIVE)
-
-            def set_tooltip(self, str):
-                """ Set the tooltip for this tray icon.
-                
-                Since AppIndicators do not support tooltips, actually
-                sets the label for the top menu item associated with
-                this tray icon.
-
-                """
-                self.tooltip_item.set_label(str)
 
 
 def usage():

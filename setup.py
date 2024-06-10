@@ -486,11 +486,11 @@ class install(_install):
                          [(os.path.join(imgdir, f)) for f in os.listdir(imgdir) if not f.startswith('.')])
                     )
             data.append((wpath.pixmaps, ['other/wicd-gtk.xpm']))
-        if not wpath.no_install_gnome_shell_extensions:
-            data.append(
-                (wpath.gnome_shell_extensions + 'wicd@code.hanskalabs.net',
-                 ['gnome-shell/' + f for f in os.listdir('gnome-shell')])
-            )
+#        if not wpath.no_install_gnome_shell_extensions:
+#            data.append(
+#                (wpath.gnome_shell_extensions + 'wicd@code.hanskalabs.net',
+#                 ['gnome-shell/' + f for f in os.listdir('gnome-shell')])
+#            )
         if not wpath.no_install_ncurses:
             data.append((wpath.curses, ['curses/curses_misc.py']))
             data.append((wpath.curses, ['curses/prefs_curses.py']))

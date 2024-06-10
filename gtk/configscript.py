@@ -28,7 +28,10 @@ run as the current user.
 
 import sys
 import os
-import gtk
+import gi
+
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 
 from wicd import wpath
 from wicd.translations import _
@@ -129,7 +132,7 @@ def main (argv):
     script_info = get_script_info(network, network_type)
 
     gladefile = os.path.join(wpath.gtk, "wicd.ui")
-    wTree = gtk.Builder()
+    wTree = Gtk.Builder()
     wTree.set_translation_domain('wicd')
     wTree.add_from_file(gladefile)
     dialog = wTree.get_object("configure_script_dialog")
@@ -158,7 +161,7 @@ def main (argv):
     dialog.show_all()
 
     result = dialog.run()
-    if result == 1:
+    if result == Gtk.ResponseType.OK:
         script_info["pre_entry"] = blank_to_none(pre_entry.get_text())
         script_info["post_entry"] = blank_to_none(post_entry.get_text())
         script_info["pre_disconnect_entry"] = \

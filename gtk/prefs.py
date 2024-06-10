@@ -3,7 +3,7 @@
 """ prefs -- Wicd Preferences Dialog.
 
 Displays the main settings dialog window for wicd and
-handles recieving/sendings the settings from/to the daemon.
+handles receiving/sending the settings from/to the daemon.
 
 """
 
@@ -24,8 +24,7 @@ handles recieving/sendings the settings from/to the daemon.
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import gtk
-from gi.repository import GObject as gobject
+from gi.repository import Gtk, GObject
 import os
 
 from wicd import misc
@@ -317,7 +316,7 @@ class PreferencesDialog(object):
         not_path = os.path.join(USER_SETTINGS_DIR, 'USE_NOTIFICATIONS')
         if self.notificationscheckbox.get_active():
             if not os.path.exists(not_path):
-                open(not_path, 'w')
+                open(not_path, 'w').close()
         else:
             if os.path.exists(not_path):
                 os.remove(not_path)
@@ -335,11 +334,11 @@ class PreferencesDialog(object):
         """ Set up anything that doesn't have to be persisted later. """
         def build_combobox(lbl):
             """ Sets up a ComboBox using the given widget name. """
-            liststore = gtk.ListStore(gobject.TYPE_STRING)
+            liststore = Gtk.ListStore(str)
             combobox = self.wTree.get_object(lbl)
             combobox.clear()
             combobox.set_model(liststore)
-            cell = gtk.CellRendererText()
+            cell = Gtk.CellRendererText()
             combobox.pack_start(cell, True)
             combobox.add_attribute(cell, 'text', 0)
             return combobox
@@ -347,46 +346,21 @@ class PreferencesDialog(object):
         def setup_label(name, lbl=""):
             """ Sets up a label for the given widget name. """
             widget = self.wTree.get_object(name)
-            # if lbl:
-            #     widget.set_label(lbl)
             if widget is None:
-                raise ValueError('widget %s does not exist' % name)
+                raise ValueError(f'widget {name} does not exist')
             return widget
-
-        # External Programs tab
-        # self.wTree.get_object("gen_settings_label").set_label(_('General Settings'))
-        # self.wTree.get_object("ext_prog_label").set_label(_('External Programs'))
-        # self.wTree.get_object("dhcp_client_label").set_label(_('DHCP Client'))
-        # self.wTree.get_object("wired_detect_label").set_label(_('Wired Link Detection'))
-        # self.wTree.get_object("route_flush_label").set_label(_('Route Table Flushing'))
-        # self.wTree.get_object("pref_backend_label").set_label(_('Backend') + ":")
-
-        # entryWiredAutoMethod = self.wTree.get_object("pref_wired_auto_label")
-        # entryWiredAutoMethod.set_label('Wired Autoconnect Setting:')
-        # entryWiredAutoMethod.set_alignment(0, 0)
-        # atrlist = pango.AttrList()
-        # atrlist.insert(pango.AttrWeight(pango.WEIGHT_BOLD, 0, 50))
-        # entryWiredAutoMethod.set_attributes(atrlist)
-
-        # self.set_label("pref_dns1_label", "%s 1" % _('DNS server'))
-        # self.set_label("pref_dns2_label", "%s 2" % _('DNS server'))
-        # self.set_label("pref_dns3_label", "%s 3" % _('DNS server'))
-        # self.set_label("pref_search_dom_label", "%s:" % _('Search domain'))
-        # self.set_label("pref_wifi_label", "%s:" % _('Wireless Interface'))
-        # self.set_label("pref_wired_label", "%s:" % _('Wired Interface'))
-        # self.set_label("pref_driver_label", "%s:" % _('WPA Supplicant Driver'))
 
         self.dialog = self.wTree.get_object("pref_dialog")
         self.dialog.set_title(_('Preferences'))
         self.dialog.set_icon_name('wicd-gtk')
-        width = int(gtk.gdk.screen_width() / 2.4)
+        width = int(Gdk.Screen.width() / 2.4)
         if width > 450:
             width = 450
-        self.dialog.resize(width, int(gtk.gdk.screen_height() / 2))
+        self.dialog.resize(width, int(Gdk.Screen.height() / 2))
 
         self.wiredcheckbox = setup_label(
             "pref_always_check",
-            _('''Always show wired interface''')
+            _('Always show wired interface')
         )
         self.preferwiredcheckbox = setup_label("pref_prefer_wired_check",
                                                "prefer_wired")
@@ -436,7 +410,6 @@ class PreferencesDialog(object):
         # Wired Link Detection Apps
         self.linkautoradio = setup_label(
             "link_auto_radio", _('Automatic (recommended)'))
-        self.linkautoradio = setup_label("link_auto_radio")
         self.ethtoolradio = setup_label("ethtool_radio")
         self.miitoolradio = setup_label("miitool_radio")
 
