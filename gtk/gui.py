@@ -26,7 +26,7 @@ Module containing the code for the main wicd GUI.
 import os
 import sys
 import time
-from gi.repository import Gtk as gtk, Pango as pango, GObject as gobject, Gdk
+from gi.repository import Gtk as gtk, Pango as pango, GObject as gobject, Gdk, GLib
 from itertools import chain
 from dbus import DBusException
 
@@ -422,7 +422,7 @@ class appGui(object):
     def disconnect_all(self, widget=None):
         """ Disconnects from any active network. """
         def handler(*args):
-            gobject.idle_add(self.all_network_list.set_sensitive, True)
+            GLib.idle_add(self.all_network_list.set_sensitive, True)
 
         self.all_network_list.set_sensitive(False)
         daemon.Disconnect(reply_handler=handler, error_handler=handler)
@@ -497,7 +497,7 @@ class appGui(object):
         if not self.is_visible:
             return True
         try:
-            gobject.idle_add(self.wTree.get_object("progressbar").pulse)
+            GLib.idle_add(self.wTree.get_object("progressbar").pulse)
         except:
             pass
         return True
@@ -567,10 +567,10 @@ class appGui(object):
             self.connecting = False
         if self.pulse_active:
             self.pulse_active = False
-            gobject.idle_add(self.all_network_list.set_sensitive, True)
-            gobject.idle_add(self.status_area.set_visible, False)
+            GLib.idle_add(self.all_network_list.set_sensitive, True)
+            GLib.idle_add(self.status_area.set_visible, False)
         if self.statusID:
-            gobject.idle_add(self.status_bar.remove_message, 1, self.statusID)
+            GLib.idle_add(self.status_bar.remove_all, 1, self.statusID)
 
     def set_connecting_state(self, info):
         """ Set connecting state. """
@@ -583,15 +583,15 @@ class appGui(object):
         if not self.pulse_active:
             self.pulse_active = True
             misc.timeout_add(100, self.pulse_progress_bar, milli=True)
-            gobject.idle_add(self.all_network_list.set_sensitive, False)
-            gobject.idle_add(self.status_area.set_visible, True)
+            GLib.idle_add(self.all_network_list.set_sensitive, False)
+            GLib.idle_add(self.status_area.set_visible, True)
         if self.statusID:
-            gobject.idle_add(self.status_bar.remove_message, 1, self.statusID)
+            GLib.idle_add(self.status_bar.remove_all, 1, self.statusID)
         if info[0] == "wireless":
             stat = wireless.CheckWirelessConnectingMessage()
-            gobject.idle_add(self.set_status, "%s: %s" % (info[1], stat))
+            GLib.idle_add(self.set_status, "%s: %s" % (info[1], stat))
         elif info[0] == "wired":
-            gobject.idle_add(self.set_status, _('Wired Network') + ': '
+            GLib.idle_add(self.set_status, _('Wired Network') + ': '
                 + wired.CheckWiredConnectingMessage())
         return True
 
@@ -629,7 +629,7 @@ class appGui(object):
         """
         if not DBUS_AVAIL:
             return
-        gobject.idle_add(self.refresh_networks, None, False, None)
+        GLib.idle_add(self.refresh_networks, None, False, None)
 
     def dbus_scan_started(self):
         """ Called when a wireless scan starts. """
@@ -858,11 +858,11 @@ class appGui(object):
             cancel_button.set_sensitive(True)
             self.all_network_list.set_sensitive(False)
             if self.statusID:
-                gobject.idle_add(
-                    self.status_bar.remove_message, 1, self.statusID)
-            gobject.idle_add(
+                GLib.idle_add(
+                    self.status_bar.remove_all, 1, self.statusID)
+            GLib.idle_add(
                 self.set_status, _('Disconnecting active connections...'))
-            gobject.idle_add(self.status_area.set_visible, True)
+            GLib.idle_add(self.status_area.set_visible, True)
             self.wait_for_events()
             self._connect_thread_started = False
 
@@ -893,8 +893,8 @@ class appGui(object):
 
         """
         def handler(*args):
-            gobject.idle_add(self.all_network_list.set_sensitive, True)
-            gobject.idle_add(self.network_list.set_sensitive, True)
+            GLib.idle_add(self.all_network_list.set_sensitive, True)
+            GLib.idle_add(self.network_list.set_sensitive, True)
 
         widget.hide()
         networkentry.connect_button.show()
@@ -955,7 +955,7 @@ class appGui(object):
         self.is_visible = True
         daemon.SetGUIOpen(True)
         self.wait_for_events(0.1)
-        gobject.idle_add(self.refresh_clicked)
+        GLib.idle_add(self.refresh_clicked)
         self._do_statusbar_update(*daemon.GetConnectionStatus())
         bus.add_signal_receiver(self._do_statusbar_update, 'StatusChanged',
                                 'org.wicd.daemon')

@@ -24,7 +24,7 @@ handles receiving/sending the settings from/to the daemon.
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, Gdk
 import os
 
 from wicd import misc
@@ -334,14 +334,10 @@ class PreferencesDialog(object):
         """ Set up anything that doesn't have to be persisted later. """
         def build_combobox(lbl):
             """ Sets up a ComboBox using the given widget name. """
-            liststore = Gtk.ListStore(str)
-            combobox = self.wTree.get_object(lbl)
-            combobox.clear()
-            combobox.set_model(liststore)
-            cell = Gtk.CellRendererText()
-            combobox.pack_start(cell, True)
-            combobox.add_attribute(cell, 'text', 0)
+            combobox = Gtk.ComboBoxText()
+            combobox.set_name(lbl)
             return combobox
+
 
         def setup_label(name, lbl=""):
             """ Sets up a label for the given widget name. """
@@ -431,6 +427,9 @@ class PreferencesDialog(object):
         self.wpadrivers = wireless.GetWpaSupplicantDrivers()
         self.wpadrivers.append("ralink_legacy")
         self.wpadrivers.append('none')
+        for driver in self.wpadrivers:
+            self.wpadrivercombo.append_text(driver)
+        self.wpadrivercombo.set_active(0)
 
         for x in self.wpadrivers:
             self.wpadrivercombo.append_text(x)
@@ -452,6 +451,9 @@ class PreferencesDialog(object):
         # Load backend combobox
         self.backends = daemon.GetBackendList()
         self.be_descriptions = daemon.GetBackendDescriptionDict()
+        for backend in self.backends:
+            self.backendcombo.append_text(backend)
+        self.backendcombo.set_active(0)
 
         for x in self.backends:
             if x:

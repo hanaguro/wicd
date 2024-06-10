@@ -1060,7 +1060,7 @@ class WirelessNetworkEntry(NetworkEntry):
         wireless.SetWirelessProperty(
             self.networkID,
             "automatic",
-            noneToString(self.chkbox_autoconnect.get_active())
+            str(self.chkbox_autoconnect.get_active())
         )
         wireless.SaveWirelessNetworkProperty(self.networkID, "automatic")
 
@@ -1069,7 +1069,7 @@ class WirelessNetworkEntry(NetworkEntry):
         wireless.SetWirelessProperty(
             self.networkID,
             "never",
-            noneToString(self.chkbox_neverconnect.get_active())
+            str(self.chkbox_neverconnect.get_active())
         )
         wireless.SaveWirelessNetworkProperty(self.networkID, "never")
         if self.chkbox_neverconnect.get_active():
