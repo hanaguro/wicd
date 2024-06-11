@@ -333,9 +333,6 @@ def ParseEncryption(network):
                             elif cur_val == 'KEY_INDEX':
                                 rep_val = '0'
                         if rep_val:
-                            if cur_val == 'APSK' and rep_val:
-                                if not (rep_val.startswith('"') and rep_val.endswith('"')):
-                                    rep_val = f'"{rep_val}"'
                             line = line.replace("$_%s" % cur_val, str(rep_val))
                         else:
                             print(("Ignoring template line: '%s'" % line))
@@ -344,6 +341,9 @@ def ParseEncryption(network):
                 config_file = ''.join([config_file, line])
             else:  # Just a regular entry.
                 config_file = ''.join([config_file, line])
+
+    # Replace any double quotes with single quotes if necessary
+    config_file = re.sub(r'""(.*?)""', r'"\1"', config_file)
 
     # Write the data to the files then chmod them so they can't be read
     # by normal users.

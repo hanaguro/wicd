@@ -283,8 +283,12 @@ class appGui(object):
 
     def handle_connection_results(self, results):
         """ Handle connection results. """
-        if results not in ['success', 'aborted'] and self.is_visible:
-            error(self.window, language[results], block=False)
+        results_str = str(results)
+        if results_str not in language:
+            language[results_str] = _('Unknown error occurred')
+        if results_str not in ['success', 'aborted'] and self.is_visible:
+            error(self.window, language[results_str], block=False)
+
 
     def create_adhoc_network(self, widget=None):
         """ Shows a dialog that creates a new adhoc network. """

@@ -36,48 +36,6 @@ from wicd.misc import Noneify, to_unicode
 
 from dbus import Int32
 
-def psk_from_passphrase(passphrase, ssid):
-    """Convert passphrase to PSK using SSID."""
-    ssid = ssid.encode('utf-8')
-    passphrase = passphrase.encode('utf-8')
-    psk = hashlib.pbkdf2_hmac('sha1', passphrase, ssid, 4096, 32)
-    return binascii.hexlify(psk).decode('utf-8')
-
-def replace_apsk_value(network_config, apsk_value):
-    """Replace the placeholder '$_APSK' with the actual value of 'apsk'."""
-    if apsk_value and 'ssid' in network_config:
-        psk_value = psk_from_passphrase(apsk_value, network_config['ssid'])
-        for key, value in network_config.items():
-            if isinstance(value, str) and '$_APSK' in value:
-                print(f"Replacing $_APSK in {key}: {value} with {psk_value}")
-                network_config[key] = value.replace('$_APSK', f'"{psk_value}"')  # 二重引用符で囲む
-    return network_config
-
-def sanitize_network_dict(network):
-    sanitized = {}
-    apsk_value = None
-
-    # Check for apsk value
-    for section, options in network.items():
-        if isinstance(options, dict) and 'apsk' in options:
-            apsk_value = options['apsk']
-
-    for section, options in network.items():
-        if isinstance(options, dict):
-            sanitized[section] = {}
-            for key, value in options.items():
-                if key and value:
-                    sanitized[section][key.strip()] = str(value).strip()
-            # Replace $_APSK with actual apsk value
-            if 'apsk' not in sanitized[section]:
-                sanitized[section]['apsk'] = apsk_value  # apskを設定
-            sanitized[section] = replace_apsk_value(sanitized[section], apsk_value)
-        else:
-            if section and options:
-                sanitized[section.strip()] = str(options).strip()
-    return sanitized
-
-
 def sanitize_config_file(path):
     """ Remove invalid lines from config file. """
     print(f"Sanitizing config file: {path}")
@@ -149,7 +107,7 @@ class ConfigManager(RawConfigParser):
 
         """
         if not self.has_section(section):
-            if default != "__None__" and option != 'apsk':
+            if default != "__None__":
                 self.add_section(section)
             else:
                 return None
@@ -172,7 +130,7 @@ class ConfigManager(RawConfigParser):
                         print((''.join(['found ', option, ' in configuration ',
                                     str(ret)])))
         else:    # Use the default, unless no default was provided
-            if default != "__None__" and option != 'apsk':
+            if default != "__None__":
                 print(('did not find %s in configuration, setting default %s' \
                     % (option, str(default))))
                 self.set(section, option, str(default), write=True)
@@ -192,12 +150,6 @@ class ConfigManager(RawConfigParser):
                 Int32(ret)
             except OverflowError:
                 ret = str(ret)
-
-        # ネットワーク辞書の正規化
-        if option == 'apsk' and ret:
-            network_config = {section: {option: ret}}
-            ret = sanitize_network_dict(network_config)[section][option]
-
         return to_unicode(ret)
 
     def get(self, *args, **kargs):
@@ -289,12 +241,5 @@ class ConfigManager(RawConfigParser):
             for (iname, value) in self.items(sname):
                 p.set(sname, iname, value)
             p.remove_option(sname, '_filename_')
-
-        # ネットワーク辞書の正規化
-        sanitized_network = sanitize_network_dict({s: dict(p.items(s)) for s in p.sections()})
-        for section in sanitized_network:
-            for key, value in sanitized_network[section].items():
-                p.set(section, key, value)
-
         p._write_one()
 

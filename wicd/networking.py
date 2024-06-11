@@ -221,12 +221,6 @@ class Controller(object):
             mac = 'X'
         if name in (None, ''):
             name = 'X'
-        os.putenv("MODE", "stop")
-        os.putenv("VERBOSITY", str(int(self.debug)))
-        os.putenv("IFACE", iface.iface)
-        os.putenv("LOGICAL", iface.iface)
-        os.putenv("PHASE", "pre-down")
-        misc.ExecuteScripts('/etc/network/if-down.d/', self.debug)
         misc.ExecuteScripts(wpath.predisconnectscripts, self.debug,
                            extra_parameters=(nettype, name, mac))
         if self.pre_disconnect_script:
@@ -241,8 +235,6 @@ class Controller(object):
         iface.FlushDNS()
         iface.Down()
         iface.Up()
-        os.putenv("PHASE", "post-down")
-        misc.ExecuteScripts('/etc/network/if-post-down.d/', self.debug)
         misc.ExecuteScripts(wpath.postdisconnectscripts, self.debug,
                             extra_parameters=(nettype, name, mac))
         if self.post_disconnect_script:
@@ -933,22 +925,6 @@ class WirelessConnectThread(ConnectThread):
         self.bitrate = bitrate
         self.allow_lower_bitrates = allow_lower_bitrates
 
-        """ takahiro
-        # ネットワーク辞書にenctypeを追加
-        if 'encryption_method' in self.network:
-            encryption_method = self.network['encryption_method'].lower()
-            if 'wpa2' in encryption_method:
-                self.network['enctype'] = 'wpa2'
-            elif 'wpa' in encryption_method:
-                self.network['enctype'] = 'wpa'
-            elif 'wep' in encryption_method:
-                self.network['enctype'] = 'wep'
-            else:
-                self.network['enctype'] = 'none'
-        else:
-            self.network['enctype'] = 'none'
-        takahiro """
-
     def _connect(self):
         """ The main function of the connection thread.
 
@@ -967,12 +943,6 @@ class WirelessConnectThread(ConnectThread):
         self.is_connecting = True
 
         # Run pre-connection script.
-        os.putenv("MODE", "start")
-        os.putenv("VERBOSITY", str(int(self.debug)))
-        os.putenv("IFACE", wiface.iface)
-        os.putenv("LOGICAL", wiface.iface)
-        os.putenv("PHASE", "pre-up")
-        self.run_global_scripts_if_needed('/etc/network/if-pre-up.d/')
         self.run_global_scripts_if_needed(wpath.preconnectscripts,
                                           extra_parameters=('wireless',
                                                     self.network['essid'],
@@ -1000,7 +970,6 @@ class WirelessConnectThread(ConnectThread):
         if self.wpa_driver != 'ralink legacy':
             success = self.generate_psk_and_authenticate(wiface)
 
-
         # Associate.
         wiface.Associate(self.network['essid'], self.network['channel'],
                          self.network['bssid'])
@@ -1025,8 +994,6 @@ class WirelessConnectThread(ConnectThread):
         self.verify_association(wiface)
 
         # Run post-connection script.
-        os.putenv("PHASE", "post-up")
-        self.run_global_scripts_if_needed('/etc/network/if-up.d/')
         self.run_global_scripts_if_needed(wpath.postconnectscripts,
                                           extra_parameters=('wireless',
                                                     self.network['essid'],
@@ -1076,18 +1043,8 @@ class WirelessConnectThread(ConnectThread):
 
     @abortable
     def generate_psk_and_authenticate(self, wiface):
-        network = self.network
-
-        """ takahiro
-        enctype = network.get('enctype')
-
-        if enctype is None:
-            print("Error: Encryption type is None")  # エラーメッセージを追加
-            return False
-        takahiro """
-
-        """ Generates a PSK and authenticates if necessary.
-
+        """ Generates a PSK and authenticates if necessary. 
+        
         Generates a PSK, and starts the authentication process
         if encryption is on.
 
@@ -1106,35 +1063,11 @@ class WirelessConnectThread(ConnectThread):
                 print(('WARNING: PSK generation failed!  Falling back to ' + \
                     'wireless key.\nPlease report this error to the wicd ' + \
                     'developers!'))
-
-            # pskフィールドが生成されていない場合はエラーメッセージを表示して終了する
-            if 'psk' not in self.network:
-                print("Error: PSK not generated")
-                return False
-
         # Generate the wpa_supplicant file...
         if self.network.get('enctype'):
             self.SetStatus('generating_wpa_config')
             print('Attempting to authenticate...')
-            if not self.network.get('bssid'):
-                # Fallback to using essid if bssid is None
-                print("Warning: BSSID is None, falling back to ESSID")
-                self.network['bssid'] = self.network['essid']
-            self.iface.Authenticate(self.network)
-
-            # pskフィールドが存在する場合のみ、pskフィールドを引用符で囲む
-            if 'psk' in self.network:
-                config_file_path = os.path.join('/var/lib/wicd/configurations', self.network["bssid"].replace(":", "").lower())
-                with open(config_file_path, 'r') as file:
-                    config_data = file.read()
-
-                config_data = config_data.replace('psk=' + self.network['psk'], 'psk="' + self.network['psk'] + '"')
-
-                with open(config_file_path, 'w') as file:
-                    file.write(config_data)
-        return True
-
-
+            wiface.Authenticate(self.network)
 
 class Wired(Controller):
     """ A wrapper for common wired interface functions. """
@@ -1277,12 +1210,6 @@ class WiredConnectThread(ConnectThread):
         self.is_connecting = True
 
         # Run pre-connection script.
-        os.putenv("MODE", "start")
-        os.putenv("VERBOSITY", str(int(self.debug)))
-        os.putenv("IFACE", liface.iface)
-        os.putenv("LOGICAL", liface.iface)
-        os.putenv("PHASE", "pre-up")
-        self.run_global_scripts_if_needed('/etc/network/if-pre-up.d/')
         self.run_global_scripts_if_needed(wpath.preconnectscripts,
                                           extra_parameters=('wired', 'wired',
                                                     self.network['profilename'])
@@ -1311,8 +1238,6 @@ class WiredConnectThread(ConnectThread):
         self.set_dns_addresses(liface)
 
         # Run post-connection script.
-        os.putenv("PHASE", "post-up")
-        self.run_global_scripts_if_needed('/etc/network/if-up.d/')
         self.run_global_scripts_if_needed(wpath.postconnectscripts,
                                           extra_parameters=('wired', 'wired',
                                                 self.network['profilename'])

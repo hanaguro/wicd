@@ -1230,42 +1230,8 @@ class WirelessDaemon(dbus.service.Object, object):
         self.wifi.Disconnect()
         self.daemon.wired_bus.wired.Disconnect()
         self.daemon.SetForcedDisconnect(False)
-
-        try:
-            self.wifi.Connect(self.LastScan[nid], debug=self.debug_mode)
-            print("Wireless connection attempt started.")
-        except Exception as e:
-            print(f"Error during wireless connection attempt: {e}")
-
-        apsk = self.LastScan[nid].get('apsk')
-        if apsk:
-            if not (apsk.startswith('"') and apsk.endswith('"')):
-                apsk = f'"{apsk}"'
-            bssid = self.LastScan[nid].get("bssid")
-            if bssid:
-                config_file_path = os.path.join('/var/lib/wicd/configurations', bssid.replace(":", "").lower())
-                if os.path.exists(config_file_path):
-                    with open(config_file_path, 'r') as file:
-                        config_data = file.read()
-                else:
-                    # Create the file if it does not exist
-                    config_data = f'ap_scan=1\nctrl_interface=/var/run/wpa_supplicant\nnetwork={{\n       ssid="{self.LastScan[nid]["essid"]}"\n       scan_ssid=1\n       proto=RSN\n       key_mgmt=WPA-PSK\n       pairwise=CCMP TKIP\n       group=CCMP TKIP\n       psk={apsk}\n}}'
-
-                # Update the psk line to ensure it is correctly quoted
-                lines = config_data.split('\n')
-                for i, line in enumerate(lines):
-                    if line.strip().startswith('psk='):
-                        lines[i] = f'       psk={apsk}'
-
-                with open(config_file_path, 'w') as file:
-                    file.write('\n'.join(lines))
-            else:
-                print(f"Error: BSSID for network {self.LastScan[nid]['essid']} is None or missing")
-        else:
-            print(f"Error: PSK for network {self.LastScan[nid]['essid']} is None or missing")
-
+        self.wifi.Connect(self.LastScan[nid], debug=self.debug_mode)
         self.daemon.UpdateState()
-
 
     @dbus.service.method('org.wicd.daemon.wireless')
     def CheckIfWirelessConnecting(self):
@@ -1357,12 +1323,8 @@ class WirelessDaemon(dbus.service.Object, object):
             profile_sections.append(essid_key)
         for section in profile_sections:
             for key, value in cur_network.items():
-                if key == 'apsk' and value is not None:
-                    if not (value.startswith('"') and value.endswith('"')):
-                        value = f'"{value}"'
                 if key not in ['quality', 'strength', 'bitrates', 'has_profile']:
                     self.config.set(section, key, str(value))
-
 
         write_script_ent(bssid_key, "beforescript")
         write_script_ent(bssid_key, "afterscript")
@@ -1375,10 +1337,7 @@ class WirelessDaemon(dbus.service.Object, object):
             write_script_ent(essid_key, "predisconnectscript")
             write_script_ent(essid_key, "postdisconnectscript")
 
-        with open(wireless_conf, 'w') as configfile:
-            self.config.write(configfile) # Caution! If you do not use self.config.write(configfile), the apsk will become invalid.
-            print(f"Profile saved: {profile_sections}")
-
+        self.config.write()
 
     @dbus.service.method('org.wicd.daemon.wireless')
     def SaveWirelessNetworkProperty(self, nid, option):

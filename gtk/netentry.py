@@ -1035,8 +1035,6 @@ class WirelessNetworkEntry(NetworkEntry):
         # Connect signals.
         self.chkbox_autoconnect.connect("toggled", self.update_autoconnect)
         self.chkbox_neverconnect.connect("toggled", self.update_neverconnect)
-        self.connect_button.connect("clicked", self.connect_network)
-        self.disconnect_button.connect("clicked", self.disconnect_network)
 
         # Show everything
         self.show_all()
@@ -1087,14 +1085,6 @@ class WirelessNetworkEntry(NetworkEntry):
         super(WirelessNetworkEntry, self).destroy_called()
         self.destroy()
         del self
-
-    def connect_network(self, widget=None):
-        """ Connect to this wireless network. """
-        wireless.ConnectWireless(self.networkID)
-
-    def disconnect_network(self, widget=None):
-        """ Disconnect from this wireless network. """
-        wireless.DisconnectWireless()
 
     def update_connect_button(self, state, apbssid):
         """ Update the connection/disconnect button for this entry. """
