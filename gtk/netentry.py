@@ -386,7 +386,7 @@ class WiredSettingsDialog(AdvancedSettingsDialog):
 
     def set_net_prop(self, option, value):
         """ Sets the given option to the given value for this network. """
-        wired.SetWiredProperty(option, value)
+        wired.SetWiredProperty(option, str(value))
 
     def edit_scripts(self, widget=None, event=None):
         """ Launch the script editting dialog. """
@@ -591,7 +591,7 @@ class WirelessSettingsDialog(AdvancedSettingsDialog):
 
     def set_net_prop(self, option, value):
         """ Sets the given option to the given value for this network. """
-        wireless.SetWirelessProperty(self.networkID, option, value)
+        wireless.SetWirelessProperty(self.networkID, option, str(value))
 
     def set_values(self):
         """ Set the various network settings to the right values. """
