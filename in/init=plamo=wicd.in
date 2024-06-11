@@ -30,13 +30,13 @@ PIDFILE="%PIDFILE%"
 case "${1}" in
    start)
       log_info_msg "Starting wicd network manager"
-      start_daemon /usr/bin/wicd
+      start_daemon /usr/sbin/wicd
       evaluate_retval
       ;;
 
    stop)
       log_info_msg "Stopping wicd network manager"
-      /usr/bin/wicd -k
+      /usr/sbin/wicd -k
       evaluate_retval
       if [ -f $PIDFILE ]; then
 	  rm -f $PIDFILE
