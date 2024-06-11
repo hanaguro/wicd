@@ -570,7 +570,7 @@ class appGui(object):
             GLib.idle_add(self.all_network_list.set_sensitive, True)
             GLib.idle_add(self.status_area.set_visible, False)
         if self.statusID:
-            GLib.idle_add(self.status_bar.remove_all, 1, self.statusID)
+            GLib.idle_add(self.status_bar.remove_all, self.statusID)
 
     def set_connecting_state(self, info):
         """ Set connecting state. """
@@ -586,7 +586,7 @@ class appGui(object):
             GLib.idle_add(self.all_network_list.set_sensitive, False)
             GLib.idle_add(self.status_area.set_visible, True)
         if self.statusID:
-            GLib.idle_add(self.status_bar.remove_all, 1, self.statusID)
+            GLib.idle_add(self.status_bar.remove_all, self.statusID)
         if info[0] == "wireless":
             stat = wireless.CheckWirelessConnectingMessage()
             GLib.idle_add(self.set_status, "%s: %s" % (info[1], stat))
@@ -859,7 +859,7 @@ class appGui(object):
             self.all_network_list.set_sensitive(False)
             if self.statusID:
                 GLib.idle_add(
-                    self.status_bar.remove_all, 1, self.statusID)
+                    self.status_bar.remove_all, self.statusID)
             GLib.idle_add(
                 self.set_status, _('Disconnecting active connections...'))
             GLib.idle_add(self.status_area.set_visible, True)
