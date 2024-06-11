@@ -1110,16 +1110,18 @@ class WirelessDaemon(dbus.service.Object, object):
             network = self.LastScan[networkid]
             value = network.get(prop)
 
-            if prop == 'enctype':
-                encryption_methods = network.get('encryption_method', [])
-                if encryption_methods:
-                    value = ', '.join(encryption_methods)
-                else:
-                    value = 'None'
+            if prop == 'enctryption':
+                encryption_methods = network.get('encryption', [])
+                if isinstance(encryption_methods, list):  # リストかどうかを確認する
+                    if encryption_methods:
+                        value = ', '.join(encryption_methods)
+                    else:
+                        value = 'None'
+#                else:
+#                    value = encryption_methods  # リストでない場合はそのまま使用する
 
             if value is None:
                 value = 'None'
-
             return misc.to_unicode(value)
         except IndexError:
             return ""

@@ -1407,7 +1407,7 @@ class BaseWirelessInterface(BaseInterface):
         Keyword arguments:
         cell -- string containing the cell information
         ralink_info -- string contating network information needed
-                       for ralink cards.
+                    for ralink cards.
 
         Returns:
         A dictionary containing the cell networks properties.
@@ -1464,16 +1464,15 @@ class BaseWirelessInterface(BaseInterface):
         elif misc.RunRegex(wep_pattern, cell) == 'on':
             # Encryption - Default to WEP
             ap['encryption'] = True
-            ap['encryption_method'] = 'WEP'
-
             if misc.RunRegex(wpa1_pattern, cell) == 'WPA Version 1':
                 ap['encryption_method'] = 'WPA'
 
             if misc.RunRegex(altwpa_pattern, cell) == 'wpa_ie':
-                ap['encryption_method'] = 'WPA'
+                ap['encryption_method'] = 'WPA' 
 
             if misc.RunRegex(wpa2_pattern, cell) == 'WPA2':
                 ap['encryption_method'] = 'WPA2'
+
         else:
             ap['encryption'] = False
 
@@ -1491,6 +1490,7 @@ class BaseWirelessInterface(BaseInterface):
             ap['strength'] = -1
 
         return ap
+
 
     def ValidateAuthentication(self, auth_time):
         """ Validate WPA authentication.
