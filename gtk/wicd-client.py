@@ -37,6 +37,9 @@ class TrayIcon() -- Parent class of TrayIconGUI and IconConnectionInfo.
 #
 
 import sys
+import gi
+gi.require_version('Gtk', '3.0')
+gi.require_version('Notify', '0.7')
 from gi.repository import Gtk as gtk, Pango as pango, GObject as gobject
 import getopt
 import os
@@ -109,7 +112,8 @@ class NetworkMenuItem(gtk.ImageMenuItem):
         self.label.set_xalign(0.0)  # Left-align the label
         if is_active:
             atrlist = pango.AttrList()
-            atrlist.insert(pango.AttrWeight(pango.Weight.BOLD, 0, 50))
+            attr = pango.attr_weight_new(pango.Weight.BOLD)
+            atrlist.insert(attr)
             self.label.set_attributes(atrlist)
         self.label.set_justify(gtk.Justification.LEFT)
         self.label.set_xalign(0)
@@ -681,10 +685,10 @@ TX:'''))
 
             if type_ == "__wired__":
                 image.set_from_icon_name("network-wired",
-                    gtk.IconSize.SMALL_TOOLBAR)
+                                        gtk.IconSize.SMALL_TOOLBAR)
             else:
                 image.set_from_icon_name(self._get_img(n_id),
-                    gtk.IconSize.SMALL_TOOLBAR)
+                                        gtk.IconSize.SMALL_TOOLBAR)
             item.set_image(image)
             del image
             item.connect("activate", network_selected, type_, n_id)
@@ -693,6 +697,7 @@ TX:'''))
             if is_connecting:
                 item.set_sensitive(False)
             del item
+
 
         @catchdbus
         def _get_img(self, net_id):
@@ -918,20 +923,26 @@ TX:'''))
                 self.connect('activate', self.on_activate)
                 self.connect('popup-menu', self.on_popup_menu)
                 self.set_from_name('no-signal')
-                self.set_tooltip_text("Initializing wicd...")
+                super().set_tooltip_text("Initializing wicd...")
 
             def on_popup_menu(self, icon, button, time):
                 """ Opens the right click menu for the tray icon. """
                 self.init_network_menu()
                 self.menu.popup(None, None, gtk.StatusIcon.position_menu, icon, button, time)
 
-
-
             def set_from_name(self, name=None):
                 """ Sets a new tray icon picture. """
                 if name != self.current_icon_name:
                     self.current_icon_name = name
-                    gtk.StatusIcon.set_from_icon_name(self, name)
+                    self.set_from_icon_name(name)
+
+            def set_tooltip_text(self, val):
+                """ Set the tooltip for this tray icon.
+
+                Sets the tooltip for the gtk.StatusIcon.
+
+                """
+                gtk.StatusIcon.set_tooltip_text(self, val)
 
             def visible(self, val):
                 """ Set if the icon is visible or not.
