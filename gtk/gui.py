@@ -114,7 +114,6 @@ class WiredProfileChooser:
             flags=gtk.DialogFlags.MODAL,
             buttons=(gtk.STOCK_CONNECT, 1, gtk.STOCK_CANCEL, 2)
         )
-        dialog.set_has_separator(False)
         dialog.set_size_request(400, 150)
         instruct_label = gtk.Label(
             _('Select or create a wired profile to connect with') + ':\n'
@@ -298,7 +297,6 @@ class appGui(object):
             flags=gtk.DialogFlags.MODAL,
             buttons=(gtk.STOCK_CANCEL, 2, gtk.STOCK_OK, 1)
         )
-        dialog.set_has_separator(False)
         dialog.set_size_request(400, -1)
         self.chkbox_use_encryption = \
             gtk.CheckButton(_('Use Encryption (WEP only)'))
@@ -355,7 +353,6 @@ class appGui(object):
             flags=gtk.DialogFlags.MODAL,
             buttons=(gtk.STOCK_DELETE, 1, gtk.STOCK_OK, 2)
         )
-        dialog.set_has_separator(True)
         dialog.set_size_request(400, 200)
 
         networks = gtk.ListStore(str, str)
@@ -470,7 +467,6 @@ class appGui(object):
             flags=gtk.DialogFlags.MODAL,
             buttons=(gtk.STOCK_CONNECT, 1, gtk.STOCK_CANCEL, 2)
         )
-        dialog.set_has_separator(False)
         lbl = gtk.Label(_('Hidden Network ESSID'))
         textbox = gtk.Entry()
         dialog.vbox.pack_start(lbl, expand=False, fill=False, padding=0)
