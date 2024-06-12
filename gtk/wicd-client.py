@@ -920,11 +920,12 @@ TX:'''))
                 self.set_from_name('no-signal')
                 self.set_tooltip_text("Initializing wicd...")
 
-            def on_popup_menu(self, status, button, timestamp):
+            def on_popup_menu(self, icon, button, time):
                 """ Opens the right click menu for the tray icon. """
                 self.init_network_menu()
-                self.menu.popup(None, None, gtk.StatusIcon.position_menu,
-                    button, timestamp, self)
+                self.menu.popup(None, None, gtk.StatusIcon.position_menu, icon, button, time)
+
+
 
             def set_from_name(self, name=None):
                 """ Sets a new tray icon picture. """
