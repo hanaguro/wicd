@@ -1169,10 +1169,8 @@ class WirelessInformationDialog(gtk.Dialog):
 
         self.set_title('Network Information')
         vbox = self.vbox
-        self.set_has_separator(False)
         table = gtk.Table(5, 2)
         table.set_col_spacings(12)
-        # pylint: disable-msg=E1101
         vbox.pack_start(table, False, False, 0)
 
         # Pack the network status HBox.
@@ -1191,10 +1189,9 @@ class WirelessInformationDialog(gtk.Dialog):
         table.attach(LeftAlignedLabel('Channel:'), 0, 1, 4, 5)
         table.attach(self.lbl_channel, 1, 2, 4, 5)
 
-        # pylint: disable-msg=E1101
         vbox.show_all()
 
-        self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
+        self.add_button(gtk.STOCK_CLOSE, gtk.ResponseType.CLOSE)  # ここを修正
         self.show()
         self.run()
         self.destroy()
@@ -1211,10 +1208,6 @@ class WirelessInformationDialog(gtk.Dialog):
             dbm_strength = -100
         display_type = daemon.GetSignalDisplayType()
         if daemon.GetWPADriver() == 'ralink legacy' or display_type == 1:
-            # Use the -xx dBm signal strength to display a signal icon
-            # I'm not sure how accurately the dBm strength is being
-            # "converted" to strength bars, so suggestions from people
-            # for a better way would be welcome.
             if dbm_strength >= -60:
                 signal_img = 'signal-100.png'
             elif dbm_strength >= -70:
@@ -1226,7 +1219,6 @@ class WirelessInformationDialog(gtk.Dialog):
             ending = "dBm"
             disp_strength = str(dbm_strength)
         else:
-            # Uses normal link quality, should be fine in most cases
             if strength > 75:
                 signal_img = 'signal-100.png'
             elif strength > 50:
