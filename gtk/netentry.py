@@ -791,7 +791,7 @@ class WiredNetworkEntry(NetworkEntry):
         self.image.set_padding(0, 0)
         self.image.set_alignment(.5, .5)
         self.image.set_size_request(60, -1)
-        self.image.set_from_icon_name("wired-gui", gtk.ICON_SIZE_DND)
+        self.image.set_from_icon_name("wired-gui", gtk.IconSize.DND)
         self.image.show()
         self.advanced_button.show()
 
@@ -809,22 +809,22 @@ class WiredNetworkEntry(NetworkEntry):
         )
         self.chkbox_default_profile = gtk.CheckButton(
             _('Use as default profile (overwrites any previous default)'))
-        self.combo_profile_names = gtk.combo_box_new_text()
+        self.combo_profile_names = gtk.ComboBoxText()
 
         # Format the profile help label.
-        self.profile_help.set_justify(gtk.JUSTIFY_LEFT)
+        self.profile_help.set_justify(gtk.Justification.LEFT)
         self.profile_help.set_line_wrap(True)
 
         # Pack the various VBox objects.
         self.hbox_temp = gtk.HBox(False, 0)
         self.hbox_def = gtk.HBox(False, 0)
-        self.vbox_top.pack_start(self.profile_help, True, True)
-        self.vbox_top.pack_start(self.hbox_def)
-        self.vbox_top.pack_start(self.hbox_temp)
-        self.hbox_temp.pack_start(self.combo_profile_names, True, True)
-        self.hbox_temp.pack_start(self.button_add, False, False)
-        self.hbox_temp.pack_start(self.button_delete, False, False)
-        self.hbox_def.pack_start(self.chkbox_default_profile, False, False)
+        self.vbox_top.pack_start(self.profile_help, True, True, gtk.PackType.START)
+        self.vbox_top.pack_start(self.hbox_def, True, True, gtk.PackType.START)
+        self.vbox_top.pack_start(self.hbox_temp, True, True, gtk.PackType.START)
+        self.hbox_temp.pack_start(self.combo_profile_names, True, True, gtk.PackType.START)
+        self.hbox_temp.pack_start(self.button_add, False, False, gtk.PackType.START)
+        self.hbox_temp.pack_start(self.button_delete, False, False, gtk.PackType.START)
+        self.hbox_def.pack_start(self.chkbox_default_profile, False, False, gtk.PackType.START)
 
         # Connect events
         self.button_add.connect("clicked", self.add_profile)
@@ -893,24 +893,21 @@ class WiredNetworkEntry(NetworkEntry):
             self.advanced_button.show()
 
     def add_profile(self, widget):
-        """ Add a profile to the profile list. """
         response = string_input(
             "Enter a profile name", "The profile name will not be used by the "
             "computer. It allows you to easily distinguish between different "
             "network profiles.",
             "Profile name:"
-        ).strip()
-
-        # if response is "" or None
-        if not response:
-            error(None, "Invalid profile name", block=True)
+        )
+        if response is None or response.strip() == "":
+            error(None, "You must enter a valid profile name.", block=True)
             return False
 
-        profile_name = response
+        profile_name = response.strip()
         profile_list = wired.GetWiredProfileList()
-        if profile_list:
-            if profile_name in profile_list:
-                return False
+        if profile_list and profile_name in profile_list:
+            error(None, "This profile name already exists.", block=True)
+            return False
 
         self.profile_help.hide()
         wired.CreateWiredNetworkProfile(profile_name, False)
@@ -926,8 +923,10 @@ class WiredNetworkEntry(NetworkEntry):
         print("removing profile")
         profile_name = self.combo_profile_names.get_active_text()
         wired.DeleteWiredNetworkProfile(profile_name)
-        self.combo_profile_names.remove_text(self.combo_profile_names.
-                                                                 get_active())
+        active_index = self.combo_profile_names.get_active()
+        if active_index != -1:
+            self.combo_profile_names.remove(active_index)
+
         self.combo_profile_names.set_active(0)
         self.advanced_dialog.prof_name = \
             self.combo_profile_names.get_active_text()
