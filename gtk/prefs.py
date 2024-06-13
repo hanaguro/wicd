@@ -334,7 +334,8 @@ class PreferencesDialog(object):
         """ Set up anything that doesn't have to be persisted later. """
         def build_combobox(lbl):
             """ Sets up a ComboBox using the given widget name. """
-            combobox = Gtk.ComboBoxText()
+#            combobox = Gtk.ComboBoxText()
+            combobox = self.wTree.get_object(lbl)
             combobox.set_name(lbl)
             return combobox
 
@@ -430,9 +431,10 @@ class PreferencesDialog(object):
         for driver in self.wpadrivers:
             self.wpadrivercombo.append_text(driver)
         self.wpadrivercombo.set_active(0)
+        self.wpadrivercombo.set_sensitive(True)
 
-        for x in self.wpadrivers:
-            self.wpadrivercombo.append_text(x)
+#        for x in self.wpadrivers:
+#            self.wpadrivercombo.append_text(x)
 
         self.entryWirelessInterface = self.wTree.get_object("pref_wifi_entry")
         self.entryWiredInterface = self.wTree.get_object("pref_wired_entry")
