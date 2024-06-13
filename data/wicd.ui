@@ -1445,7 +1445,7 @@ to read its description.</property>
                         <property name="visible">True</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkComboBox" id="pref_wpa_combobox">
+                          <object class="GtkComboBoxText" id="pref_wpa_combobox">
                             <property name="visible">True</property>
                           </object>
                           <packing>
@@ -1592,7 +1592,7 @@ to read its description.</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkComboBox" id="pref_backend_combobox">
+                      <object class="GtkComboBoxText" id="pref_backend_combobox">
                         <property name="visible">True</property>
                         <property name="has_tooltip">True</property>
                       </object>
