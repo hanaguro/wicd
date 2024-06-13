@@ -693,6 +693,7 @@ TX:'''))
             del image
             item.connect("activate", network_selected, type_, n_id)
             net_menu.append(item)
+#            net_menu.set_size_request(200, 200) 
             item.show()
             if is_connecting:
                 item.set_sensitive(False)
@@ -815,6 +816,7 @@ TX:'''))
                 submenu.append(no_nets_item)
 
             submenu.reposition()
+            submenu.set_size_request(200, 200) 
             net_menuitem.show()
 
         def init_network_menu(self):
