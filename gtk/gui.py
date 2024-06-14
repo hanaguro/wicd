@@ -456,7 +456,7 @@ class appGui(object):
             self.pref = PreferencesDialog(self, self.wTree)
         else:
             self.pref.load_preferences_diag()
-        if self.pref.run() == gtk.ResponseType.ACCEPT:
+        if self.pref.run() == 1: # connect_hidden()に倣う
             self.pref.save_results()
         self.pref.hide()
 
@@ -805,7 +805,7 @@ class appGui(object):
 
         """
         result = dialog.run()
-        if result == gtk.ResponseType.ACCEPT:
+        if result == gtk.ResponseType.ACCEPT: # ここは ACCEPT で良いみたい
             if self.save_settings(nettype, networkid, networkentry):
                 return True
             else:

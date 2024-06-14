@@ -433,9 +433,6 @@ class PreferencesDialog(object):
         self.wpadrivercombo.set_active(0)
         self.wpadrivercombo.set_sensitive(True)
 
-#        for x in self.wpadrivers:
-#            self.wpadrivercombo.append_text(x)
-
         self.entryWirelessInterface = self.wTree.get_object("pref_wifi_entry")
         self.entryWiredInterface = self.wTree.get_object("pref_wired_entry")
 
