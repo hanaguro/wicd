@@ -107,14 +107,20 @@ class DynWrap(urwid.AttrMap):
         if hasattr(widget, 'set_sensitive'):
             widget.set_sensitive(state)
         elif isinstance(widget, urwid.AttrMap):
-            widget.original_widget.set_sensitive(state)
+            self.set_sensitive_recursive(widget.original_widget, state)
         elif isinstance(widget, urwid.WidgetWrap):
             self.set_sensitive_recursive(widget._w, state)
-        elif isinstance(widget, urwid.RadioButton):
-            widget.set_state(state)
         elif isinstance(widget, urwid.Pile) or isinstance(widget, urwid.ListBox):
             for item in widget.contents:
                 self.set_sensitive_recursive(item[0], state)
+        # 他の場合でset_sensitiveが定義されていない場合は何もしない
+        else:
+            pass
+
+    def set_sensitive(self, state):
+        """ Enable or disable widget sensitivity based on state. """
+        self.sensitive = state
+        self.set_sensitive_recursive(self.original_widget, state)
 
 
 
