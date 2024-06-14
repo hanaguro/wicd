@@ -240,7 +240,13 @@ class PrefsDialog(urwid.WidgetWrap):
 
         self.always_show_wired_checkb.set_state(daemon.GetAlwaysShowWiredInterface())
         self.prefer_wired_chkbx.set_state(daemon.GetPreferWiredNetwork())
-        self.global_dns_checkb.set_state(daemon.GetUseGlobalDNS())
+
+        state = daemon.GetUseGlobalDNS() # なぜか直接set_state()に渡すと以後チェックボックスが選択できなくなる
+        if state == True:
+            self.global_dns_checkb.set_state(True)
+        else:
+            self.global_dns_checkb.set_state(False)
+
         theDNS = daemon.GetGlobalDNSAddresses()
 
         i = 0
