@@ -212,6 +212,17 @@ class WiredSettingsDialog(AdvancedSettingsDialog):
         AdvancedSettingsDialog.__init__(self)
         self.wired = True
 
+        # prof_name のバリデーションを追加
+        if name is None or not isinstance(name, str):
+            # prof_name が None または文字列でない場合、デフォルト値を設定またはエラー処理
+            self.prof_name = 'Default Profile'  # デフォルトのプロファイル名
+            # エラー処理が必要な場合はここにログ記録や例外を投げる処理を追加
+        else:
+            self.prof_name = name
+
+        title = _('Configuring preferences for wired profile "$A"').replace('$A', self.prof_name)
+        self._w.header = urwid.Text(('header', title), align='right')
+
         self.set_default = urwid.CheckBox(_('Use as default profile (overwrites any previous default)'))
         self._listbox.body.append(self.set_default)
 
@@ -226,11 +237,6 @@ class WiredSettingsDialog(AdvancedSettingsDialog):
         self.encrypt_types = misc.LoadEncryptionMethods(wired=True)
         self.set_values()
 
-        self.prof_name = name
-        title = _('Configuring preferences for wired profile "$A"').replace('$A', self.prof_name)
-        self._w.header = urwid.Text(('header', title), align='right')
-
-        self.set_values()
 
     def set_net_prop(self, option, value):
         wired.SetWiredProperty(option, str(value))

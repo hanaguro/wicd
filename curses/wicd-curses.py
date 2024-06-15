@@ -124,6 +124,11 @@ class WiredComboBox(ComboBox):
         self.theList = []
         self.set_list(l)
 
+    def get_selected_profile(self):
+        # theListの現在の選択を返す
+        return self.theList[self.get_focus()[1]] if self.theList and len(self.theList) > 0 else None
+
+
 class NetLabel(urwid.WidgetWrap):
     """ Wireless network label. """
     def __init__(self, i, is_active):
