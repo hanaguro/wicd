@@ -1801,28 +1801,6 @@ def daemonize():
     os.dup2(0, 2)
 
 
-def clean_wireless_settings_file():
-    """ Cleans up the wireless settings file to remove duplicates and fix malformed lines. """
-    wireless_conf = os.path.join(wpath.etc, "wireless-settings.conf")
-
-    if not os.path.isfile(wireless_conf):
-        return
-
-    seen = set()
-    cleaned_lines = []
-
-    with open(wireless_conf, 'r') as f:
-        for line in f:
-            # Check for duplicate lines and malformed lines
-            if line in seen or not line.strip():
-                continue
-            seen.add(line)
-            # Fix malformed lines if necessary
-            cleaned_lines.append(line)
-
-    with open(wireless_conf, 'w') as f:
-        f.writelines(cleaned_lines)
-
 def main(argv):
     """ The main daemon program.
 
@@ -1957,7 +1935,6 @@ def main(argv):
     print('wicd is version', wpath.version, wpath.revision)
 
     # Clean wireless settings file before initializing
-    clean_wireless_settings_file()
 
     # Open the DBUS session
     bus = dbus.SystemBus()
