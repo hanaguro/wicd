@@ -297,8 +297,7 @@ class ComboBox(urwid.WidgetWrap):
     """A ComboBox of text objects"""
     class ComboSpace(urwid.WidgetWrap):
         """The actual menu-like space that comes down from the ComboBox"""
-        def __init__(self, l, body, ui, show_first, pos=(0, 0),
-          attr=('body', 'focus')):
+        def __init__(self, l, body, ui, show_first, pos=(0, 0), attr=('body', 'focus')):
             """
             body      : parent widget
             l         : stuff to include in the combobox
@@ -312,10 +311,11 @@ class ComboBox(urwid.WidgetWrap):
             width = max(len(entry) for entry in l)
             content = [urwid.AttrMap(SelText(w), attr[0], attr[1]) for w in l]
             self._listbox = urwid.ListBox(content)
+            if show_first is None or show_first >= len(l) or show_first < 0:
+                show_first = 0
             self._listbox.set_focus(show_first)
-
-            overlay = urwid.Overlay(self._listbox, body, ('fixed left', pos[0]), width + 2, ('fixed top', pos[1]), height)
-            super().__init__(overlay)
+            self.overlay = urwid.Overlay(self._listbox, body, ('fixed left', pos[0]), width + 2, ('fixed top', pos[1]), height)
+            super().__init__(self.overlay)
 
         def show(self, ui, display):
             """ Show widget. """
@@ -340,9 +340,7 @@ class ComboBox(urwid.WidgetWrap):
                 for k in keys:
                     self._w.keypress(dim, k)
 
-    def __init__(self, label='', l=None, attrs=('body', 'editnfc'),
-      focus_attr='focus', use_enter=True, focus=0, callback=None,
-      user_args=None):
+    def __init__(self, label='', l=None, attrs=('body', 'editnfc'), focus_attr='focus', use_enter=True, focus=0, callback=None, user_args=None, overlay=None):
         """
         label     : bit of text that preceeds the combobox.  If it is "", then ignore it
         l         : stuff to include in the combobox
@@ -358,33 +356,24 @@ class ComboBox(urwid.WidgetWrap):
         self.label = urwid.Text(label)
         self.attrs = attrs
         self.focus_attr = focus_attr
-        if l is None:
-            l = []
-        self.list = l
-
+        self.list = l if l is not None else []
+        self.overlay = overlay  # Use the passed overlay if available
         s, trash = self.label.get_text()
-
-        self.overlay = None
         self.cbox = DynWrap(SelText(self.DOWN_ARROW), attrs=attrs, focus_attr=focus_attr)
         if label != '':
             w = urwid.Columns([('fixed', len(s), self.label), self.cbox], dividechars=1)
         else:
             w = urwid.Columns([self.cbox])
         super().__init__(w)
-
         self.use_enter = use_enter
-
-        if urwid.__version__ < "1.1.0":
-            self.focus = focus
-        else:
-            self._w.focus_position = focus
-
+#        self.focus = focus
         self.callback = callback
         self.user_args = user_args
 
-        self.parent = None
-        self.ui = None
-        self.row = None
+    def build_overlay(self, ui, body):
+        """ Build the overlay for the combo box. """
+        if not self.overlay:
+            self.overlay = self.ComboSpace(self.list, body, ui, self.focus, pos=(0, 0))
 
     def set_list(self, l):
         """ Populate widget list. """
@@ -392,6 +381,9 @@ class ComboBox(urwid.WidgetWrap):
 
     def set_focus(self, index):
         """ Set widget focus. """
+        if not self.list or index < 0 or index >= len(self.list):  # リストが空、またはインデックスが範囲外の場合、何もしない
+            return
+
         if urwid.__version__ < "1.1.0":
             self.focus = index
         else:

@@ -321,7 +321,7 @@ class WiredSettingsDialog(AdvancedSettingsDialog):
         pass
 
 class WirelessSettingsDialog(AdvancedSettingsDialog):
-    def __init__(self, networkID, parent):
+    def __init__(self, networkID, parent, ui):
         AdvancedSettingsDialog.__init__(self)
         self.wired = False
 
@@ -329,6 +329,7 @@ class WirelessSettingsDialog(AdvancedSettingsDialog):
 
         self.networkid = networkID
         self.parent = parent
+        self.ui = ui
         global_settings_t = _('Use these settings for all networks sharing this essid')
         encryption_t = _('Use Encryption')
         autoconnect_t = _('Automatically connect to this network')
@@ -397,13 +398,20 @@ class WirelessSettingsDialog(AdvancedSettingsDialog):
             if enc_type['type'] == wireless.GetWirelessProperty(networkID, "enctype"):
                 activeID = x
         self.encryption_combo.set_list(l)
-
+        self.encryption_combo.build_overlay(self.ui, self._listbox.body)
         self.encryption_combo.set_focus(activeID)
         if activeID != -1:
             self.encryption_chkbox.set_state(True, do_callback=False)
             self.encryption_combo.sensitive = True
         else:
             self.encryption_combo.set_focus(0)
+
+        # 現在の画面サイズを取得
+        size = self.ui.get_cols_rows()
+        # 現在のフレームからキャンバスを生成
+        canvas = self._frame.render(size, True)
+        # 画面を更新
+        self.ui.draw_screen(size, canvas)
 
         self.change_encrypt_method()
         dhcphname = wireless.GetWirelessProperty(networkID, "dhcphostname")

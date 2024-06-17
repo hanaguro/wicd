@@ -491,7 +491,7 @@ class appGUI():
                     else:
                         # wireless list only other option
                         trash, pos = self.thePile.get_focus().get_focus()
-                        self.diag = WirelessSettingsDialog(pos, self.frame)
+                        self.diag = WirelessSettingsDialog(pos, self.frame, ui)
                         self.diag.ready_widgets(ui, self.frame)
                         self.frame.set_body(self.diag)
                     self.diag_type = 'conf'
