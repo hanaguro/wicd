@@ -225,6 +225,9 @@ class appGUI():
         self.diag_type = 'none'
         self.scanning = False
         self.pref = None
+        self.force_update_ui = True
+        self.pre_wired_connecting = None
+        self.pre_wireless_connecting = None
         self.update_status()
 
 
@@ -254,7 +257,7 @@ class appGUI():
             return True
         self.frame.set_body(self.screen_locker)
         self.screen_locked = True
-        self.update_ui()
+        self.update_ui_with_no_key()
 
     def unlock_screen(self):
         """ Unlock the screen. """
@@ -265,7 +268,7 @@ class appGUI():
         if not self.diag:
             self.frame.set_body(self.thePile)
         self.screen_locked = False
-        self.update_ui()
+        self.update_ui_with_no_key()
 
     def raise_hidden_network_dialog(self):
         """ Show hidden network dialog. """
@@ -276,7 +279,7 @@ class appGUI():
         exitcode, hidden = dialog.run(ui, self.frame)
         if exitcode != -1:
             # That dialog will sit there for a while if I don't get rid of it
-            self.update_ui()
+            self.update_ui_with_no_key()
             wireless.SetHiddenNetworkESSID(misc.noneToString(hidden))
             wireless.Scan(False)
         wireless.SetHiddenNetworkESSID("")
@@ -354,7 +357,7 @@ class appGUI():
 
         self.prev_state = state
         if not firstrun:
-            self.update_ui()
+            self.update_ui_with_no_key()
         if firstrun:
             if wired.GetDefaultWiredNetwork() is not None:
                 self.wiredCB.original_widget.set_focus(wired.GetWiredProfileList().index(wired.GetDefaultWiredNetwork()))
@@ -372,6 +375,7 @@ class appGUI():
             if not self.conn_status:
                 self.conn_status = True
                 gobject.timeout_add(250, self.set_connecting_status, fast)
+                self.update_ui_with_no_key()
             return True
         else:
             if check_for_wired(wired.GetWiredIP(''), self.set_status):
@@ -384,7 +388,7 @@ class appGUI():
                 return True
             else:
                 self.set_status(_('Not connected'))
-                self.update_ui()
+                self.update_ui_with_no_key()
                 return True
 
     def set_connecting_status(self, fast):
@@ -405,7 +409,6 @@ class appGUI():
             self.conn_status = False
             return False
 
-
     def set_status(self, text, from_idle=False):
         """ Set the status text. """
         # Set the status text, usually called by the update_status method
@@ -418,7 +421,16 @@ class appGUI():
         # Cheap little indicator stating that we are actually connecting
         twirl = ['|', '/', '-', '\\']
 
-        if from_idle and not self.connecting:
+        wired_connecting = wired.CheckIfWiredConnecting()
+        wireless_connecting = wireless.CheckIfWirelessConnecting()
+
+        if wired_connecting != self.pre_wired_connecting or wireless_connecting != self.pre_wireless_connecting:
+            self.force_update_ui = True
+
+        self.pre_wired_connecting = wired_connecting
+        self.pre_wireless_connecting = wireless_connecting
+
+        if from_idle and not self.connecting and not self.force_update_ui:
             self.update_status()
             self.conn_status = False
             return False
@@ -430,7 +442,12 @@ class appGUI():
             self.tcount += 1
             toAppend = twirl[self.tcount % 4]
         self.status_label.original_widget.set_text(text + ' ' + toAppend)
-        self.update_ui()
+        if self.conn_status or self.force_update_ui:
+            self.update_ui_with_no_key()
+            self.force_update_ui = False
+        else:
+            self.update_ui()
+
         return True
 
     def dbus_scan_finished(self):
@@ -458,7 +475,7 @@ class appGUI():
             self.frame.set_body(self.thePile)
         self.diag = None
         self.frame.set_footer(urwid.Pile([self.primaryCols, self.footer2]))
-        self.update_ui()
+        self.update_ui_with_no_key()
 
     def handle_keys(self, keys):
         """ Handle keys. """
@@ -614,6 +631,16 @@ class appGUI():
         if self.update_tag is not None:
             gobject.source_remove(self.update_tag)
         return False
+
+    def update_ui_with_no_key(self):
+        if not ui._started:
+            return False
+        canvas = self.frame.render((self.size), True)
+        ui.draw_screen((self.size), canvas)
+        if self.update_tag is not None:
+            gobject.source_remove(self.update_tag)
+        return False
+
 
 
     def connect(self, nettype, networkid, networkentry=None):
@@ -906,7 +933,7 @@ def run():
     fds = ui.get_input_descriptors()
     for fd in fds:
         gobject.io_add_watch(fd, gobject.IO_IN, app.call_update_ui)
-    app.update_ui()  # Ensure UI is drawn initially
+    app.update_ui_with_no_key()  # Ensure UI is drawn initially
     loop.run()
 
 
