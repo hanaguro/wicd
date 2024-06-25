@@ -1881,13 +1881,21 @@ def main(argv):
             print('error restoring resolv.conf')
 
         # connect to dbus, trigger a disconnect, then knock out the daemon
-        from wicd import dbusmanager
-        bus = dbusmanager.connect_to_dbus()
-        dbus_ifaces = dbusmanager.get_dbus_ifaces()
-        dbus_ifaces['daemon'].Disconnect()
+        from dbus.exceptions import DBusException
+        try:
+            from wicd import dbusmanager
+            bus = dbusmanager.connect_to_dbus()
+            dbus_ifaces = dbusmanager.get_dbus_ifaces()
+            dbus_ifaces['daemon'].Disconnect()
+        except DBusException as e:
+            print("Failed to connect to D-Bus system bus: ", e)
+
         pid = int(f.readline())
         f.close()
-        os.kill(pid, signal.SIGTERM)
+        try:
+            os.kill(pid, signal.SIGTERM)
+        except OSError:
+            print("Failed to send SIGTERM to wicd, pid %s" % pid)
 
         # quit, this should be the only option specified
         sys.exit(0)
