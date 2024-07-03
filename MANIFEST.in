@@ -6,19 +6,20 @@ include MANIFEST.in
 include NEWS
 include README
 include uninstall.sh
+include vcsinfo.py
 
 graft cli
 graft curses
+graft data
 graft encryption
+graft gtk
 graft icons
 graft images
 graft in
 graft other
 graft po
 graft tests
-graft src
-
-include src/wicd/daemon/files/*
+graft wicd
 
 recursive-include man wicd-client.1
 recursive-include . *.py
@@ -29,5 +30,3 @@ prune build/
 prune .bzr*
 prune .git*
 prune *.log
-
-global-exclude *~ *.py[cod] *.so

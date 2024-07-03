@@ -48,16 +48,13 @@ class PrefsDialog(urwid.WidgetWrap):
 
         width, height = ui.get_cols_rows()
         height -= 3
-        #width = 80
-        #height = 20
-        # Stuff that goes at the top
 
         header0_t = _('General Settings')
         header1_t = _('External Programs')
         header2_t = _('Advanced Settings')
-        self.header0 = urwid.AttrWrap(SelText(header0_t), 'tab active', 'focus')
-        self.header1 = urwid.AttrWrap(SelText(header1_t), 'body', 'focus')
-        self.header2 = urwid.AttrWrap(SelText(header2_t), 'body', 'focus')
+        self.header0 = urwid.AttrMap(SelText(header0_t), 'tab active', 'focus')
+        self.header1 = urwid.AttrMap(SelText(header1_t), 'body', 'focus')
+        self.header2 = urwid.AttrMap(SelText(header2_t), 'body', 'focus')
         title = ('Preferences')
 
         # Blank line
@@ -112,8 +109,7 @@ class PrefsDialog(urwid.WidgetWrap):
         wpa_cat_t = ('header', _('WPA Supplicant'))
         wpa_t = ('editcp', 'Driver:')
         wpa_list = []
-        wpa_warn_t = ('important',
-            _('You should almost always use wext as the WPA supplicant driver'))
+        wpa_warn_t = ('important', _('You should almost always use wext as the WPA supplicant driver'))
 
         backend_cat_t = ('header', _('Backend'))
         backend_t = _('Backend') + ':'
@@ -124,8 +120,7 @@ class PrefsDialog(urwid.WidgetWrap):
 
         wless_cat_t = ('header', _('Wireless Interface'))
         use_dbm_t = _('Use dBm to measure signal strength')
-        verify_ap_t = \
-            _('Ping static gateways after connecting to verify association')
+        verify_ap_t = _('Ping static gateways after connecting to verify association')
 
         ####
         #### UI Widgets
@@ -133,19 +128,14 @@ class PrefsDialog(urwid.WidgetWrap):
 
         # General Settings
         self.net_cat = urwid.Text(net_cat_t)
-        self.wired_edit = \
-            urwid.AttrWrap(urwid.Edit(wired_t), 'editbx', 'editfc')
-        self.wless_edit = \
-            urwid.AttrWrap(urwid.Edit(wless_t), 'editbx', 'editfc')
+        self.wired_edit = urwid.AttrMap(urwid.Edit(wired_t), 'editbx', 'editfc')
+        self.wless_edit = urwid.AttrMap(urwid.Edit(wless_t), 'editbx', 'editfc')
         self.prefer_wired_chkbx = urwid.CheckBox(prefer_wired_t)
         self.global_dns_cat = urwid.Text(global_dns_cat_t)
         # Default the global DNS settings to off.  They will be reenabled later
         # if so required.
         global_dns_state = False
-        self.global_dns_checkb = urwid.CheckBox(global_dns_t,
-             global_dns_state,
-            on_state_change=self.global_dns_trigger
-        )
+        self.global_dns_checkb = urwid.CheckBox(global_dns_t, global_dns_state, on_state_change=self.global_dns_trigger)
         self.search_dom = DynWrap(urwid.Edit(search_dom_t), global_dns_state)
         self.dns_dom = DynWrap(urwid.Edit(dns_dom_t), global_dns_state)
         self.dns1 = DynWrap(urwid.Edit(dns1_t), global_dns_state)
@@ -162,14 +152,15 @@ class PrefsDialog(urwid.WidgetWrap):
 
         self.auto_reconn_cat = urwid.Text(auto_reconn_cat_t)
         self.auto_reconn_checkb = urwid.CheckBox(auto_reconn_t)
+
         generalLB = urwid.ListBox([
             self.net_cat,
-            self.wless_edit,  # _blank,
+            self.wless_edit,
             self.wired_edit,
             self.always_show_wired_checkb,
             self.prefer_wired_chkbx, _blank,
             self.global_dns_cat,
-            self.global_dns_checkb,  # _blank,
+            self.global_dns_checkb,
             self.search_dom, self.dns_dom,
             self.dns1, self.dns2, self.dns3, _blank,
             self.wired_auto_cat,
@@ -179,9 +170,6 @@ class PrefsDialog(urwid.WidgetWrap):
             self.auto_reconn_cat,
             self.auto_reconn_checkb
         ])
-
-        #### External Programs tab
-        automatic_t = _('Automatic (recommended)')
 
         self.dhcp_header = urwid.Text(dhcp_header_t)
         self.dhcp_l = []
@@ -194,9 +182,7 @@ class PrefsDialog(urwid.WidgetWrap):
         self.dhcp2 = DynRadioButton(self.dhcp_l, dhcp2_t)
         self.dhcp3 = DynRadioButton(self.dhcp_l, dhcp3_t)
         self.dhcp4 = DynRadioButton(self.dhcp_l, dhcp4_t)
-        self.dhcp_l = [
-            self.dhcp0, self.dhcp1, self.dhcp2, self.dhcp3, self.dhcp4
-        ]
+        self.dhcp_l = [self.dhcp0, self.dhcp1, self.dhcp2, self.dhcp3, self.dhcp4]
 
         self.wired_l = []
         self.wired_detect_header = urwid.Text(wired_detect_header_t)
@@ -257,11 +243,9 @@ class PrefsDialog(urwid.WidgetWrap):
             self.header1: externalLB,
             self.header2: advancedLB
         }
-        #self.load_settings()
 
         self.tabs = TabColumns(headerList, lbList, _('Preferences'))
-        # pylint: disable-msg=E1101
-        self.__super.__init__(self.tabs)
+        super().__init__(self.tabs)
 
     def load_settings(self):
         """ Load settings to be used in the dialog. """
@@ -269,23 +253,27 @@ class PrefsDialog(urwid.WidgetWrap):
         # ComboBox does not like dbus.Strings as text markups.  My fault. :/
         wless_iface = str(daemon.GetWirelessInterface())
         wired_iface = str(daemon.GetWiredInterface())
-        self.wless_edit.set_edit_text(wless_iface)
-        self.wired_edit.set_edit_text(wired_iface)
+        self.wless_edit.original_widget.set_edit_text(wless_iface)
+        self.wired_edit.original_widget.set_edit_text(wired_iface)
 
-        self.always_show_wired_checkb.set_state(
-                daemon.GetAlwaysShowWiredInterface())
+        self.always_show_wired_checkb.set_state(daemon.GetAlwaysShowWiredInterface())
         self.prefer_wired_chkbx.set_state(daemon.GetPreferWiredNetwork())
-        # DNS
-        self.global_dns_checkb.set_state(daemon.GetUseGlobalDNS())
+
+        state = daemon.GetUseGlobalDNS() # なぜか直接set_state()に渡すと以後チェックボックスが選択できなくなる
+        if state == True:
+            self.global_dns_checkb.set_state(True)
+        else:
+            self.global_dns_checkb.set_state(False)
+
         theDNS = daemon.GetGlobalDNSAddresses()
 
         i = 0
-        for w in self.dns1, self.dns2, self.dns3, self.dns_dom, self.search_dom:
-            w.set_edit_text(misc.noneToBlankString(theDNS[i]))
+        for w in [self.dns1, self.dns2, self.dns3, self.dns_dom, self.search_dom]:
+            w.original_widget.set_edit_text(misc.noneToBlankString(theDNS[i]))
             i += 1
 
         # Wired Automatic Connection
-        self.wired_auto_l[daemon.GetWiredAutoConnectMethod() - 1]
+        self.wired_auto_l[daemon.GetWiredAutoConnectMethod() - 1].set_state(True)
         self.auto_reconn_checkb.set_state(daemon.GetAutoReconnect())
 
         def find_avail(apps):
@@ -331,7 +319,6 @@ class PrefsDialog(urwid.WidgetWrap):
         except ValueError:
             self.backend_cbox.set_focus(0)
 
-        # Three last checkboxes
         self.debug_mode_checkb.set_state(daemon.GetDebugMode())
         self.use_dbm_checkb.set_state(daemon.GetSignalDisplayType())
         self.verify_ap_checkb.set_state(daemon.GetShouldVerifyAp())
@@ -341,25 +328,20 @@ class PrefsDialog(urwid.WidgetWrap):
             This exact order is found in prefs.py"""
         daemon.SetUseGlobalDNS(self.global_dns_checkb.get_state())
 
-        for i in [
-            self.dns1, self.dns2, self.dns3,
-            self.dns_dom, self.search_dom, self.dns_dom
-        ]:
-            i.set_edit_text(i.get_edit_text().strip())
+        for i in [self.dns1, self.dns2, self.dns3, self.dns_dom, self.search_dom, self.dns_dom]:
+            i.original_widget.set_edit_text(i.original_widget.get_edit_text().strip())
 
         daemon.SetGlobalDNS(
-            self.dns1.get_edit_text(),
-            self.dns2.get_edit_text(),
-            self.dns3.get_edit_text(),
-            self.dns_dom.get_edit_text(),
-            self.search_dom.get_edit_text()
+            self.dns1.original_widget.get_edit_text(),
+            self.dns2.original_widget.get_edit_text(),
+            self.dns3.original_widget.get_edit_text(),
+            self.dns_dom.original_widget.get_edit_text(),
+            self.search_dom.original_widget.get_edit_text()
         )
-        daemon.SetWirelessInterface(self.wless_edit.get_edit_text())
-        daemon.SetWiredInterface(self.wired_edit.get_edit_text())
+        daemon.SetWirelessInterface(self.wless_edit.original_widget.get_edit_text())
+        daemon.SetWiredInterface(self.wired_edit.original_widget.get_edit_text())
         daemon.SetWPADriver(self.wpadrivers[self.wpa_cbox.get_focus()[1]])
-        daemon.SetAlwaysShowWiredInterface(
-            self.always_show_wired_checkb.get_state()
-        )
+        daemon.SetAlwaysShowWiredInterface(self.always_show_wired_checkb.get_state())
         daemon.SetAutoReconnect(self.auto_reconn_checkb.get_state())
         daemon.SetDebugMode(self.debug_mode_checkb.get_state())
         daemon.SetSignalDisplayType(int(self.use_dbm_checkb.get_state()))
@@ -405,7 +387,7 @@ class PrefsDialog(urwid.WidgetWrap):
 
     def global_dns_trigger(self, check_box, new_state, user_data=None):
         """ DNS CheckBox callback. """
-        for w in self.dns1, self.dns2, self.dns3, self.dns_dom, self.search_dom:
+        for w in [self.dns1, self.dns2, self.dns3, self.dns_dom, self.search_dom]:
             w.set_sensitive(new_state)
 
     def ready_widgets(self, ui, body):

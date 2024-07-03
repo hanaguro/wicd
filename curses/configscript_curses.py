@@ -104,7 +104,10 @@ def main(argv):
                        urwid.Filler(button_cols, 'bottom')
                        ])
     frame = urwid.Frame(lbox)
-    result = ui.run_wrapper(run)
+
+    # run_wrapper をコンテキストマネージャに置き換え
+    with ui.start():
+        result = run()
 
     if result:
         script_info["pre_entry"] = blank_to_none(pre_entry.get_edit_text())
@@ -117,6 +120,7 @@ def main(argv):
 
 OK_PRESSED = False
 CANCEL_PRESSED = False
+
 
 
 def ok_callback(button_object, user_data=None):

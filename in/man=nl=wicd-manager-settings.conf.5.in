@@ -39,14 +39,14 @@ Default is ioctl backend.
 .br
 1 = dhclient
 .br
-2 = dhcpcd
+2 = dhcpcd5
 .br
 3 = pump
 .TP
 .BI "sudo_app = " <0|1|2|3>
 0 = autodetect
 .br
-1 = gksu
+1 = pkexec
 .br
 2 = kdesu
 .br

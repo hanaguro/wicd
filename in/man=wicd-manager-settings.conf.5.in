@@ -39,34 +39,36 @@ Default is ioctl backend.
 .br
 1 = dhclient
 .br
-2 = dhcpcd
+2 = dhcpcd5
 .br
 3 = pump
 .TP
 .BI "sudo_app = " <0|1|2|3>
 0 = autodetect
 .br
-1 = gksu
+1 = pkexec
 .br
 2 = kdesu
 .br
 3 = ktsuss
 .TP
-.BI "wired_interface = " <interface_name>
+.BI "wired_interface = " <interface_name|None>
 .TP
 .BI "always_show_wired_interface = " <True|False>
 .TP
-.BI "wired_connect_mode = " <0|1>
-0 = connect to wired interface automatically
+.BI "wired_connect_mode = " <1|2|3>
+1 = default profile
 .br
-1 = do not connect to wired interface automatically
+2 = show list
+.br
+3 = last used profile
 .TP
 .BI "prefer_wired = " <True|False>
 True = Switch to wired interface if a link is detected, even if already connected to wireless
 .br
 False = Do not switch to wired interface automatically
 .TP
-.BI "wireless_interface = " <name_of_wireless_interface>
+.BI "wireless_interface = " <name_of_wireless_interface|None>
 .TP
 .BI "wpa_driver = " <wext|madwifi|ndiswrapper|hostap|hermes|atmel|broadcom|ipw|ralink legacy|none>
 The default (and best supported) is wext.  It should work properly in most cases.

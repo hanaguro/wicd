@@ -35,7 +35,7 @@ connection enabled.
 
 Wicd uses built-in linux wireless-tools, such as ifconfig and iwconfig, to
 get and configure network info.  There is some flexibility in its use of DHCP,
-providing support for dhclient, dhcpcd, and pump.  Wicd uses wpa_supplicant
+providing support for dhclient, dhcpcd5, and pump.  Wicd uses wpa_supplicant
 to handle all wireless encryption settings, and uses a template-based system
 to create the configuration files used by wpa_supplicant.  These templates
 can be edited, and new templates can be created by the user and imported into
@@ -79,7 +79,7 @@ aren't suitable for your particular distribution or system.
 .br
 If you need to run any custom commands before or after connecting to or 
 disconnecting from a network, Wicd supports this; however, you will need to
-have a graphical sudo helper installed (currently supported are kdesu, gksu,
+have a graphical sudo helper installed (currently supported are kdesu, pkexec,
 and ktsuss). Also see %SCRIPTS% in FILES.
 .br
 If you do not have a graphical sudo helper installed, you still have the
@@ -120,7 +120,7 @@ See this file's own man page for more information about it.
 
 .B %ETC%dhclient.conf.template
 .br
-This is used to replace /etc/dhclient.conf during Wicd activity,
+This is used to generate /var/lib/wicd/dhclient.conf during Wicd activity,
 if you're using dhclient(1) as DHCP client. See dhclient.conf(5)
 for more information.
 
@@ -178,7 +178,7 @@ log if you are having connection or other problems.
 .BR mii-tool (8),
 .BR ethtool (8),
 .BR dhclient (8),
-.BR dhcpcd (8),
+.BR dhcpcd5 (8),
 .BR pump (8).
 
 

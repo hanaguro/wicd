@@ -37,7 +37,7 @@ elk draadloos netwerk waar automatisch verbinden aan staat.
 Wicd gebruikt ingebouwde Linux draadloze netwerktools, zoals ifconfig en
 iwconfig, om netwerkinformatie te krijgen en in te stellen. Er is enige
 flexibiliteit in het gebruik van DHCP, door het ondersteunen van dhclient,
-dhcpcd en pump. Wicd gebruikt wpa_supplicant voor alle draadloze
+dhcpcd5 en pump. Wicd gebruikt wpa_supplicant voor alle draadloze
 coderingsinstellingen, en gebruikt een sjabloongebaseert systeem om de
 configuratiebestanden te maken die door wpa_supplicant worden gebruikt. Deze
 sjablonen kunnen worden bewerkt, en nieuwe sjablonen kunnen worden gemaakt door
@@ -85,7 +85,7 @@ standaardtools niet handig zijn voor jouw distributie of systeem.
 Als het nodig is om een eigen commando uit te voeren voor of na het verbinding
 maken of verbreken van een netwerk, dan ondersteund Wicd dit; maar je moet wel
 een grafische sudo helper geïnstalleerd hebben (op dit moment worden kdesu,
-gksu en ktsuss ondersteund).
+pkexec en ktsuss ondersteund).
 .br
 Als je geen grafische sudo helper geïnstalleerd hebt, heb je nog steeds de
 mogelijkheid om eigen scripts te gebruiken, maar je moet ze handmatig maken.
@@ -153,7 +153,7 @@ als je problemen hebt met de verbinding of met andere dingen.
 .BR mii-tool (8),
 .BR ethtool (8),
 .BR dhclient (8),
-.BR dhcpcd (8),
+.BR dhcpcd5 (8),
 .BR pump (8).
 
 

@@ -13,5 +13,5 @@ network={
     eap=PEAP
     identity="$_DOMAIN\$_IDENTITY"
     password="$_PASSWORD"
-    phase2="auth=MSCHAPv2"
+    phase2="auth=MSCHAPV2"
 }
