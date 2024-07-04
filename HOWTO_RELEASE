@@ -1,0 +1,28 @@
+This is a quick-and-dirty reminder document on how to create a new release.
+It might not be complete or perfect, but it's better than having nothing.
+
+Author: Tom Van Braeckel
+
+On http://launchpad.net/wicd
+- create the milestone (see the series page, https://launchpad.net/wicd/1.7)
+- assign bugs to the milestone
+- move unfinished work to the *next* milestone (this is optional, I stopped doing this)
+
+In the sources:
+- ensure all work is committed
+- bzr pull to make sure you have all work
+- update the VERSION_NUM variable in setup.py
+- sudo python setup.py compile_translations
+- sudo python setup.py configure
+- sudo python setup.py install
+- test: sudo python wicd/wicd-daemon.py; python gtk/wicd-client.py # and check the versio number!
+- update the NEWS file
+- update the CHANGES file for Debian. Hint: bzr log -r717.. | head -n -1 > CHANGES && cat in/CHANGES.suffix >> CHANGES
+- find -name "*.pyc" -o -name "*.orig" -o -name "*.rej" -o -name "*.~1~" -delete	# To clean stuff (Debian warns if this is not done)
+
+Build the release tarball by running:
+python setup.py sdist
+
+On http://launchpad.net/wicd
+- Attach the dist/wicd-*.tar.gz file to the milestone
+- Release the milestone (by filling in its "released" date)

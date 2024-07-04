@@ -1,0 +1,38 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch GTK client",
+            "type": "python",
+            "request": "launch",
+            "module": "wicd.frontends.gtk",
+            "console": "integratedTerminal",
+            "args": [ "--session-dbus"],
+        },
+        {
+            "name": "Launch test daemon",
+            "type": "python",
+            "request": "launch",
+            "module":  "wicd.daemon",
+            "console": "integratedTerminal",
+            "args": [ "-f", "--session-dbus"],
+        },
+        {
+            "name": "Launch test cli",
+            "type": "python",
+            "request": "launch",
+            "module":  "wicd.frontends.cli",
+            "console": "integratedTerminal",
+            "args": [ "--session-dbus", "--wired", "-l"]
+        },
+        {
+            "name": "Python: Modulo",
+            "type": "python",
+            "request": "launch",
+            "module": "unittest"
+        }
+    ]
+}

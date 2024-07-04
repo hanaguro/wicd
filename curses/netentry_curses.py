@@ -33,6 +33,11 @@ daemon = None
 wired = None
 wireless = None
 
+<<<<<<< HEAD
+=======
+
+# Call this first!
+>>>>>>> dcb3965f06636aef62f4b5eae3b77d511f24d030
 def dbus_init(dbus_ifaces):
     """ Initialize DBus interfaces. """
     global daemon, wired, wireless
@@ -41,6 +46,18 @@ def dbus_init(dbus_ifaces):
     wireless = dbus_ifaces['wireless']
 
 class AdvancedSettingsDialog(urwid.WidgetWrap):
+<<<<<<< HEAD
+=======
+    """
+    Settings dialog.
+
+    Both the wired and the wireless settings preferences dialogs use some of the
+    same fields.
+    This will be used to produce the individual network settings dialogs way far
+    below.
+    """
+    # pylint: disable-msg=W0231
+>>>>>>> dcb3965f06636aef62f4b5eae3b77d511f24d030
     def __init__(self):
         self.ui = None
         self.body = None
@@ -177,6 +194,10 @@ class AdvancedSettingsDialog(urwid.WidgetWrap):
         self.set_net_prop('dhcphostname', self.dhcp_h.get_edit_text())
         self.set_net_prop('usedhcphostname', self.use_dhcp_h.get_state())
 
+<<<<<<< HEAD
+=======
+    # Prevent comboboxes from dying.
+>>>>>>> dcb3965f06636aef62f4b5eae3b77d511f24d030
     def ready_widgets(self, ui, body):
         """ Build comboboxes. """
         self.ui = ui
@@ -188,6 +209,10 @@ class AdvancedSettingsDialog(urwid.WidgetWrap):
         """ Handle change of item in the combobox. """
         self.change_encrypt_method()
 
+<<<<<<< HEAD
+=======
+    # More or less ripped from netentry.py
+>>>>>>> dcb3965f06636aef62f4b5eae3b77d511f24d030
     def change_encrypt_method(self):
         """ Change encrypt method based on combobox. """
         self.encryption_info = {}
@@ -197,6 +222,10 @@ class AdvancedSettingsDialog(urwid.WidgetWrap):
         if self._w.body.body.__contains__(self.pile_encrypt):
             self._w.body.body.pop(self._w.body.body.__len__() - 1)
 
+<<<<<<< HEAD
+=======
+        # If nothing is selected, select the first entry.
+>>>>>>> dcb3965f06636aef62f4b5eae3b77d511f24d030
         if ID == -1:
             self.encryption_combo.set_focus(0)
             ID = 0
@@ -212,6 +241,12 @@ class AdvancedSettingsDialog(urwid.WidgetWrap):
                 edit = MaskingEdit(('editcp', text + ': '))
                 edit.set_mask_mode('no_focus')
                 theList.append(edit)
+<<<<<<< HEAD
+=======
+                # Add the data to any array, so that the information
+                # can be easily accessed by giving the name of the wanted
+                # data.
+>>>>>>> dcb3965f06636aef62f4b5eae3b77d511f24d030
                 self.encryption_info[field[0]] = [edit, type_]
 
                 if self.wired:
@@ -255,7 +290,14 @@ class WiredSettingsDialog(AdvancedSettingsDialog):
         self.encryption_chkbox = urwid.CheckBox(encryption_t, on_state_change=self.encryption_toggle)
         self.encryption_combo = ComboBox(callback=self.combo_on_change)
         self.pile_encrypt = None
+<<<<<<< HEAD
         self._listbox.body.append(self.encryption_chkbox)
+=======
+        # _w is a Frame, _w.body is a ListBox, _w.body.body is the ListWalker
+        # pylint: disable-msg=E1103
+        self._listbox.body.append(self.encryption_chkbox)
+        # pylint: disable-msg=E1103
+>>>>>>> dcb3965f06636aef62f4b5eae3b77d511f24d030
         self._listbox.body.append(self.encryption_combo)
         self.encrypt_types = misc.LoadEncryptionMethods(wired=True)
         self.set_values()
@@ -309,6 +351,11 @@ class WiredSettingsDialog(AdvancedSettingsDialog):
         self.dhcp_h.set_edit_text(str(dhcphname))
 
     def save_settings(self):
+<<<<<<< HEAD
+=======
+        """ Save settings to disk. """
+        # Check encryption info
+>>>>>>> dcb3965f06636aef62f4b5eae3b77d511f24d030
         if self.encryption_chkbox.get_state():
             encrypt_info = self.encryption_info
             encrypt_methods = self.encrypt_types
@@ -367,12 +414,29 @@ class WirelessSettingsDialog(AdvancedSettingsDialog):
         self.allow_lower_bitrates_chkbox = urwid.CheckBox(allow_lower_bitrates_t)
 
         self.pile_encrypt = None
+<<<<<<< HEAD
         self._listbox.body.append(self.bitrate_combo)
         self._listbox.body.append(self.allow_lower_bitrates_chkbox)
         self._listbox.body.append(urwid.Text(''))
         self._listbox.body.append(self.global_settings_chkbox)
         self._listbox.body.append(self.autoconnect_chkbox)
         self._listbox.body.append(self.encryption_chkbox)
+=======
+        # _w is a Frame, _w.body is a ListBox, _w.body.body is the ListWalker
+        # pylint: disable-msg=E1103
+        self._listbox.body.append(self.bitrate_combo)
+        # pylint: disable-msg=E1103
+        self._listbox.body.append(self.allow_lower_bitrates_chkbox)
+        # pylint: disable-msg=E1103
+        self._listbox.body.append(urwid.Text(''))
+        # pylint: disable-msg=E1103
+        self._listbox.body.append(self.global_settings_chkbox)
+        # pylint: disable-msg=E1103
+        self._listbox.body.append(self.autoconnect_chkbox)
+        # pylint: disable-msg=E1103
+        self._listbox.body.append(self.encryption_chkbox)
+        # pylint: disable-msg=E1103
+>>>>>>> dcb3965f06636aef62f4b5eae3b77d511f24d030
         self._listbox.body.append(self.encryption_combo)
         self.encrypt_types = misc.LoadEncryptionMethods()
         self.set_values()
@@ -381,6 +445,10 @@ class WirelessSettingsDialog(AdvancedSettingsDialog):
         self._w.header = urwid.Text(('header', title), align='right')
 
     def set_values(self):
+<<<<<<< HEAD
+=======
+        """ Set the various network settings to the right values. """
+>>>>>>> dcb3965f06636aef62f4b5eae3b77d511f24d030
         networkID = self.networkid
         self.ip_edit.set_edit_text(self.format_entry(networkID, "ip"))
         self.netmask_edit.set_edit_text(self.format_entry(networkID, "netmask"))
@@ -445,12 +513,26 @@ class WirelessSettingsDialog(AdvancedSettingsDialog):
         self.dhcp_h.set_edit_text(str(dhcphname))
 
     def set_net_prop(self, option, value):
+<<<<<<< HEAD
         wireless.SetWirelessProperty(self.networkid, option, str(value))
 
     def format_entry(self, networkid, label):
         return noneToBlankString(wireless.GetWirelessProperty(networkid, label))
 
     def save_settings(self):
+=======
+        """ Sets the given option to the given value for this network. """
+        wireless.SetWirelessProperty(self.networkid, option, str(value))
+
+    def format_entry(self, networkid, label):
+        """ Helper method for fetching/formatting wireless properties. """
+        return noneToBlankString(wireless.GetWirelessProperty(networkid, label))
+
+    # Ripped from netentry.py
+    def save_settings(self):
+        """ Save settings to disk. """
+        # Check encryption info
+>>>>>>> dcb3965f06636aef62f4b5eae3b77d511f24d030
         if self.encryption_chkbox.get_state():
             encrypt_info = self.encryption_info
             encrypt_methods = self.encrypt_types
